@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Star, Sparkles, ShieldCheck, Heart, Award, MapPin, Gift, Feather } from 'lucide-react';
+import { ArrowRight, Star, Sparkles, ShieldCheck, Heart, Award, MapPin, Truck, CheckCircle2 } from 'lucide-react';
 import { AppView } from '../types';
 
 interface LandingHeroProps {
@@ -9,8 +9,17 @@ interface LandingHeroProps {
 }
 
 export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
+  const handleScrollToStyles = () => {
+    const el = document.getElementById('stijlen');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      onNavigate('customizer');
+    }
+  };
+
   return (
-    <section className="relative overflow-hidden pt-12 pb-20 lg:pt-16 lg:pb-28 bg-[#FAF8F5]">
+    <section className="relative overflow-hidden pt-10 pb-16 lg:pt-14 lg:pb-24 bg-[#FAF8F5]">
       {/* Soft natural ambient lighting */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-[#F2EDE2] rounded-full blur-[120px] -z-10 pointer-events-none opacity-80" />
 
@@ -21,18 +30,18 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
             {/* Pill Badge */}
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#F3EFE7] border border-[#E4DDD0] text-[#78716C] text-xs font-medium">
               <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-              <span>Thoughtful Keepsakes Crafted with Archival Care</span>
+              <span>Exclusieve Pilot Editie • Nederland & België</span>
             </div>
 
             {/* Main Emotive Headline */}
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#1C1917] leading-[1.18]">
-              Gifts made to hold <br />
-              <span className="italic text-[#A37055]">what words cannot.</span>
+              Cadeaus die vasthouden <br />
+              <span className="italic text-[#A37055]">wat woorden niet kunnen.</span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-[#57534E] text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
-              From the exact alignment of the stars on the night you first met, to hand-embroidered organic textiles and carved solid walnut heirlooms. Every gift is made to order with quiet simplicity and enduring emotional value.
+              De exacte stand van de sterren op het moment dat jullie elkaar ontmoetten, elkaar het jawoord gaven of een nieuw leven verwelkomden. Wetenschappelijk berekend via NASA-astronomie en met de hand ingelijst in museumkwaliteit.
             </p>
 
             {/* CTA Buttons */}
@@ -41,15 +50,15 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate('customizer')}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs tracking-wide shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
               >
-                <span>Personalize &ldquo;The Celestial Blueprint™&rdquo;</span>
+                <span>Ontwerp jouw sterrenkaart</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button
-                onClick={() => onNavigate('products')}
+                onClick={handleScrollToStyles}
                 className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#292524] border border-[#D6D0C7] font-medium text-xs tracking-wide transition-all shadow-sm"
               >
-                Explore All Keepsakes
+                Bekijk de 5 Kunststijlen
               </button>
             </div>
 
@@ -61,7 +70,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 ))}
               </div>
               <span>
-                <strong className="text-[#1C1917] font-medium">4.98 / 5.0</strong> from over 3,200+ heartfelt milestone moments
+                <strong className="text-[#1C1917] font-medium">4.98 / 5.0</strong> uit meer dan 3.200+ dierbare herinneringen
               </span>
             </div>
           </div>
@@ -81,19 +90,19 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 >
                   <img
                     src="/textures/star_map_sample.png"
-                    alt="The Celestial Blueprint Custom Star Map Print"
+                    alt="Gepersonaliseerde Sterrenposter Voorbeeld"
                     className="w-full h-full object-cover transform group-hover:scale-[1.015] transition-transform duration-500"
                   />
 
                   {/* Understated Minimalist Badge */}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md border border-[#E7E3DC] px-3 py-1 rounded-full text-[10px] font-medium text-[#1C1917] tracking-wider shadow-sm">
-                    FLAGSHIP KEEPSAKE
+                    EXCLUSIEVE PILOT EDITIE
                   </div>
 
                   {/* Hover Prompt */}
                   <div className="absolute inset-0 bg-[#1C1917]/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <span className="px-4 py-2 rounded-full bg-white text-[#1C1917] font-semibold text-xs shadow-xl flex items-center gap-1.5 transform translate-y-1 group-hover:translate-y-0 transition-transform">
-                      <span>Personalize in Atelier Studio</span>
+                      <span>Personaliseer in Atelier Studio</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
@@ -103,16 +112,16 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 <div className="pt-3.5 px-1 flex items-center justify-between">
                   <div>
                     <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
-                      The Celestial Blueprint™
+                      De Gepersonaliseerde Sterrenposter
                     </h3>
                     <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3 text-[#A37055]" />
-                      <span>New York, NY • September 22, 2026</span>
+                      <span>Amsterdam • 21:00 • 285 gsm Fine-Art</span>
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs line-through text-[#A8A29E] block">$68.00</span>
-                    <span className="text-sm font-semibold text-[#1C1917]">$49.00</span>
+                    <span className="text-[11px] text-[#A8A29E] line-through block">€68,00</span>
+                    <span className="font-serif text-sm font-bold text-[#1C1917]">vanaf €49,00</span>
                   </div>
                 </div>
               </div>
@@ -120,45 +129,45 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Bottom Trust & Craftsmanship Highlights */}
-        <div className="mt-16 pt-8 border-t border-[#EAE5DC] grid grid-cols-2 md:grid-cols-4 gap-6 text-center md:text-left">
-          <div className="flex items-center space-x-3 justify-center md:justify-start">
-            <div className="w-9 h-9 rounded-xl bg-[#F4F0E8] border border-[#E4DED2] flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-[#A37055]" />
+        {/* Feature Highlights Grid */}
+        <div className="mt-14 pt-10 border-t border-[#EAE5DC] grid grid-cols-2 md:grid-cols-4 gap-6 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-[#F0EBE1] flex items-center justify-center text-[#A37055] shrink-0">
+              <Award className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-semibold text-[#1C1917]">Astronomical Precision</h4>
-              <p className="text-[11px] text-[#78716C]">8,870 stars via NASA ephemeris</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">Echte NASA Sterrendata</h4>
+              <p className="text-[11px] text-[#78716C]">Wetenschappelijk nauwkeurig</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 justify-center md:justify-start">
-            <div className="w-9 h-9 rounded-xl bg-[#F4F0E8] border border-[#E4DED2] flex items-center justify-center shrink-0">
-              <Award className="w-4 h-4 text-[#A37055]" />
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-[#F0EBE1] flex items-center justify-center text-[#A37055] shrink-0">
+              <Truck className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-semibold text-[#1C1917]">Archival Fine Art Paper</h4>
-              <p className="text-[11px] text-[#78716C]">300 DPI heavy cotton rag</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">Gratis Verzending NL & BE</h4>
+              <p className="text-[11px] text-[#78716C]">Via PostNL & Bpost Track & Trace</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 justify-center md:justify-start">
-            <div className="w-9 h-9 rounded-xl bg-[#F4F0E8] border border-[#E4DED2] flex items-center justify-center shrink-0">
-              <Feather className="w-4 h-4 text-[#A37055]" />
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-[#F0EBE1] flex items-center justify-center text-[#A37055] shrink-0">
+              <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-semibold text-[#1C1917]">Natural Solid Wood</h4>
-              <p className="text-[11px] text-[#78716C]">Sustainably harvested walnut & oak</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">285 gsm Katoenpapier</h4>
+              <p className="text-[11px] text-[#78716C]">Museum archiefkwaliteit</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 justify-center md:justify-start">
-            <div className="w-9 h-9 rounded-xl bg-[#F4F0E8] border border-[#E4DED2] flex items-center justify-center shrink-0">
-              <Gift className="w-4 h-4 text-[#A37055]" />
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-[#F0EBE1] flex items-center justify-center text-[#A37055] shrink-0">
+              <Heart className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-semibold text-[#1C1917]">Keepsake Packaging</h4>
-              <p className="text-[11px] text-[#78716C]">Wax seals & complimentary gift notes</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">Ambachtelijk Ingelijst</h4>
+              <p className="text-[11px] text-[#78716C]">Slanke 8 mm fotolijsten</p>
             </div>
           </div>
         </div>

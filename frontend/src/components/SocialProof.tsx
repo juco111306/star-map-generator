@@ -1,36 +1,36 @@
 'use client';
 
 import React from 'react';
-import { Star, CheckCircle, Heart } from 'lucide-react';
+import { Star, CheckCircle } from 'lucide-react';
 
 export const SocialProof: React.FC = () => {
   const reviews = [
     {
-      name: 'Jessica & David M.',
-      occasion: '1st Wedding Anniversary (Paper)',
+      name: 'Anouk & Daan M.',
+      occasion: '1e Huwelijksverjaardag (Katoen)',
       stars: 5,
-      date: 'Verified Buyer',
+      location: 'Amsterdam, Nederland',
       content:
-        'My husband literally was moved to tears when he opened this on our paper anniversary. The texture of the cotton rag paper is so substantial, and the script calligraphy of our names is breathtaking. We chose the Scandinavian Oak frame and it hangs in our bedroom.',
-      product: 'The Celestial Blueprint™ in Midnight Classic (18x24")',
+        'Mijn man was letterlijk sprakeloos toen hij dit uitpakte voor onze eerste trouwdag. De tastbare kwaliteit van het katoenpapier en de sierlijke kalligrafie van onze namen zijn adembenemend. We kozen de Scandinavisch eiken lijst en hij hangt nu trots in onze woonkamer.',
+      product: 'Gepersonaliseerde Sterrenposter in Midnight Classic (50×70 cm)',
     },
     {
-      name: 'Liam & Sophia K.',
-      occasion: 'Engagement Milestone',
+      name: 'Charlotte & Thomas V.',
+      occasion: 'Verlovingsmoment',
       stars: 5,
-      date: 'Verified Buyer',
+      location: 'Antwerpen, België',
       content:
-        'We ordered our star map for the night we got engaged under the stars in Santorini. The compass dial, constellations, and the delicate stardust texture look so elevated in person. It feels like a piece of quiet poetry.',
-      product: 'The Celestial Blueprint™ in Minimalist Light (18x24")',
+        'We bestelden onze sterrenkaart voor de nacht van ons aanzoek onder de sterrenhemel in de Ardennen. De kompasring, de herkenbare sterrenbeelden en de diepe kleuren zien er in het echt nóg luxueuzer uit dan op het scherm. Een prachtig tastbaar aandenken.',
+      product: 'Gepersonaliseerde Sterrenposter in Emerald Night (40×50 cm)',
     },
     {
-      name: 'Elena & Marcus R.',
-      occasion: 'Newborn Baby Arrival',
+      name: 'Sanne & Ruben K.',
+      occasion: 'Geboorte van onze Dochter',
       stars: 5,
-      date: 'Verified Buyer',
+      location: 'Utrecht, Nederland',
       content:
-        'I gifted this to my sister when she had her daughter. Having the exact night sky over the hospital with her birth coordinates is the most deeply meaningful gift you could ever give a new mother.',
-      product: 'The Celestial Blueprint™ in Teal Watercolor (18x24")',
+        'Dit cadeau gekregen bij de geboorte van onze dochter Fien. De exacte nachthemel boven het ziekenhuis met haar geboortecoördinaten en tijdstip is het meest betekenisvolle geschenk dat we konden wensen voor de kinderkamer.',
+      product: 'Gepersonaliseerde Sterrenposter in Teal Watercolor (30×40 cm)',
     },
   ];
 
@@ -44,10 +44,10 @@ export const SocialProof: React.FC = () => {
             ))}
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-[#1C1917]">
-            Cherished Across Generations
+            Dierbare Herinneringen in Nederland & België
           </h2>
           <p className="text-[#57534E] text-sm font-light leading-relaxed">
-            Real stories from couples and families who preserved a piece of eternity.
+            Echte ervaringen van koppels en gezinnen die hun meest bijzondere moment hebben vereeuwigd.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export const SocialProof: React.FC = () => {
                   </div>
                   <span className="text-[10.5px] text-[#78716C] flex items-center gap-1">
                     <CheckCircle className="w-3 h-3 text-[#A37055]" />
-                    <span>Verified Heirloom</span>
+                    <span>Geverifieerde Koper</span>
                   </span>
                 </div>
 
@@ -80,13 +80,14 @@ export const SocialProof: React.FC = () => {
                   <h4 className="font-serif text-xs font-bold text-[#1C1917]">
                     {r.name}
                   </h4>
-                  <span className="text-[10.5px] text-[#A37055] font-medium">
+                  <span className="text-[10px] text-[#A37055] font-medium">
                     {r.occasion}
                   </span>
                 </div>
-                <p className="text-[10px] text-[#78716C] mt-0.5">
-                  {r.product}
-                </p>
+                <div className="flex items-center justify-between text-[10px] text-[#78716C] mt-1">
+                  <span>{r.product}</span>
+                  <span className="font-mono text-[9.5px] text-[#8C827A]">{r.location}</span>
+                </div>
               </div>
             </div>
           ))}

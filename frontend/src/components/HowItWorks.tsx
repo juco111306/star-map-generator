@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Calendar, Sliders, Printer, Sparkles, ArrowRight, Feather, Heart } from 'lucide-react';
+import { Calendar, Printer, Sparkles, ArrowRight, Feather } from 'lucide-react';
 
 interface HowItWorksProps {
   onStartCustomizing: () => void;
@@ -11,23 +11,23 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartCustomizing }) =>
   const steps = [
     {
       number: '01',
-      title: 'Specify Your Defining Moment',
+      title: 'Kies Jouw Bijzondere Moment',
       description:
-        'Select any date in time and any place on Earth—from a bustling city square to the quiet shore where you made your promise.',
+        'Selecteer een datum, tijdstip en locatie op aarde—van een historische gracht in Amsterdam of Brugge tot het strand van jullie huwelijksreis.',
       icon: <Calendar className="w-5 h-5 text-[#A37055]" />,
     },
     {
       number: '02',
-      title: 'Personalize with Quiet Care',
+      title: 'Personaliseer in Onze Studio',
       description:
-        'Choose timeless typography, bespoke cursive calligraphy names, coordinate footers, and delicate vector ornaments.',
+        'Voeg jullie namen toe in elegante kalligrafie, kies een romantische titel, stem lettergroottes af tot 100 pt en kies jouw favoriete kunststijl.',
       icon: <Feather className="w-5 h-5 text-[#A37055]" />,
     },
     {
       number: '03',
-      title: 'Archival Crafting & Delivery',
+      title: 'Ambachtelijk Gedrukt & Geleverd',
       description:
-        'Our atelier renders the vector 300 DPI artwork, hand-frames your print in solid wood, and packages it in archival gift wrap.',
+        'Individueel gedrukt op 285 gsm archiefwaardig fine-art papier, optioneel ingelijst in een slank 8 mm kader en snel bezorgd via PostNL of Bpost.',
       icon: <Printer className="w-5 h-5 text-[#A37055]" />,
     },
   ];
@@ -38,13 +38,13 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartCustomizing }) =>
         <div className="text-center max-w-xl mx-auto space-y-3">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#F3EFE7] border border-[#E4DDD0] text-[#78716C] text-xs font-medium">
             <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>THE ATELIER PROCESS</span>
+            <span>HET AMBACHTELIJKE PROCES</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-[#1C1917]">
-            How Your Keepsake is Made
+            Hoe Jouw Sterrenposter Wordt Gemaakt
           </h2>
           <p className="text-[#57534E] text-sm font-light leading-relaxed">
-            From mathematical astronomy calculations to physical museum craftsmanship in three simple steps.
+            Van wetenschappelijke NASA-berekeningen tot fysiek meesterwerk in drie eenvoudige stappen.
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartCustomizing }) =>
             onClick={onStartCustomizing}
             className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs tracking-wide shadow-sm hover:shadow-md transition-all transform hover:-translate-y-0.5"
           >
-            <span>Personalize The Star Map Now</span>
+            <span>Ontwerp nu jouw sterrenkaart</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

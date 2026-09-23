@@ -103,10 +103,13 @@ export const GOOGLE_FONTS = [
 ];
 
 export const POPULAR_LOCATIONS = [
-  { name: 'New York, USA', lat: 40.7128, lon: -74.0060 },
-  { name: 'Paris, France', lat: 48.8566, lon: 2.3522 },
-  { name: 'Tokyo, Japan', lat: 35.6762, lon: 139.6503 },
-  { name: 'London, UK', lat: 51.5074, lon: -0.1278 },
-  { name: 'Rome, Italy', lat: 41.9028, lon: 12.4964 },
-  { name: 'Sydney, Australia', lat: -33.8688, lon: 151.2093 },
+  { name: 'Amsterdam, Nederland', lat: 52.3676, lon: 4.9041 },
+  { name: 'Rotterdam, Nederland', lat: 51.9244, lon: 4.4777 },
+  { name: 'Utrecht, Nederland', lat: 52.0907, lon: 5.1214 },
+  { name: 'Antwerpen, België', lat: 51.2194, lon: 4.4025 },
+  { name: 'Brussel, België', lat: 50.8503, lon: 4.3517 },
+  { name: 'Gent, België', lat: 51.0543, lon: 3.7174 },
+  { name: 'Brugge, België', lat: 51.2093, lon: 3.2247 },
+  { name: 'Eindhoven, Nederland', lat: 51.4416, lon: 5.4697 },
+  { name: 'Parijs, Frankrijk', lat: 48.8566, lon: 2.3522 },
 ];

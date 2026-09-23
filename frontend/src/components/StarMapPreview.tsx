@@ -408,10 +408,10 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         {onFrameChange && (
           <div className="flex items-center bg-[#FAF8F5] p-0.5 rounded-lg border border-[#E8E4DC] text-[11px]">
             {([
-              { id: 'none', label: 'Print', dot: 'bg-[#C5C0B7]' },
-              { id: 'black', label: 'Slim Black', dot: 'bg-[#1C1A18]' },
-              { id: 'oak', label: 'Slim Oak', dot: 'bg-[#9A6B3D]' },
-              { id: 'white', label: 'Slim White', dot: 'bg-white border border-[#D5D0C7]' },
+              { id: 'none', label: 'Zonder lijst', dot: 'bg-[#C5C0B7]' },
+              { id: 'black', label: 'Slank Zwart', dot: 'bg-[#1C1A18]' },
+              { id: 'oak', label: 'Slank Eiken', dot: 'bg-[#9A6B3D]' },
+              { id: 'white', label: 'Slank Wit', dot: 'bg-white border border-[#D5D0C7]' },
             ] as const).map(({ id, label, dot }) => (
               <button
                 key={id}
@@ -435,7 +435,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
           <button
             onClick={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
             className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Zoom Out"
+            title="Uitzoomen"
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
@@ -445,21 +445,21 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
           <button
             onClick={() => setZoomLevel((z) => Math.min(1.8, z + 0.1))}
             className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Zoom In"
+            title="Inzoomen"
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setZoomLevel(1.0)}
             className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Reset Zoom"
+            title="Standaard zoom"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Toggle Fullscreen"
+            title="Volledig scherm"
           >
             <Maximize2 className="w-3.5 h-3.5" />
           </button>

@@ -32,6 +32,7 @@ import { GOOGLE_FONTS, POPULAR_LOCATIONS } from '../constants/styles';
 import { TYPOGRAPHY_PRESETS } from '../constants/presets';
 import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, PosterSize, TextBlockConfig } from '../types';
 import { StyleSelector } from './StyleSelector';
+import { apiFetch } from '../utils/api';
 
 interface ConfigPanelProps {
   config: MapConfig;
@@ -47,12 +48,12 @@ interface ConfigPanelProps {
 export type StudioTab = 'location' | 'text' | 'font' | 'design' | 'format';
 
 const TITLE_SUGGESTIONS = [
-  "The night our stars aligned",
-  "The night we said 'I do'",
-  "The star was born",
-  "The beginning of our adventure",
-  "The night we met",
-  "Under this sky",
+  "De nacht dat onze sterren samenkwamen",
+  "De nacht waarin we 'Ja' zeiden",
+  "Toen een ster werd geboren",
+  "Het begin van ons avontuur",
+  "De nacht waarin we elkaar ontmoetten",
+  "Onder deze hemel",
 ];
 
 export const ConfigPanel: React.FC<ConfigPanelProps> = ({
@@ -83,7 +84,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     const timer = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const res = await fetch(`/api/geocode?q=${encodeURIComponent(searchQuery.trim())}`);
+        const res = await apiFetch(`/api/geocode?q=${encodeURIComponent(searchQuery.trim())}`);
         if (res.ok) {
           const data = await res.json();
           setGeocodeResults(data);
@@ -171,12 +172,12 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   };
 
   const dividers: { id: DividerStyle; label: string; symbol: string }[] = [
-    { id: 'diamond', label: 'Diamond', symbol: '— ◆ —' },
-    { id: 'star', label: 'Star', symbol: '— ✦ —' },
-    { id: 'heart', label: 'Heart', symbol: '— ♥ —' },
-    { id: 'dot', label: 'Dot', symbol: '— • —' },
-    { id: 'line', label: 'Clean Line', symbol: '———' },
-    { id: 'none', label: 'None', symbol: 'None' },
+    { id: 'diamond', label: 'Diamant', symbol: '— ◆ —' },
+    { id: 'star', label: 'Ster', symbol: '— ✦ —' },
+    { id: 'heart', label: 'Hart', symbol: '— ♥ —' },
+    { id: 'dot', label: 'Punt', symbol: '— • —' },
+    { id: 'line', label: 'Minimalistische Lijn', symbol: '———' },
+    { id: 'none', label: 'Geen', symbol: 'Geen' },
   ];
 
   const frames: {
@@ -190,36 +191,36 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   }[] = [
     {
       id: 'none',
-      label: 'Unframed Print',
-      sub: 'Archival Paper',
-      desc: '300 DPI museum-grade fine art print, ready for framing',
+      label: 'Zonder Lijst (Print)',
+      sub: 'Archiefpapier 285 gsm',
+      desc: '300 DPI museumkwaliteit fine-art print, klaar om zelf in te lijsten',
       borderStyle: 'border-dashed border-[#C5BFB5]',
       bgStyle: 'bg-white',
       innerBg: 'bg-[#2E3440]',
     },
     {
       id: 'black',
-      label: 'Slim Matte Black',
-      sub: 'Thin 8 mm Profile',
-      desc: 'Sleek contemporary gallery aluminium with crystal acrylic',
+      label: 'Slank Mat Zwart',
+      sub: 'Dun 8 mm Profiel',
+      desc: 'Strak galerij-aluminium met ontspiegeld kristalglas',
       borderStyle: 'border-[3px] border-[#181716]',
       bgStyle: 'bg-[#181716]',
       innerBg: 'bg-[#0E1526]',
     },
     {
       id: 'oak',
-      label: 'Slim Nordic Oak',
-      sub: 'Thin 8 mm Profile',
-      desc: 'Solid Scandinavian natural oak with delicate warm grain',
+      label: 'Slank Scandinavisch Eiken',
+      sub: 'Dun 8 mm Profiel',
+      desc: 'Massief natuurlijk eikenhout met een warme, verfijnde houtnerf',
       borderStyle: 'border-[3px] border-[#A27344]',
       bgStyle: 'bg-[#A27344]',
       innerBg: 'bg-[#0E1526]',
     },
     {
       id: 'white',
-      label: 'Slim Gallery White',
-      sub: 'Thin 8 mm Profile',
-      desc: 'Crisp satin white museum moulding for minimalist interiors',
+      label: 'Slank Galerij Wit',
+      sub: 'Dun 8 mm Profiel',
+      desc: 'Zacht satijnwit museumprofiel voor lichte en minimalistische interieurs',
       borderStyle: 'border-[3px] border-[#E8E4DC] ring-1 ring-[#D0CAC0]',
       bgStyle: 'bg-white',
       innerBg: 'bg-[#0E1526]',
@@ -227,28 +228,28 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   ];
 
   const layoutVariations: { id: LayoutVariation; label: string; desc: string; badge?: string }[] = [
-    { id: 'standard_stack', label: 'The Standard Stack', desc: 'Classic gallery stack below the star map', badge: 'Popular' },
-    { id: 'top_title', label: 'The Top Title', desc: 'Header at top, celestial sphere centered' },
-    { id: 'curved_border', label: 'Curved Border', desc: 'Title arches along the outer circular rim' },
-    { id: 'moon_phases', label: 'The Moon Phases', desc: '7 lunar phases as a refined divider', badge: 'Trending' },
-    { id: 'framed', label: 'The Framed Keyline', desc: 'Delicate passe-partout inner border' },
+    { id: 'standard_stack', label: 'De Standaard Galerij', desc: 'Klassieke tijdloze tekststapel onder de sterrenkaart', badge: 'Populair' },
+    { id: 'top_title', label: 'Titel Bovenaan', desc: 'Hoofdtitel bovenaan, sterrenhemel gecentreerd' },
+    { id: 'curved_border', label: 'Gebogen Randschrift', desc: 'Titel buigt sierlijk langs de buitenrand van de cirkel' },
+    { id: 'moon_phases', label: 'De Maanfasen', desc: '7 opeenvolgende maanstanden als elegant scheidingselement', badge: 'Populair' },
+    { id: 'framed', label: 'Galerijkader (Keyline)', desc: 'Verfijnde dubbele binnenrand en passe-partout belijning' },
   ];
 
   const formatOptions: { id: PosterSize; label: string; sub: string; aspect: string; popular?: boolean }[] = [
-    { id: '20x30', label: '20 × 30 cm', sub: 'Compact Keepsake (2:3)', aspect: '2:3' },
-    { id: '30x40', label: '30 × 40 cm', sub: 'Classic Gallery (3:4)', aspect: '3:4', popular: true },
+    { id: '20x30', label: '20 × 30 cm', sub: 'Compact Aandenken (2:3)', aspect: '2:3' },
+    { id: '30x40', label: '30 × 40 cm', sub: 'Klassieke Galerij (3:4)', aspect: '3:4', popular: true },
     { id: '40x50', label: '40 × 50 cm', sub: 'Medium Statement (4:5)', aspect: '4:5' },
-    { id: '50x70', label: '50 × 70 cm', sub: 'Grand Art Size (5:7)', aspect: '5:7', popular: true },
+    { id: '50x70', label: '50 × 70 cm', sub: 'Groot Kunstformaat (5:7)', aspect: '5:7', popular: true },
     { id: '18x24', label: '18 × 24 in', sub: '45 × 60 cm (3:4)', aspect: '3:4' },
     { id: '24x36', label: '24 × 36 in', sub: '60 × 90 cm (2:3)', aspect: '2:3' },
   ];
 
   const stepsList: { id: StudioTab; label: string; icon: any }[] = [
-    { id: 'location', label: '1. Location', icon: MapPin },
-    { id: 'design', label: '2. Form', icon: Sparkles },
-    { id: 'text', label: '3. Text', icon: Type },
-    { id: 'font', label: '4. Typography', icon: Sliders },
-    { id: 'format', label: '5. Format', icon: Maximize2 },
+    { id: 'location', label: '1. Locatie & Tijd', icon: MapPin },
+    { id: 'design', label: '2. Vorm & Stijl', icon: Sparkles },
+    { id: 'text', label: '3. Tekst', icon: Type },
+    { id: 'font', label: '4. Typografie', icon: Sliders },
+    { id: 'format', label: '5. Formaat & Lijst', icon: Maximize2 },
   ];
 
   const currentStepIdx = stepsList.findIndex((s) => s.id === activeTab);
@@ -266,10 +267,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-[11px] text-[#78716C]">
             <button onClick={onBackToProducts} className="hover:text-[#1C1917] transition-colors">
-              Collection
+              Overzicht
             </button>
             <span>/</span>
-            <span className="text-[#1C1917] font-medium">The Celestial Blueprint™</span>
+            <span className="text-[#1C1917] font-medium">Gepersonaliseerde Sterrenposter</span>
           </div>
 
           <button
@@ -277,7 +278,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             className="text-xs text-[#A37055] hover:text-[#1C1917] font-medium transition-colors flex items-center gap-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Collection</span>
+            <span>Terug naar Home</span>
           </button>
         </div>
 
@@ -286,20 +287,20 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <span className="text-[10px] uppercase font-semibold tracking-widest text-[#A37055]">
-                Custom Star Map Print
+                Gepersonaliseerde Sterrenkaart
               </span>
               <h2 className="font-serif text-xl font-normal text-[#1C1917] tracking-wide">
-                The Celestial Blueprint™
+                De Sterrenposter
               </h2>
             </div>
             <div className="text-right">
-              <span className="text-base font-semibold text-[#1C1917]">$49.00</span>
-              <span className="text-[10px] text-[#78716C] block">300 DPI Archival Quality</span>
+              <span className="text-base font-semibold text-[#1C1917]">€49,00</span>
+              <span className="text-[10px] text-[#78716C] block">300 DPI Archiefkwaliteit</span>
             </div>
           </div>
         </div>
 
-        {/* Studio Step Tabs (Ordered like WhereItHappened) */}
+        {/* Studio Step Tabs */}
         <div className="flex p-1 rounded-xl bg-[#F0EBE1] border border-[#E5DFD4] gap-1 text-xs overflow-x-auto">
           {stepsList.map((step) => {
             const Icon = step.icon;
@@ -330,7 +331,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Choose Your Location</span>
+                  <span>Kies Jouw Locatie</span>
                 </span>
                 <span className="text-[10px] text-[#A8A29E] font-mono">
                   {config.latitude.toFixed(2)}°, {config.longitude.toFixed(2)}°
@@ -345,7 +346,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleKeyDownSearch}
-                    placeholder="Search city, address, or landmark..."
+                    placeholder="Zoek stad, adres of bezienswaardigheid..."
                     className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-10 pr-10 py-2.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] transition"
                   />
                   {isSearching && (
@@ -375,7 +376,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
               {/* Popular quick picks */}
               <div className="space-y-1.5 pt-1">
-                <span className="text-[10.5px] text-[#78716C] block font-medium">Popular Romantic Cities:</span>
+                <span className="text-[10.5px] text-[#78716C] block font-medium">Populaire Steden in NL & BE:</span>
                 <div className="flex flex-wrap gap-1.5">
                   {POPULAR_LOCATIONS.map((loc) => (
                     <button
@@ -399,12 +400,12 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-[#A37055]" />
-                <span>Date & Time</span>
+                <span>Datum & Tijdstip</span>
               </label>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">Date</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">Datum</label>
                   <input
                     type="date"
                     value={config.date}
@@ -412,11 +413,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       const newDate = e.target.value;
                       const dObj = new Date(newDate);
                       const monthNames = [
-                        'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
-                        'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER',
+                        'JANUARI', 'FEBRUARI', 'MAART', 'APRIL', 'MEI', 'JUNI',
+                        'JULI', 'AUGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DECEMBER',
                       ];
                       const formattedDate = !isNaN(dObj.getTime())
-                        ? `${monthNames[dObj.getUTCMonth()]} ${dObj.getUTCDate()}, ${dObj.getUTCFullYear()}`
+                        ? `${dObj.getUTCDate()} ${monthNames[dObj.getUTCMonth()]} ${dObj.getUTCFullYear()}`
                         : newDate;
 
                       onChange({
@@ -432,7 +433,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">Time</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">Tijdstip</label>
                   <input
                     type="time"
                     value={config.time}
@@ -443,7 +444,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </div>
 
               <p className="text-[11px] text-[#78716C] font-light pt-1">
-                The Skyfield astronomy engine calculates the exact celestial alignment for this date and time.
+                Het Skyfield astronomiemodel berekent de exacte stand van de sterren voor dit tijdstip en deze coördinaten.
               </p>
             </div>
           </div>
@@ -455,8 +456,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             {/* 1. Form (Circle or Heart) */}
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center justify-between">
-                <span>1. Map Silhouette & Shape</span>
-                <span className="text-[10px] text-[#A37055]">Circle or Heart</span>
+                <span>1. Kaartsilhouet & Vorm</span>
+                <span className="text-[10px] text-[#A37055]">Cirkel of Hart</span>
               </label>
 
               <div className="grid grid-cols-2 gap-2.5">
@@ -471,9 +472,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 >
                   <Circle className="w-4 h-4 shrink-0" />
                   <div className="text-left">
-                    <span className="text-xs font-semibold block">Circular (Classic)</span>
+                    <span className="text-xs font-semibold block">Klassieke Cirkel</span>
                     <span className={`text-[10px] block ${(config.maskShape || 'circle') === 'circle' ? 'text-white/80' : 'text-[#78716C]'}`}>
-                      Timeless celestial sphere
+                      Tijdloze hemelbol
                     </span>
                   </div>
                 </button>
@@ -489,9 +490,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 >
                   <Heart className="w-4 h-4 text-rose-400 shrink-0" />
                   <div className="text-left">
-                    <span className="text-xs font-semibold block">Heart Silhouette</span>
+                    <span className="text-xs font-semibold block">Hartvormig Silhouet</span>
                     <span className={`text-[10px] block ${config.maskShape === 'heart' ? 'text-white/80' : 'text-[#78716C]'}`}>
-                      Romantic custom shape
+                      Romantische herinnering
                     </span>
                   </div>
                 </button>
@@ -502,17 +503,17 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                 <Compass className="w-3.5 h-3.5 text-[#A37055]" />
-                <span>2. Astronomical Elements</span>
+                <span>2. Astronomische Elementen</span>
               </label>
 
               <div className="space-y-2">
                 <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E2DDD5] cursor-pointer hover:border-[#1C1917] transition">
                   <div>
                     <span className="text-xs font-medium text-[#1C1917] block">
-                      Milky Way Galaxy
+                      Melkweg Nevel
                     </span>
                     <span className="text-[10px] text-[#78716C]">
-                      Soft cosmic stardust overlay
+                      Subtiel kosmisch sterrenstof
                     </span>
                   </div>
                   <input
@@ -526,10 +527,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E2DDD5] cursor-pointer hover:border-[#1C1917] transition">
                   <div>
                     <span className="text-xs font-medium text-[#1C1917] block">
-                      Constellation Outlines
+                      Sterrenbeelden & Lijnen
                     </span>
                     <span className="text-[10px] text-[#78716C]">
-                      88 official IAU constellation lines
+                      88 officiële IAU sterrenbeelden
                     </span>
                   </div>
                   <input
@@ -543,10 +544,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E2DDD5] cursor-pointer hover:border-[#1C1917] transition">
                   <div>
                     <span className="text-xs font-medium text-[#1C1917] block">
-                      Celestial Grid & Compass Ring
+                      Hemelcoördinaten & Kompas
                     </span>
                     <span className="text-[10px] text-[#78716C]">
-                      Equatorial coordinate grid & cardinal points (N, S, E, W)
+                      Equatoriaal raster en windrichtingen (N, Z, O, W)
                     </span>
                   </div>
                   <input
@@ -564,9 +565,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>3. Poster Layout Variations</span>
+                  <span>3. Poster Layout Variaties</span>
                 </span>
-                <span className="text-[10px] text-[#A37055] font-medium">5 Styles</span>
+                <span className="text-[10px] text-[#A37055] font-medium">5 Stijlen</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -607,8 +608,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             {/* 4. Art Style & Color Palette */}
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center justify-between">
-                <span>4. Art Style & Color Palette</span>
-                <span className="text-[10px] text-[#A37055]">5 Curated Styles</span>
+                <span>4. Kunststijl & Kleurenpalet</span>
+                <span className="text-[10px] text-[#A37055]">5 Samengestelde Stijlen</span>
               </label>
 
               <StyleSelector
@@ -626,15 +627,15 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  1. Main Title Inscription
+                  1. Hoofdtitel Inscriptie
                 </span>
-                <span className="text-[10px] text-[#A37055]">Primary</span>
+                <span className="text-[10px] text-[#A37055]">Primair</span>
               </div>
               <input
                 type="text"
                 value={config.titleBlock.text}
                 onChange={(e) => updateBlock('titleBlock', { text: e.target.value })}
-                placeholder="e.g. THE NIGHT WE MET"
+                placeholder="bijv. DE NACHT WAARIN WE ELKAAR VONDEN"
                 className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
               />
 
@@ -642,7 +643,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="space-y-1.5 pt-1">
                 <span className="text-[10px] text-[#78716C] font-medium flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-[#A37055]" />
-                  <span>Popular Inscription Suggestions:</span>
+                  <span>Populaire Inscriptie Suggesties:</span>
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {TITLE_SUGGESTIONS.map((suggestion) => {
@@ -676,7 +677,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  2. Names / Calligraphy
+                  2. Namen / Kalligrafie
                 </span>
                 <label className="text-[10.5px] font-medium text-[#A37055] flex items-center gap-1.5 cursor-pointer">
                   <input
@@ -685,7 +686,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     onChange={(e) => updateBlock('namesBlock', { enabled: e.target.checked })}
                     className="rounded accent-[#1C1917] w-3.5 h-3.5"
                   />
-                  <span>Add Names</span>
+                  <span>Namen toevoegen</span>
                 </label>
               </div>
 
@@ -694,12 +695,12 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   type="text"
                   value={config.namesBlock.text}
                   onChange={(e) => updateBlock('namesBlock', { text: e.target.value })}
-                  placeholder="e.g. Sophia & Lucas"
+                  placeholder="bijv. Emma & Daan"
                   className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
                 />
               ) : (
                 <p className="text-[11px] text-[#78716C] italic font-light">
-                  Names are disabled. Check the box to add an elegant script inscription.
+                  Namen zijn uitgeschakeld. Vink het vakje aan voor een elegante kalligrafie-inscriptie.
                 </p>
               )}
             </div>
@@ -708,14 +709,14 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  3. Significant Date
+                  3. Betekenisvolle Datum
                 </span>
               </div>
               <input
                 type="text"
                 value={config.dateBlock.text}
                 onChange={(e) => updateBlock('dateBlock', { text: e.target.value })}
-                placeholder="e.g. SEPTEMBER 22, 2026"
+                placeholder="bijv. 22 SEPTEMBER 2026"
                 className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
               />
             </div>
@@ -723,11 +724,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             {/* 4. Location & GPS Coordinates */}
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide block">
-                4. Location & GPS Coordinates
+                4. Locatie & GPS Coördinaten
               </span>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">City / Place</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">Stad / Locatie</label>
                   <input
                     type="text"
                     value={config.locationBlock.text}
@@ -736,7 +737,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">Coordinates</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">Coördinaten</label>
                   <input
                     type="text"
                     value={config.coordsBlock.text}
@@ -751,7 +752,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  5. Decorative Divider
+                  5. Decoratief Scheidingselement
                 </span>
                 <span className="text-[10px] text-[#78716C]">Ornament</span>
               </div>
@@ -773,7 +774,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 ))}
               </div>
               <p className="text-[10.5px] text-[#78716C] font-light pt-0.5">
-                Decorative divider size and scaling can be customized in Step 4 (Typography).
+                De grootte van het scheidingselement kan worden aangepast in Stap 4 (Typografie).
               </p>
             </div>
           </div>
@@ -787,9 +788,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Wand2 className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Artisan Typography Presets</span>
+                  <span>Ambachtelijke Typografie Voorinstellingen</span>
                 </span>
-                <span className="text-[10px] text-[#A37055]">1-Click</span>
+                <span className="text-[10px] text-[#A37055]">1-Klik</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -819,28 +820,28 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-                      <span>Studio Curated Typography</span>
+                      <span>Atelier Typografie Harmonie</span>
                     </span>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F2EB] text-[#78716C] font-medium">
-                      Balanced Proportions
+                      Gebalanceerde Proporties
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Title Font</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Titel Lettertype</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.titleBlock.font} ({config.titleBlock.size} pt)</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Names Script</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Namen Schrijfletter</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.namesBlock.font} ({config.namesBlock.size} pt)</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Significant Date</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Datum Lettertype</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.dateBlock.font} ({config.dateBlock.size} pt)</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Decorative Divider</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Scheidingselement</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.dividerSize || 34} pt</span>
                     </div>
                   </div>
@@ -853,10 +854,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-serif text-sm font-semibold text-[#1C1917]">
-                      Would you like to customize fonts & sizes?
+                      Wil je lettertypes & groottes handmatig aanpassen?
                     </h4>
                     <p className="text-[11.5px] text-[#78716C] font-light max-w-xs mx-auto leading-relaxed">
-                      Our studio presets are pre-harmonized for museum print quality. You can open individual controls to change fonts, text sizes up to 100 pt, letter spacing, and the decorative divider scale.
+                      Onze atelier-instellingen zijn perfect afgestemd voor museumkwaliteit. Je kunt individuele regelaars openen voor lettertypes, tekstgroottes tot 100 pt, spatiëring en de schaal van het scheidingselement.
                     </p>
                   </div>
                   <div className="pt-1">
@@ -866,7 +867,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#1C1917] text-[#FAF8F5] text-xs font-medium hover:bg-[#2C2825] transition-all shadow-sm inline-flex items-center justify-center gap-2"
                     >
                       <Sliders className="w-3.5 h-3.5 text-[#D4B59D]" />
-                      <span>Yes, Customize Fonts & Sizes</span>
+                      <span>Ja, pas lettertypes & groottes aan</span>
                     </button>
                   </div>
                 </div>
@@ -877,14 +878,14 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3 rounded-xl bg-[#F5F1E9] border border-[#E2DDD5] flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2 text-[#44403C]">
                     <Sliders className="w-4 h-4 text-[#A37055]" />
-                    <span className="font-medium">Custom Typography Controls Active</span>
+                    <span className="font-medium">Handmatige typografie-regelaars actief</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsCustomizingTypography(false)}
                     className="text-[11px] text-[#78716C] hover:text-[#1C1917] underline decoration-[#A8A29E] transition"
                   >
-                    Hide Controls
+                    Regelaars verbergen
                   </button>
                 </div>
 
@@ -892,7 +893,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                      Main Title Font & Size
+                      Hoofdtitel Lettertype & Grootte
                     </span>
                     <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                       <input
@@ -901,13 +902,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         onChange={(e) => updateBlock('titleBlock', { uppercase: e.target.checked })}
                         className="rounded accent-[#1C1917] w-3 h-3"
                       />
-                      <span>UPPERCASE</span>
+                      <span>HOOFDLETTERS</span>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="text-[10px] text-[#78716C] block mb-1">Font</label>
+                      <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
                       <select
                         value={config.titleBlock.font}
                         onChange={(e) => updateBlock('titleBlock', { font: e.target.value })}
@@ -920,7 +921,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Size</span>
+                        <span>Grootte</span>
                         <span className="text-[#A37055] font-mono">{config.titleBlock.size} pt</span>
                       </div>
                       <input
@@ -934,7 +935,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Letter Spacing</span>
+                        <span>Spatiëring</span>
                         <span className="text-[#A37055] font-mono">{config.titleBlock.tracking} px</span>
                       </div>
                       <input
@@ -955,7 +956,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                        Names Font & Size
+                        Namen Lettertype & Grootte
                       </span>
                       <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                         <input
@@ -964,13 +965,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           onChange={(e) => updateBlock('namesBlock', { uppercase: e.target.checked })}
                           className="rounded accent-[#1C1917] w-3 h-3"
                         />
-                        <span>UPPERCASE</span>
+                        <span>HOOFDLETTERS</span>
                       </label>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="text-[10px] text-[#78716C] block mb-1">Font</label>
+                        <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
                         <select
                           value={config.namesBlock.font}
                           onChange={(e) => updateBlock('namesBlock', { font: e.target.value })}
@@ -983,7 +984,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       </div>
                       <div>
                         <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                          <span>Size</span>
+                          <span>Grootte</span>
                           <span className="text-[#A37055] font-mono">{config.namesBlock.size} pt</span>
                         </div>
                         <input
@@ -997,7 +998,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       </div>
                       <div>
                         <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                          <span>Letter Spacing</span>
+                          <span>Spatiëring</span>
                           <span className="text-[#A37055] font-mono">{config.namesBlock.tracking} px</span>
                         </div>
                         <input
@@ -1018,7 +1019,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                      Date Font & Size
+                      Datum Lettertype & Grootte
                     </span>
                     <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                       <input
@@ -1027,13 +1028,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         onChange={(e) => updateBlock('dateBlock', { uppercase: e.target.checked })}
                         className="rounded accent-[#1C1917] w-3 h-3"
                       />
-                      <span>UPPERCASE</span>
+                      <span>HOOFDLETTERS</span>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="text-[10px] text-[#78716C] block mb-1">Font</label>
+                      <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
                       <select
                         value={config.dateBlock.font}
                         onChange={(e) => updateBlock('dateBlock', { font: e.target.value })}
@@ -1046,7 +1047,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Size</span>
+                        <span>Grootte</span>
                         <span className="text-[#A37055] font-mono">{config.dateBlock.size} pt</span>
                       </div>
                       <input
@@ -1060,7 +1061,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Letter Spacing</span>
+                        <span>Spatiëring</span>
                         <span className="text-[#A37055] font-mono">{config.dateBlock.tracking} px</span>
                       </div>
                       <input
@@ -1081,7 +1082,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                        Decorative Divider Size
+                        Grootte Scheidingselement
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-[#A37055] font-mono text-[10px]">{config.dividerSize || 34} pt</span>
@@ -1089,9 +1090,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           type="button"
                           onClick={() => onChange({ dividerSize: config.dateBlock.size })}
                           className="text-[9.5px] px-2 py-0.5 rounded bg-[#FAF8F5] border border-[#E2DDD5] text-[#57534E] hover:text-[#1C1917] hover:border-[#1C1917] transition"
-                          title="Set divider size to match significant date"
+                          title="Stel scheidingselement gelijk aan de datumgrootte"
                         >
-                          Match Date
+                          Gelijk aan datum
                         </button>
                       </div>
                     </div>
@@ -1106,9 +1107,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         className="w-full accent-[#1C1917] cursor-pointer"
                       />
                       <div className="flex justify-between text-[9px] text-[#A8A29E]">
-                        <span>8 pt (Delicate)</span>
-                        <span className="text-[#A37055] font-medium">34 pt (Standard)</span>
-                        <span>60 pt (Bold)</span>
+                        <span>8 pt (Fijn)</span>
+                        <span className="text-[#A37055] font-medium">34 pt (Standaard)</span>
+                        <span>60 pt (Groot)</span>
                       </div>
                     </div>
                   </div>
@@ -1118,7 +1119,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                      Location & Coordinates Typography
+                      Locatie & Coördinaten Typografie
                     </span>
                     <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                       <input
@@ -1130,13 +1131,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         }}
                         className="rounded accent-[#1C1917] w-3 h-3"
                       />
-                      <span>UPPERCASE</span>
+                      <span>HOOFDLETTERS</span>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="text-[10px] text-[#78716C] block mb-1">Font</label>
+                      <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
                       <select
                         value={config.coordsBlock.font}
                         onChange={(e) => {
@@ -1152,7 +1153,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Coordinates Size</span>
+                        <span>Coördinaten Grootte</span>
                         <span className="text-[#A37055] font-mono">{config.coordsBlock.size} pt</span>
                       </div>
                       <input
@@ -1166,7 +1167,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Location Size</span>
+                        <span>Locatie Grootte</span>
                         <span className="text-[#A37055] font-mono">{config.locationBlock.size} pt</span>
                       </div>
                       <input
@@ -1193,9 +1194,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Maximize2 className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Poster Size (Metric Standards)</span>
+                  <span>Posterformaat (Metrische Standaarden)</span>
                 </label>
-                <span className="text-[10px] text-[#A37055] font-medium">300 DPI Archival Quality</span>
+                <span className="text-[10px] text-[#A37055] font-medium">300 DPI Archiefkwaliteit</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
@@ -1218,7 +1219,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           <span className={`text-[8.5px] px-1 py-0.5 rounded font-medium ${
                             isSelected ? 'bg-white/20 text-white' : 'bg-[#A37055]/15 text-[#A37055]'
                           }`}>
-                            Popular
+                            Populair
                           </span>
                         )}
                       </div>
@@ -1234,13 +1235,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Thin Professional Picture Frames</span>
+                  <span>Slanke Professionele Wissellijsten</span>
                 </label>
-                <span className="text-[10px] text-[#A37055] font-medium">8 mm Gallery Moulding</span>
+                <span className="text-[10px] text-[#A37055] font-medium">8 mm Galerieprofiel</span>
               </div>
 
               <p className="text-[11px] text-[#78716C] font-light">
-                Museum-quality ultra-slim 8 mm profiles with anti-reflective crystal glass, handmade by artisan framers.
+                Museumkwaliteit ultra-slanke 8 mm profielen met ontspiegeld mineraalglas, vakkundig met de hand ingelijst.
               </p>
 
               <div className="grid grid-cols-2 gap-2.5">
@@ -1292,10 +1293,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <label className="flex items-center justify-between cursor-pointer">
                 <div>
                   <span className="text-xs font-medium text-[#1C1917] block">
-                    Museum Matting Border (Passe-Partout)
+                    Museum Passe-Partout Rand
                   </span>
                   <span className="text-[10px] text-[#78716C]">
-                    Crisp white gallery border with refined inner keyline
+                    Helderwitte galerierand met verfijnde subtiele binnenlijn
                   </span>
                 </div>
                 <input
@@ -1318,7 +1319,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               className="py-2 px-3 rounded-xl border border-[#D6D0C7] text-xs font-medium text-[#57534E] hover:text-[#1C1917] hover:bg-white transition flex items-center gap-1"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Previous Step</span>
+              <span>Vorige stap</span>
             </button>
           ) : <div />}
 
@@ -1328,7 +1329,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               onClick={handleNextStep}
               className="py-2 px-3.5 rounded-xl bg-[#1C1917] text-white text-xs font-medium hover:bg-[#2E2A27] transition flex items-center gap-1 shadow-sm"
             >
-              <span>Next Step</span>
+              <span>Volgende stap</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           )}
@@ -1338,8 +1339,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       {/* Sticky Bottom Action Card */}
       <div className="pt-4 border-t border-[#EAE5DC] space-y-3 bg-[#FAF8F5]">
         <div className="flex items-center justify-between text-xs text-[#78716C] px-1">
-          <span>Size: <strong className="text-[#1C1917]">{config.posterSize.replace('x', ' × ')}</strong></span>
-          <span className="text-[#A37055] font-medium">300 DPI Archival Quality</span>
+          <span>Formaat: <strong className="text-[#1C1917]">{config.posterSize.replace('x', ' × ')} cm</strong></span>
+          <span className="text-[#A37055] font-medium">300 DPI Archiefkwaliteit</span>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -1349,10 +1350,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             onClick={onInstantExport}
             disabled={isExporting}
             className="flex-1 py-3 rounded-xl bg-white hover:bg-[#F2EDE4] border border-[#D6D0C7] text-[#1C1917] font-medium text-xs flex items-center justify-center gap-1.5 transition disabled:opacity-50 shadow-sm"
-            title="Download instant sample PDF"
+            title="Download direct een proefdruk PDF"
           >
             <Printer className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>{isExporting ? 'Rendering...' : 'Sample PDF'}</span>
+            <span>{isExporting ? 'Genereren...' : 'Proefdruk PDF'}</span>
           </button>
 
           {/* Primary Order Action Button */}
@@ -1361,7 +1362,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             onClick={onOpenOrderModal}
             className="flex-[2] py-3 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 transition transform hover:-translate-y-0.5"
           >
-            <span>Order Print & Ship</span>
+            <span>Bestellen & Drukken</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

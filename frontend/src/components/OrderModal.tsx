@@ -17,6 +17,7 @@ import {
   X,
 } from 'lucide-react';
 import { CustomerDetails, MapConfig, OrderRecord } from '../types';
+import { apiFetch } from '../utils/api';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -40,7 +41,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     city: '',
     state: '',
     postal_code: '',
-    country: 'United States',
+    country: 'Nederland',
     gift_note: '',
     producer_notes: '',
   });
@@ -54,7 +55,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customer.name.trim() || !customer.email.trim() || !customer.address_line1.trim()) {
-      setError('Please fill out name, email, and delivery address.');
+      setError('Vul alstublieft uw naam, e-mailadres en bezorgadres in.');
       return;
     }
 
@@ -87,7 +88,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         },
       };
 
-      const res = await fetch('/api/orders', {
+      const res = await apiFetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -95,7 +96,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
       if (!res.ok) {
         const errText = await res.text();
-        throw new Error(errText || 'Failed to submit order');
+        throw new Error(errText || 'Het versturen van de bestelling is mislukt');
       }
 
       const orderData: OrderRecord = await res.json();
@@ -112,17 +113,17 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       } catch {}
     } catch (err: any) {
       console.error('Order creation error:', err);
-      setError(err.message || 'Error sending order to workshop');
+      setError(err.message || 'Fout bij het verzenden van de bestelling naar het atelier');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const frameLabels: Record<string, string> = {
-    none: 'Unframed Fine Art Print',
-    black: 'Slim Matte Black Gallery Frame (8 mm)',
-    oak: 'Slim Nordic Oak Wood Frame (8 mm)',
-    white: 'Slim Gallery White Frame (8 mm)',
+    none: 'Zonder lijst (Fine Art Kunstdruk)',
+    black: 'Slanke Matzwarte Galerielijst (8 mm)',
+    oak: 'Slanke Scandinavisch Eiken Lijst (8 mm)',
+    white: 'Slanke Galeriewitte Lijst (8 mm)',
   };
 
   return (
@@ -136,10 +137,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </div>
             <div>
               <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
-                Send to Print Workshop
+                Verzend naar Drukkerij Atelier
               </h3>
               <p className="text-[11px] text-[#78716C]">
-                Compile 300 DPI archival PDF & dispatch to production queue
+                300 DPI museum-PDF compileren & toevoegen aan de productiewachtrij
               </p>
             </div>
           </div>
@@ -162,36 +163,36 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
             <div className="space-y-1.5">
               <span className="text-[11px] font-mono tracking-widest text-[#78716C] font-bold uppercase">
-                ORDER REFERENCE: {completedOrder.order_id}
+                BESTELREFERENTIE: {completedOrder.order_id}
               </span>
               <h2 className="font-serif text-2xl font-bold text-[#1C1917]">
-                Dispatched to Print Workshop
+                Succesvol Verzonden naar het Atelier
               </h2>
               <p className="text-xs text-[#57534E] max-w-md mx-auto leading-relaxed">
-                Your archival 300 DPI print-ready PDF has been compiled using exact celestial positions and filed into your producer printing queue.
+                Uw 300 DPI archiefwaardige print-PDF is met uiterste precisie berekend op basis van de exacte hemelcoördinaten en toegevoegd aan de productiewachtrij.
               </p>
             </div>
 
             {/* Order Specification Summary Card */}
             <div className="p-5 bg-white rounded-2xl border border-[#E8E4DC] text-left text-xs space-y-2.5 max-w-lg mx-auto shadow-sm">
               <div className="flex justify-between pb-2 border-b border-[#F0ECE1]">
-                <span className="text-[#78716C]">Keepsake:</span>
-                <span className="font-bold text-[#1C1917]">The Celestial Blueprint™</span>
+                <span className="text-[#78716C]">Kunstwerk:</span>
+                <span className="font-bold text-[#1C1917]">De Gepersonaliseerde Sterrenposter™</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Inscribed For:</span>
+                <span className="text-[#78716C]">Opgedragen aan:</span>
                 <span className="text-[#1C1917] font-serif font-bold">{completedOrder.names_text}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Milestone Date:</span>
+                <span className="text-[#78716C]">Bijzondere Datum:</span>
                 <span className="text-[#1C1917]">{completedOrder.date_text}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Print Size & Frame:</span>
-                <span className="text-[#1C1917]">{completedOrder.poster_size}&quot; • {frameLabels[completedOrder.frame_style] || 'Print'}</span>
+                <span className="text-[#78716C]">Formaat & Lijst:</span>
+                <span className="text-[#1C1917]">{completedOrder.poster_size} cm • {frameLabels[completedOrder.frame_style] || 'Kunstdruk'}</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-[#F0ECE1]">
-                <span className="text-[#78716C]">Shipping To:</span>
+                <span className="text-[#78716C]">Bezorging aan:</span>
                 <span className="text-[#1C1917]">{completedOrder.customer.name}, {completedOrder.customer.city}</span>
               </div>
             </div>
@@ -204,14 +205,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#1C1917] font-medium text-xs border border-[#E2DDD5] flex items-center justify-center gap-2 shadow-sm transition"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download Print PDF Proof</span>
+                <span>Download Proefdruk PDF</span>
               </a>
 
               <button
                 onClick={onClose}
                 className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition"
               >
-                Return to Studio
+                Terug naar Atelier
               </button>
             </div>
           </div>
@@ -237,131 +238,143 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-[#1C1917] text-xs">
-                    The Celestial Blueprint™
+                    De Gepersonaliseerde Sterrenposter™
                   </h4>
                   <p className="text-[11px] text-[#78716C] font-serif italic">
-                    {config.namesBlock.text || 'Custom Keepsake'}
+                    {config.namesBlock.text || 'Ambachtelijk Kunstwerk'}
                   </p>
                   <p className="text-[10px] text-[#A8A29E]">
-                    {config.posterSize}&quot; • {frameLabels[config.frameStyle]}
+                    {config.posterSize} cm • {frameLabels[config.frameStyle]}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium block mb-0.5">
-                  Print Ready (300 DPI)
+                  Drukrijp (300 DPI)
                 </span>
-                <span className="text-xs font-bold text-[#1C1917]">$49.00</span>
+                <span className="text-xs font-bold text-[#1C1917]">€49,00</span>
               </div>
             </div>
 
             {/* Customer & Recipient Shipping Fields */}
             <div className="space-y-3">
               <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                1. Recipient & Delivery Details
+                1. Gegevens van de Ontvanger & Bezorgadres
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Full Recipient Name *</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Volledige Naam *</label>
                   <input
                     type="text"
                     required
                     value={customer.name}
                     onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                    placeholder="e.g. Emma Harrison"
+                    placeholder="bijv. Emma van der Meer"
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Notification Email *</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">E-mailadres voor updates *</label>
                   <input
                     type="email"
                     required
                     value={customer.email}
                     onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                    placeholder="emma@example.com"
+                    placeholder="emma@voorbeeld.nl"
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[11px] text-[#57534E] font-medium block mb-1">Shipping Street Address *</label>
+                <label className="text-[11px] text-[#57534E] font-medium block mb-1">Straatnaam & Huisnummer *</label>
                 <input
                   type="text"
                   required
                   value={customer.address_line1}
                   onChange={(e) => setCustomer({ ...customer, address_line1: e.target.value })}
-                  placeholder="e.g. 742 Evergreen Terrace, Apt 4B"
+                  placeholder="bijv. Keizersgracht 142"
                   className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">City *</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Plaats *</label>
                   <input
                     type="text"
                     required
                     value={customer.city}
                     onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
-                    placeholder="New York"
+                    placeholder="Amsterdam"
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">State / Province</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Provincie</label>
                   <input
                     type="text"
                     value={customer.state}
                     onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
-                    placeholder="NY"
+                    placeholder="Noord-Holland"
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Postal Code *</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Postcode *</label>
                   <input
                     type="text"
                     required
                     value={customer.postal_code}
                     onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
-                    placeholder="10001"
+                    placeholder="1015 CJ"
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="text-[11px] text-[#57534E] font-medium block mb-1">Land *</label>
+                <select
+                  value={customer.country}
+                  onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
+                  className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                >
+                  <option value="Nederland">Nederland (PostNL Tracked)</option>
+                  <option value="België">België (Bpost Tracked)</option>
+                </select>
               </div>
             </div>
 
             {/* Optional Gift Message & Print Workshop Instructions */}
             <div className="space-y-3 pt-2 border-t border-[#E8E4DC]">
               <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                2. Gift Note & Printing Instructions
+                2. Cadeaukaartje & Aanwijzingen voor de Drukker
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-[11px] text-[#57534E] font-medium block mb-1">
-                    Complimentary Gift Note (Wax-Sealed)
+                    Kosteloos Cadeaukaartje (Met Waszegel)
                   </label>
                   <textarea
                     rows={2}
                     value={customer.gift_note}
                     onChange={(e) => setCustomer({ ...customer, gift_note: e.target.value })}
-                    placeholder="e.g. Happy 1st Anniversary my love! Here is the sky when our forever began."
+                    placeholder="bijv. Gefeliciteerd met jullie 1-jarig huwelijk! Dit was de hemel toen ons avontuur begon."
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                   />
                 </div>
                 <div>
                   <label className="text-[11px] text-[#57534E] font-medium block mb-1">
-                    Special Notes for Print Producer
+                    Aanwijzingen voor de Drukker
                   </label>
                   <textarea
                     rows={2}
                     value={customer.producer_notes}
                     onChange={(e) => setCustomer({ ...customer, producer_notes: e.target.value })}
-                    placeholder="e.g. Heavy matte archival stock, double-check corner alignment."
+                    placeholder="bijv. Zwaar 285 g/m² katoenpapier, extra zorgvuldig centreren."
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                   />
                 </div>
@@ -371,7 +384,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">
               <span className="text-[11px] text-[#78716C]">
-                Payment deferred • Files into producer print queue
+                Pilot testbestelling • Direct naar atelier productiewachtrij
               </span>
 
               <div className="flex items-center space-x-2">
@@ -380,7 +393,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   onClick={onClose}
                   className="px-4 py-2 rounded-full text-xs font-medium text-[#78716C] hover:text-[#1C1917]"
                 >
-                  Cancel
+                  Annuleren
                 </button>
 
                 <button
@@ -391,12 +404,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Generating 300 DPI PDF...</span>
+                      <span>300 DPI PDF Genereren...</span>
                     </>
                   ) : (
                     <>
                       <Printer className="w-3.5 h-3.5" />
-                      <span>Submit Order to Workshop</span>
+                      <span>Bestelling Indienen bij Atelier</span>
                     </>
                   )}
                 </button>

@@ -12,7 +12,9 @@ import { ConfigPanel } from '../components/ConfigPanel';
 import { StarMapPreview } from '../components/StarMapPreview';
 import { OrderModal } from '../components/OrderModal';
 import { ProducerPortal } from '../components/ProducerPortal';
+import { PilotNotice } from '../components/PilotNotice';
 import { AppView, CelestialData, FrameStyle, MapConfig, OrderRecord } from '../types';
+import { apiFetch } from '../utils/api';
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<AppView>('landing');
@@ -22,15 +24,15 @@ export default function Home() {
   const [config, setConfig] = useState<MapConfig>({
     posterSize: '50x70',
     styleId: 'midnight_classic',
-    locationName: 'New York, USA',
-    latitude: 40.7128,
-    longitude: -74.006,
+    locationName: 'Amsterdam, Nederland',
+    latitude: 52.3676,
+    longitude: 4.9041,
     date: '2026-09-22',
     time: '21:00',
 
     // Fully customizable text blocks
     titleBlock: {
-      text: 'THE NIGHT WE MET',
+      text: 'DE NACHT WAARIN WE ELKAAR VONDEN',
       font: 'Cinzel',
       size: 38,
       tracking: 3,
@@ -39,7 +41,7 @@ export default function Home() {
       enabled: true,
     },
     namesBlock: {
-      text: 'Emma & Noah',
+      text: 'Emma & Daan',
       font: 'Great Vibes',
       size: 51,
       tracking: 1,
@@ -57,7 +59,7 @@ export default function Home() {
       enabled: false,
     },
     dateBlock: {
-      text: 'SEPTEMBER 22, 2026',
+      text: '22 SEPTEMBER 2026',
       font: 'Montserrat',
       size: 27,
       tracking: 2.5,
@@ -66,7 +68,7 @@ export default function Home() {
       enabled: true,
     },
     locationBlock: {
-      text: 'NEW YORK, NY',
+      text: 'AMSTERDAM, NEDERLAND',
       font: 'Montserrat',
       size: 21,
       tracking: 2,
@@ -75,7 +77,7 @@ export default function Home() {
       enabled: true,
     },
     coordsBlock: {
-      text: '40.7128° N • 74.0060° W',
+      text: '52.3676° N • 4.9041° E',
       font: 'Montserrat',
       size: 21,
       tracking: 1.8,
@@ -104,7 +106,7 @@ export default function Home() {
   // Fetch initial orders count for the producer queue
   const fetchOrdersQueue = async () => {
     try {
-      const res = await fetch('/api/orders');
+      const res = await apiFetch('/api/orders');
       if (res.ok) {
         const data = await res.json();
         setOrders(data);
@@ -129,7 +131,7 @@ export default function Home() {
     setIsLoadingStars(true);
     try {
       const isoDateTime = `${dateStr}T${timeStr || '21:00'}:00Z`;
-      const res = await fetch('/api/star-data', {
+      const res = await apiFetch('/api/star-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -199,7 +201,7 @@ export default function Home() {
         frame_style: config.frameStyle,
       };
 
-      const res = await fetch('/api/generate-pdf', {
+      const res = await apiFetch('/api/generate-pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -258,15 +260,23 @@ export default function Home() {
             setCurrentView(v);
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           }} />
-          <ProductCatalog onCustomizeStarMap={() => {
-            setCurrentView('customizer');
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-          }} />
+          <ProductCatalog
+            onCustomizeStarMap={() => {
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+            onSelectStyle={(styleId) => {
+              setConfig((prev) => ({ ...prev, styleId }));
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+          />
           <HowItWorks onStartCustomizing={() => {
             setCurrentView('customizer');
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           }} />
           <SocialProof />
+          <PilotNotice />
           <Footer onNavigate={(v) => {
             setCurrentView(v);
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
