@@ -3,6 +3,11 @@
 import React from 'react';
 import { Sparkles, ArrowRight, Check } from 'lucide-react';
 import { DESIGN_STYLES } from '../constants/styles';
+import {
+  SAMPLE_STARS,
+  SAMPLE_CONSTELLATION_LINES,
+  SAMPLE_CONSTELLATION_STARS,
+} from '../constants/sampleCelestialData';
 
 interface ProductCatalogProps {
   onCustomizeStarMap: () => void;
@@ -57,6 +62,61 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     }
   };
 
+  // Helper to render authentic starfield inside poster sphere
+  const renderCelestialSky = (
+    maskId: string,
+    bgFill: string,
+    starColor: string,
+    lineColor: string,
+    radius: number = 400,
+    nebula?: React.ReactNode
+  ) => (
+    <>
+      <defs>
+        <clipPath id={maskId}>
+          <circle cx="500" cy="480" r={radius - 1} />
+        </clipPath>
+      </defs>
+      <g clipPath={`url(#${maskId})`}>
+        <circle cx="500" cy="480" r={radius} fill={bgFill} />
+        {nebula}
+        {SAMPLE_CONSTELLATION_LINES.map((line, idx) => (
+          <line
+            key={idx}
+            x1={500 + line.x1 * radius}
+            y1={480 - line.y1 * radius}
+            x2={500 + line.x2 * radius}
+            y2={480 - line.y2 * radius}
+            stroke={lineColor}
+            strokeWidth="1.25"
+            strokeLinecap="round"
+          />
+        ))}
+        {SAMPLE_STARS.map((s, idx) => (
+          <circle
+            key={idx}
+            cx={500 + s.x * radius}
+            cy={480 - s.y * radius}
+            r={s.r}
+            fill={starColor}
+            opacity={s.bright ? 1.0 : 0.88}
+          />
+        ))}
+        {SAMPLE_CONSTELLATION_STARS.map((s, idx) => (
+          <circle
+            key={`cs-${idx}`}
+            cx={500 + s.x * radius}
+            cy={480 - s.y * radius}
+            r={s.r}
+            fill={starColor}
+            opacity={0.98}
+          />
+        ))}
+        <text x="496" y={480 - 0.54 * radius} textAnchor="middle" fill={starColor} fontSize="32" opacity="0.95">✦</text>
+      </g>
+    </>
+  );
+
   // Render the exact, authentic miniature vector poster for each style matching studio proportions
   const renderExactPosterSVG = (styleId: string) => {
     switch (styleId) {
@@ -67,9 +127,19 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect width="1000" height="1400" fill="#0B132B" />
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
+            {/* Dense Authentic Celestial Starfield */}
+            {renderCelestialSky(
+              'cat-sky-midnight',
+              '#070D1F',
+              '#FFFFFF',
+              'rgba(255,255,255,0.42)',
+              400,
+              <ellipse cx="485" cy="470" rx="300" ry="180" fill="rgba(255,255,255,0.075)" transform="rotate(-25 485 470)" />
+            )}
+
             {/* Celestial Circle & Compass */}
-            <circle cx="500" cy="480" r="400" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
-            <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="1.5" strokeDasharray="8 6" />
+            <circle cx="500" cy="480" r="400" fill="none" stroke="rgba(255, 255, 255, 0.48)" strokeWidth="3" />
+            <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255, 255, 255, 0.24)" strokeWidth="1.5" strokeDasharray="8 6" />
             <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="1" />
 
             {/* Cardinal Degree Ticks */}
@@ -82,30 +152,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <text x="500" y="915" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
             <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
             <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
-
-            {/* Nebula */}
-            <ellipse cx="485" cy="470" rx="260" ry="160" fill="rgba(255,255,255,0.065)" transform="rotate(-25 485 470)" />
-
-            {/* Constellations */}
-            <line x1="330" y1="360" x2="440" y2="295" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-            <line x1="440" y1="295" x2="610" y2="345" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-            <line x1="610" y1="345" x2="710" y2="465" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-            <line x1="380" y1="590" x2="515" y2="640" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
-            <line x1="515" y1="640" x2="645" y2="560" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
-
-            {/* Stars */}
-            <circle cx="330" cy="360" r="7" fill="#FFFFFF" />
-            <circle cx="440" cy="295" r="10" fill="#FFFFFF" />
-            <circle cx="610" cy="345" r="8" fill="#FFFFFF" />
-            <circle cx="710" cy="465" r="7" fill="#FFFFFF" />
-            <circle cx="380" cy="590" r="7" fill="#FFFFFF" />
-            <circle cx="515" cy="640" r="9" fill="#FFFFFF" />
-            <circle cx="645" cy="560" r="8" fill="#FFFFFF" />
-            <circle cx="280" cy="480" r="4.5" fill="#FFFFFF" opacity="0.75" />
-            <circle cx="560" cy="420" r="3.5" fill="#FFFFFF" opacity="0.65" />
-            <circle cx="460" cy="530" r="5" fill="#FFFFFF" opacity="0.8" />
-            <circle cx="670" cy="670" r="3.5" fill="#FFFFFF" opacity="0.55" />
-            <text x="440" y="270" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
 
             {/* Exact Proportioned Typography Stack */}
             <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
@@ -145,23 +191,17 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(12,75,86,0.22)" strokeWidth="1.5" />
 
             {/* Swirling Teal Watercolor Celestial Disk */}
-            <circle cx="500" cy="480" r="400" fill="url(#cat-teal-nebula-hq)" stroke="#0C4B56" strokeWidth="3.5" />
+            {renderCelestialSky(
+              'cat-sky-teal',
+              'url(#cat-teal-nebula-hq)',
+              '#FFFFFF',
+              'rgba(255,255,255,0.55)',
+              400,
+              <ellipse cx="485" cy="470" rx="260" ry="150" fill="rgba(255,255,255,0.12)" transform="rotate(-20 485 470)" />
+            )}
+
+            <circle cx="500" cy="480" r="400" fill="none" stroke="#0C4B56" strokeWidth="3.5" />
             <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="1.5" strokeDasharray="8 6" />
-            <ellipse cx="485" cy="470" rx="240" ry="140" fill="rgba(255,255,255,0.1)" transform="rotate(-20 485 470)" />
-
-            {/* Constellations */}
-            <line x1="330" y1="380" x2="470" y2="320" stroke="rgba(255,255,255,0.55)" strokeWidth="2" />
-            <line x1="470" y1="320" x2="650" y2="360" stroke="rgba(255,255,255,0.55)" strokeWidth="2" />
-            <line x1="390" y1="600" x2="580" y2="570" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-
-            <circle cx="330" cy="380" r="8" fill="#FFFFFF" />
-            <circle cx="470" cy="320" r="10" fill="#FFFFFF" />
-            <circle cx="650" cy="360" r="8" fill="#FFFFFF" />
-            <circle cx="390" cy="600" r="7" fill="#FFFFFF" />
-            <circle cx="580" cy="570" r="8.5" fill="#FFFFFF" />
-            <circle cx="530" cy="480" r="4.5" fill="#FFFFFF" opacity="0.85" />
-            <circle cx="410" cy="500" r="4" fill="#FFFFFF" opacity="0.75" />
-            <text x="470" y="295" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
 
             {/* Exact Inscription in Deep Teal */}
             <text x="500" y="955" textAnchor="middle" fill="#083B44" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
@@ -191,8 +231,16 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect width="1000" height="1400" fill="#081C15" />
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="1.5" />
 
-            {/* Inner Forest Sphere */}
-            <circle cx="500" cy="480" r="400" fill="#04110C" stroke="#D4AF37" strokeWidth="3.5" />
+            {/* Inner Forest Sphere with Gold Stars */}
+            {renderCelestialSky(
+              'cat-sky-emerald',
+              '#04110C',
+              '#D4AF37',
+              'rgba(212,175,55,0.48)',
+              400
+            )}
+
+            <circle cx="500" cy="480" r="400" fill="none" stroke="#D4AF37" strokeWidth="3.5" />
             <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(212,175,55,0.38)" strokeWidth="1.5" strokeDasharray="8 6" />
             <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(212,175,55,0.22)" strokeWidth="1" />
 
@@ -206,22 +254,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <text x="500" y="915" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
             <text x="75" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
             <text x="925" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
-
-            {/* Cassiopeia W in Gold */}
-            <line x1="310" y1="360" x2="400" y2="425" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
-            <line x1="400" y1="425" x2="500" y2="350" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
-            <line x1="500" y1="350" x2="600" y2="435" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
-            <line x1="600" y1="435" x2="690" y2="375" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
-
-            <circle cx="310" cy="360" r="8" fill="#D4AF37" />
-            <circle cx="400" cy="425" r="9" fill="#D4AF37" />
-            <circle cx="500" cy="350" r="10" fill="#D4AF37" />
-            <circle cx="600" cy="435" r="9" fill="#D4AF37" />
-            <circle cx="690" cy="375" r="8" fill="#D4AF37" />
-            <circle cx="450" cy="600" r="7" fill="#D4AF37" />
-            <circle cx="570" cy="630" r="8.5" fill="#D4AF37" />
-            <circle cx="370" cy="540" r="4.5" fill="#D4AF37" opacity="0.75" />
-            <text x="500" y="325" textAnchor="middle" fill="#D4AF37" fontSize="30" opacity="0.95">✦</text>
 
             {/* Exact Inscription in Gold */}
             <text x="500" y="955" textAnchor="middle" fill="#D4AF37" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
@@ -252,24 +284,17 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,235,238,0.22)" strokeWidth="1.5" />
 
             {/* Deep Bordeaux Celestial Disk */}
-            <circle cx="500" cy="480" r="400" fill="#240308" stroke="rgba(255,235,238,0.45)" strokeWidth="3" />
+            {renderCelestialSky(
+              'cat-sky-burgundy',
+              '#240308',
+              '#FFFFFF',
+              'rgba(255,235,238,0.45)',
+              400
+            )}
+
+            <circle cx="500" cy="480" r="400" fill="none" stroke="rgba(255,235,238,0.45)" strokeWidth="3" />
             <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,235,238,0.25)" strokeWidth="1.5" strokeDasharray="8 6" />
             <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255,235,238,0.15)" strokeWidth="1" />
-
-            {/* Constellation Lines */}
-            <line x1="340" y1="360" x2="480" y2="330" stroke="rgba(255,235,238,0.48)" strokeWidth="2" />
-            <line x1="480" y1="330" x2="640" y2="410" stroke="rgba(255,235,238,0.48)" strokeWidth="2" />
-            <line x1="480" y1="330" x2="520" y2="510" stroke="rgba(255,235,238,0.42)" strokeWidth="2" />
-            <line x1="520" y1="510" x2="660" y2="600" stroke="rgba(255,235,238,0.42)" strokeWidth="2" />
-
-            <circle cx="340" cy="360" r="8" fill="#FFFFFF" />
-            <circle cx="480" cy="330" r="10" fill="#FFFFFF" />
-            <circle cx="640" cy="410" r="8" fill="#FFFFFF" />
-            <circle cx="520" cy="510" r="8" fill="#F7D6DA" />
-            <circle cx="660" cy="600" r="9" fill="#FFFFFF" />
-            <circle cx="380" cy="560" r="4.5" fill="#F7D6DA" opacity="0.85" />
-            <circle cx="580" cy="380" r="4" fill="#FFFFFF" opacity="0.75" />
-            <text x="480" y="305" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
 
             {/* Exact Inscription in Rose / Champagne */}
             <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
@@ -303,8 +328,17 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect width="1000" height="1400" fill="#0B132B" />
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
-            {/* Celestial Sphere Background */}
-            <circle cx="500" cy="480" r="390" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
+            {/* Celestial Sphere with Dense Starfield */}
+            {renderCelestialSky(
+              'cat-sky-border',
+              '#070D1F',
+              '#FFFFFF',
+              'rgba(255,255,255,0.42)',
+              390,
+              <ellipse cx="485" cy="470" rx="280" ry="160" fill="rgba(255,255,255,0.07)" transform="rotate(-25 485 470)" />
+            )}
+
+            <circle cx="500" cy="480" r="390" fill="none" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
             <circle cx="500" cy="480" r="362" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="1.5" strokeDasharray="8 6" />
 
             {/* Signature Curved Inscription Along Outer Arc */}
@@ -313,16 +347,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 THE NIGHT WE MET
               </textPath>
             </text>
-
-            {/* Constellation Lines & Stars */}
-            <line x1="360" y1="520" x2="490" y2="490" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-            <line x1="490" y1="490" x2="620" y2="550" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-            <circle cx="360" cy="520" r="8" fill="#FFFFFF" />
-            <circle cx="490" cy="490" r="10" fill="#FFFFFF" />
-            <circle cx="620" cy="550" r="8" fill="#FFFFFF" />
-            <circle cx="430" cy="410" r="6" fill="#FFFFFF" />
-            <circle cx="570" cy="395" r="7" fill="#FFFFFF" />
-            <text x="490" y="465" textAnchor="middle" fill="#FFFFFF" fontSize="28" opacity="0.95">✦</text>
 
             {/* Inscription Below */}
             <text x="500" y="990" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="62" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">

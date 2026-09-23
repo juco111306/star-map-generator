@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowRight, Star, Sparkles, ShieldCheck, Heart, Award, MapPin, Truck, CheckCircle2 } from 'lucide-react';
 import { AppView } from '../types';
+import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES, SAMPLE_CONSTELLATION_STARS } from '../constants/sampleCelestialData';
 
 interface LandingHeroProps {
   onNavigate: (view: AppView) => void;
@@ -89,15 +90,81 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                   className="relative rounded-2xl overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer border border-[#E5E0D6] group-hover:border-[#C4BAA9] transition-all shadow-inner"
                 >
                   <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <clipPath id="hero-celestial-mask">
+                        <circle cx="500" cy="480" r="399" />
+                      </clipPath>
+                      <filter id="hero-star-glow" x="-40%" y="-40%" width="180%" height="180%">
+                        <feGaussianBlur stdDeviation="2" result="blur" />
+                        <feMerge>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+
                     {/* Archival Canvas Background */}
                     <rect width="1000" height="1400" fill="#0B132B" />
                     
                     {/* Inner Fine Matting Keyline */}
                     <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
-                    {/* Celestial Sphere Background */}
-                    <circle cx="500" cy="480" r="400" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
-                    <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="1.5" strokeDasharray="8 6" />
+                    {/* Celestial Sphere Masked Contents */}
+                    <g clipPath="url(#hero-celestial-mask)">
+                      {/* Deep Midnight Blue Disk Base */}
+                      <circle cx="500" cy="480" r="400" fill="#070D1F" />
+
+                      {/* Milky Way Soft Luminous Nebula */}
+                      <ellipse cx="485" cy="470" rx="300" ry="180" fill="rgba(255,255,255,0.075)" transform="rotate(-25 485 470)" />
+                      <ellipse cx="510" cy="495" rx="240" ry="120" fill="rgba(255,255,255,0.045)" transform="rotate(-32 510 495)" />
+
+                      {/* Authentic Constellation Lines */}
+                      {SAMPLE_CONSTELLATION_LINES.map((line, idx) => (
+                        <line
+                          key={idx}
+                          x1={500 + line.x1 * 400}
+                          y1={480 - line.y1 * 400}
+                          x2={500 + line.x2 * 400}
+                          y2={480 - line.y2 * 400}
+                          stroke="rgba(255, 255, 255, 0.42)"
+                          strokeWidth="1.3"
+                          strokeLinecap="round"
+                        />
+                      ))}
+
+                      {/* Full Visible Astronomical Stars */}
+                      {SAMPLE_STARS.map((s, idx) => (
+                        <circle
+                          key={idx}
+                          cx={500 + s.x * 400}
+                          cy={480 - s.y * 400}
+                          r={s.r}
+                          fill="#FFFFFF"
+                          opacity={s.bright ? 1.0 : 0.88}
+                          filter={s.bright ? 'url(#hero-star-glow)' : undefined}
+                        />
+                      ))}
+
+                      {/* Major Constellation Vertex Stars */}
+                      {SAMPLE_CONSTELLATION_STARS.map((s, idx) => (
+                        <circle
+                          key={`cs-${idx}`}
+                          cx={500 + s.x * 400}
+                          cy={480 - s.y * 400}
+                          r={s.r}
+                          fill="#FFFFFF"
+                          opacity={0.98}
+                          filter="url(#hero-star-glow)"
+                        />
+                      ))}
+
+                      {/* North Star ✦ at celestial pole */}
+                      <text x="496" y="265" textAnchor="middle" fill="#FFFFFF" fontSize="32" opacity="0.95">✦</text>
+                    </g>
+
+                    {/* Celestial Boundary Rings & Compass */}
+                    <circle cx="500" cy="480" r="400" fill="none" stroke="rgba(255, 255, 255, 0.48)" strokeWidth="3" />
+                    <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255, 255, 255, 0.24)" strokeWidth="1.5" strokeDasharray="8 6" />
                     <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="1" />
 
                     {/* Compass Cardinal Degree Ticks */}
@@ -110,36 +177,6 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                     <text x="500" y="915" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
                     <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
                     <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
-
-                    {/* Milky Way Soft Nebula */}
-                    <ellipse cx="485" cy="470" rx="260" ry="160" fill="rgba(255,255,255,0.065)" transform="rotate(-25 485 470)" />
-
-                    {/* Constellation Outlines */}
-                    <line x1="330" y1="360" x2="440" y2="295" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-                    <line x1="440" y1="295" x2="610" y2="345" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-                    <line x1="610" y1="345" x2="710" y2="465" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
-                    <line x1="380" y1="590" x2="515" y2="640" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
-                    <line x1="515" y1="640" x2="645" y2="560" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
-
-                    {/* Principal Stars */}
-                    <circle cx="330" cy="360" r="7" fill="#FFFFFF" />
-                    <circle cx="440" cy="295" r="10" fill="#FFFFFF" />
-                    <circle cx="610" cy="345" r="8" fill="#FFFFFF" />
-                    <circle cx="710" cy="465" r="7" fill="#FFFFFF" />
-                    <circle cx="380" cy="590" r="7" fill="#FFFFFF" />
-                    <circle cx="515" cy="640" r="9" fill="#FFFFFF" />
-                    <circle cx="645" cy="560" r="8" fill="#FFFFFF" />
-
-                    {/* Background Stellar Dust */}
-                    <circle cx="280" cy="480" r="4.5" fill="#FFFFFF" opacity="0.75" />
-                    <circle cx="560" cy="420" r="3.5" fill="#FFFFFF" opacity="0.65" />
-                    <circle cx="460" cy="530" r="5" fill="#FFFFFF" opacity="0.8" />
-                    <circle cx="670" cy="670" r="3.5" fill="#FFFFFF" opacity="0.55" />
-                    <circle cx="350" cy="430" r="4" fill="#FFFFFF" opacity="0.7" />
-                    <circle cx="620" cy="280" r="4.5" fill="#FFFFFF" opacity="0.85" />
-
-                    {/* North Star ✦ */}
-                    <text x="440" y="270" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
 
                     {/* Prominent, Harmonious Studio Typography Proportions */}
                     {/* 1. Main Title Inscription */}
