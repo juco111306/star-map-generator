@@ -48,11 +48,11 @@ interface ConfigPanelProps {
 export type StudioTab = 'location' | 'text' | 'font' | 'design' | 'format';
 
 const TITLE_SUGGESTIONS = [
+  "The Night We Met",
   "De nacht dat onze sterren samenkwamen",
   "De nacht waarin we 'Ja' zeiden",
   "Toen een ster werd geboren",
   "Het begin van ons avontuur",
-  "De nacht waarin we elkaar ontmoetten",
   "Onder deze hemel",
 ];
 
