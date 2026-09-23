@@ -3,7 +3,7 @@
 import React from 'react';
 import { ArrowRight, Star, Sparkles, ShieldCheck, Heart, Award, MapPin, Truck, CheckCircle2 } from 'lucide-react';
 import { AppView } from '../types';
-import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES, SAMPLE_CONSTELLATION_STARS } from '../constants/sampleCelestialData';
+import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
 
 interface LandingHeroProps {
   onNavigate: (view: AppView) => void;
@@ -118,7 +118,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                       <ellipse cx="485" cy="470" rx="300" ry="180" fill="rgba(255,255,255,0.075)" transform="rotate(-25 485 470)" />
                       <ellipse cx="510" cy="495" rx="240" ry="120" fill="rgba(255,255,255,0.045)" transform="rotate(-32 510 495)" />
 
-                      {/* Authentic Constellation Lines */}
+                      {/* Authentic Constellation Lines (matching StarMapPreview 0.85px) */}
                       {SAMPLE_CONSTELLATION_LINES.map((line, idx) => (
                         <line
                           key={idx}
@@ -127,12 +127,12 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                           x2={500 + line.x2 * 400}
                           y2={480 - line.y2 * 400}
                           stroke="rgba(255, 255, 255, 0.42)"
-                          strokeWidth="1.3"
+                          strokeWidth="0.85"
                           strokeLinecap="round"
                         />
                       ))}
 
-                      {/* Full Visible Astronomical Stars */}
+                      {/* Full Visible Astronomical Stars with exact natural radii */}
                       {SAMPLE_STARS.map((s, idx) => (
                         <circle
                           key={idx}
@@ -140,26 +140,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                           cy={480 - s.y * 400}
                           r={s.r}
                           fill="#FFFFFF"
-                          opacity={s.bright ? 1.0 : 0.88}
+                          opacity={s.bright ? 1.0 : 0.85}
                           filter={s.bright ? 'url(#hero-star-glow)' : undefined}
                         />
                       ))}
-
-                      {/* Major Constellation Vertex Stars */}
-                      {SAMPLE_CONSTELLATION_STARS.map((s, idx) => (
-                        <circle
-                          key={`cs-${idx}`}
-                          cx={500 + s.x * 400}
-                          cy={480 - s.y * 400}
-                          r={s.r}
-                          fill="#FFFFFF"
-                          opacity={0.98}
-                          filter="url(#hero-star-glow)"
-                        />
-                      ))}
-
-                      {/* North Star ✦ at celestial pole */}
-                      <text x="496" y="265" textAnchor="middle" fill="#FFFFFF" fontSize="32" opacity="0.95">✦</text>
                     </g>
 
                     {/* Celestial Boundary Rings & Compass */}

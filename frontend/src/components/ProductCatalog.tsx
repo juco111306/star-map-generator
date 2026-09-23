@@ -6,7 +6,6 @@ import { DESIGN_STYLES } from '../constants/styles';
 import {
   SAMPLE_STARS,
   SAMPLE_CONSTELLATION_LINES,
-  SAMPLE_CONSTELLATION_STARS,
 } from '../constants/sampleCelestialData';
 
 interface ProductCatalogProps {
@@ -88,7 +87,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             x2={500 + line.x2 * radius}
             y2={480 - line.y2 * radius}
             stroke={lineColor}
-            strokeWidth="1.25"
+            strokeWidth="0.85"
             strokeLinecap="round"
           />
         ))}
@@ -99,20 +98,9 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             cy={480 - s.y * radius}
             r={s.r}
             fill={starColor}
-            opacity={s.bright ? 1.0 : 0.88}
+            opacity={s.bright ? 1.0 : 0.85}
           />
         ))}
-        {SAMPLE_CONSTELLATION_STARS.map((s, idx) => (
-          <circle
-            key={`cs-${idx}`}
-            cx={500 + s.x * radius}
-            cy={480 - s.y * radius}
-            r={s.r}
-            fill={starColor}
-            opacity={0.98}
-          />
-        ))}
-        <text x="496" y={480 - 0.54 * radius} textAnchor="middle" fill={starColor} fontSize="32" opacity="0.95">✦</text>
       </g>
     </>
   );
