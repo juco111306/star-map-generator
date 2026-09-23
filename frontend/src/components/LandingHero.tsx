@@ -77,22 +77,98 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
 
           {/* Right Column: Visual Product Showcase in Serene Frame */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative group w-full max-w-[400px]">
+            <div className="relative group w-full max-w-[460px]">
               {/* Soft warm shadow */}
               <div className="absolute -inset-2 rounded-[32px] bg-[#E8E1D3]/50 blur-xl opacity-80" />
 
               {/* Framed Artwork Presentation */}
               <div className="relative rounded-[28px] bg-white border border-[#EBE7DF] p-4 shadow-[0_20px_50px_rgba(40,30,20,0.08)]">
-                {/* Artwork Thumbnail with soft cream mat */}
+                {/* Artwork Thumbnail with exact studio proportions */}
                 <div
                   onClick={() => onNavigate('customizer')}
-                  className="relative rounded-2xl overflow-hidden aspect-[3/4] bg-[#060D1E] cursor-pointer border border-[#E5E0D6] group-hover:border-[#C4BAA9] transition-colors shadow-inner"
+                  className="relative rounded-2xl overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer border border-[#E5E0D6] group-hover:border-[#C4BAA9] transition-all shadow-inner"
                 >
-                  <img
-                    src="/textures/star_map_sample.png"
-                    alt="Gepersonaliseerde Sterrenposter Voorbeeld"
-                    className="w-full h-full object-cover transform group-hover:scale-[1.015] transition-transform duration-500"
-                  />
+                  <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+                    {/* Archival Canvas Background */}
+                    <rect width="1000" height="1400" fill="#0B132B" />
+                    
+                    {/* Inner Fine Matting Keyline */}
+                    <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
+
+                    {/* Celestial Sphere Background */}
+                    <circle cx="500" cy="480" r="400" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
+                    <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="1.5" strokeDasharray="8 6" />
+                    <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="1" />
+
+                    {/* Compass Cardinal Degree Ticks */}
+                    <line x1="500" y1="72" x2="500" y2="92" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+                    <line x1="500" y1="868" x2="500" y2="888" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+                    <line x1="92" y1="480" x2="112" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+                    <line x1="888" y1="480" x2="908" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+
+                    <text x="500" y="60" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
+                    <text x="500" y="915" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
+                    <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
+                    <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
+
+                    {/* Milky Way Soft Nebula */}
+                    <ellipse cx="485" cy="470" rx="260" ry="160" fill="rgba(255,255,255,0.065)" transform="rotate(-25 485 470)" />
+
+                    {/* Constellation Outlines */}
+                    <line x1="330" y1="360" x2="440" y2="295" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+                    <line x1="440" y1="295" x2="610" y2="345" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+                    <line x1="610" y1="345" x2="710" y2="465" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+                    <line x1="380" y1="590" x2="515" y2="640" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
+                    <line x1="515" y1="640" x2="645" y2="560" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
+
+                    {/* Principal Stars */}
+                    <circle cx="330" cy="360" r="7" fill="#FFFFFF" />
+                    <circle cx="440" cy="295" r="10" fill="#FFFFFF" />
+                    <circle cx="610" cy="345" r="8" fill="#FFFFFF" />
+                    <circle cx="710" cy="465" r="7" fill="#FFFFFF" />
+                    <circle cx="380" cy="590" r="7" fill="#FFFFFF" />
+                    <circle cx="515" cy="640" r="9" fill="#FFFFFF" />
+                    <circle cx="645" cy="560" r="8" fill="#FFFFFF" />
+
+                    {/* Background Stellar Dust */}
+                    <circle cx="280" cy="480" r="4.5" fill="#FFFFFF" opacity="0.75" />
+                    <circle cx="560" cy="420" r="3.5" fill="#FFFFFF" opacity="0.65" />
+                    <circle cx="460" cy="530" r="5" fill="#FFFFFF" opacity="0.8" />
+                    <circle cx="670" cy="670" r="3.5" fill="#FFFFFF" opacity="0.55" />
+                    <circle cx="350" cy="430" r="4" fill="#FFFFFF" opacity="0.7" />
+                    <circle cx="620" cy="280" r="4.5" fill="#FFFFFF" opacity="0.85" />
+
+                    {/* North Star ✦ */}
+                    <text x="440" y="270" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
+
+                    {/* Prominent, Harmonious Studio Typography Proportions */}
+                    {/* 1. Main Title Inscription */}
+                    <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
+                      THE NIGHT WE MET
+                    </text>
+
+                    {/* 2. Couple Calligraphy Names */}
+                    <text x="500" y="1028" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
+                      Emma &amp; Daan
+                    </text>
+
+                    {/* 3. Decorative Divider */}
+                    <g>
+                      <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+                      <text x="500" y="1094" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="20">✦</text>
+                      <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+                    </g>
+
+                    {/* 4. Significant Date */}
+                    <text x="500" y="1144" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
+                      22 SEPTEMBER 2026
+                    </text>
+
+                    {/* 5. Location & GPS Coordinates */}
+                    <text x="500" y="1195" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
+                      AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
+                    </text>
+                  </svg>
 
                   {/* Understated Minimalist Badge */}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md border border-[#E7E3DC] px-3 py-1 rounded-full text-[10px] font-medium text-[#1C1917] tracking-wider shadow-sm">

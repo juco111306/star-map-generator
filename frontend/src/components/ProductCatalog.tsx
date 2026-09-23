@@ -57,78 +57,82 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     }
   };
 
-  // Render the exact, authentic miniature vector poster for each style
+  // Render the exact, authentic miniature vector poster for each style matching studio proportions
   const renderExactPosterSVG = (styleId: string) => {
     switch (styleId) {
       case 'midnight_classic':
         return (
-          <svg viewBox="0 0 300 420" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+          <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             {/* Background */}
-            <rect width="300" height="420" fill="#0B132B" />
-            <rect x="12" y="12" width="276" height="396" fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="0.8" />
+            <rect width="1000" height="1400" fill="#0B132B" />
+            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
             {/* Celestial Circle & Compass */}
-            <circle cx="150" cy="155" r="95" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="1.2" />
-            <circle cx="150" cy="155" r="88" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="0.6" strokeDasharray="3 2" />
-            <circle cx="150" cy="155" r="64" fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="0.5" />
+            <circle cx="500" cy="480" r="400" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
+            <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="1.5" strokeDasharray="8 6" />
+            <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="1" />
 
             {/* Cardinal Degree Ticks */}
-            <line x1="150" y1="56" x2="150" y2="64" stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
-            <line x1="150" y1="246" x2="150" y2="254" stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
-            <line x1="51" y1="155" x2="59" y2="155" stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
-            <line x1="241" y1="155" x2="249" y2="155" stroke="rgba(255,255,255,0.6)" strokeWidth="1" />
+            <line x1="500" y1="72" x2="500" y2="92" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+            <line x1="500" y1="868" x2="500" y2="888" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+            <line x1="92" y1="480" x2="112" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+            <line x1="888" y1="480" x2="908" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
 
-            <text x="150" y="52" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="6" fontFamily="sans-serif" fontWeight="bold">N</text>
-            <text x="150" y="262" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="6" fontFamily="sans-serif" fontWeight="bold">S</text>
-            <text x="46" y="157" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="6" fontFamily="sans-serif" fontWeight="bold">W</text>
-            <text x="254" y="157" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="6" fontFamily="sans-serif" fontWeight="bold">E</text>
+            <text x="500" y="60" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
+            <text x="500" y="915" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
+            <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
+            <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
 
             {/* Nebula */}
-            <ellipse cx="145" cy="150" rx="60" ry="38" fill="rgba(255,255,255,0.06)" transform="rotate(-25 145 150)" />
+            <ellipse cx="485" cy="470" rx="260" ry="160" fill="rgba(255,255,255,0.065)" transform="rotate(-25 485 470)" />
 
             {/* Constellations */}
-            <line x1="108" y1="125" x2="135" y2="108" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-            <line x1="135" y1="108" x2="175" y2="120" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-            <line x1="175" y1="120" x2="198" y2="150" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-            <line x1="122" y1="182" x2="154" y2="195" stroke="rgba(255,255,255,0.35)" strokeWidth="0.8" />
-            <line x1="154" y1="195" x2="185" y2="174" stroke="rgba(255,255,255,0.35)" strokeWidth="0.8" />
+            <line x1="330" y1="360" x2="440" y2="295" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+            <line x1="440" y1="295" x2="610" y2="345" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+            <line x1="610" y1="345" x2="710" y2="465" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+            <line x1="380" y1="590" x2="515" y2="640" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
+            <line x1="515" y1="640" x2="645" y2="560" stroke="rgba(255,255,255,0.38)" strokeWidth="2" />
 
             {/* Stars */}
-            <circle cx="108" cy="125" r="2.2" fill="#FFFFFF" />
-            <circle cx="135" cy="108" r="3.0" fill="#FFFFFF" />
-            <circle cx="175" cy="120" r="2.5" fill="#FFFFFF" />
-            <circle cx="198" cy="150" r="2.0" fill="#FFFFFF" />
-            <circle cx="122" cy="182" r="2.0" fill="#FFFFFF" />
-            <circle cx="154" cy="195" r="2.6" fill="#FFFFFF" />
-            <circle cx="185" cy="174" r="2.2" fill="#FFFFFF" />
-            <circle cx="100" cy="160" r="1.2" fill="#FFFFFF" opacity="0.75" />
-            <circle cx="168" cy="144" r="1.0" fill="#FFFFFF" opacity="0.65" />
-            <circle cx="140" cy="168" r="1.4" fill="#FFFFFF" opacity="0.8" />
-            <circle cx="190" cy="190" r="1.0" fill="#FFFFFF" opacity="0.55" />
-            <text x="135" y="101" textAnchor="middle" fill="#FFFFFF" fontSize="9" opacity="0.95">✦</text>
+            <circle cx="330" cy="360" r="7" fill="#FFFFFF" />
+            <circle cx="440" cy="295" r="10" fill="#FFFFFF" />
+            <circle cx="610" cy="345" r="8" fill="#FFFFFF" />
+            <circle cx="710" cy="465" r="7" fill="#FFFFFF" />
+            <circle cx="380" cy="590" r="7" fill="#FFFFFF" />
+            <circle cx="515" cy="640" r="9" fill="#FFFFFF" />
+            <circle cx="645" cy="560" r="8" fill="#FFFFFF" />
+            <circle cx="280" cy="480" r="4.5" fill="#FFFFFF" opacity="0.75" />
+            <circle cx="560" cy="420" r="3.5" fill="#FFFFFF" opacity="0.65" />
+            <circle cx="460" cy="530" r="5" fill="#FFFFFF" opacity="0.8" />
+            <circle cx="670" cy="670" r="3.5" fill="#FFFFFF" opacity="0.55" />
+            <text x="440" y="270" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
 
-            {/* Exact Typography Stack */}
-            <text x="150" y="286" textAnchor="middle" fill="#FFFFFF" fontSize="10" fontFamily="serif" fontWeight="700" letterSpacing="2.5">
+            {/* Exact Proportioned Typography Stack */}
+            <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
               THE NIGHT WE MET
             </text>
-            <text x="150" y="310" textAnchor="middle" fill="rgba(255,255,255,0.9)" fontSize="14" fontFamily="cursive" fontStyle="italic">
+            <text x="500" y="1028" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
               Emma &amp; Daan
             </text>
-            <text x="150" y="330" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="9">✦</text>
-            <text x="150" y="348" textAnchor="middle" fill="rgba(255,255,255,0.8)" fontSize="7.5" fontFamily="sans-serif" letterSpacing="1.8">
+            <g>
+              <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+              <text x="500" y="1094" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="20">✦</text>
+              <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+            </g>
+            <text x="500" y="1144" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
               22 SEPTEMBER 2026
             </text>
-            <text x="150" y="364" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="6.5" fontFamily="monospace" letterSpacing="1.2">
-              52.3676° N • 4.9041° E
+            <text x="500" y="1195" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
+              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
             </text>
           </svg>
         );
 
       case 'teal_watercolor':
         return (
-          <svg viewBox="0 0 300 420" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+          <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <defs>
-              <radialGradient id="cat-teal-nebula" cx="45%" cy="45%" r="55%">
+              <radialGradient id="cat-teal-nebula-hq" cx="45%" cy="45%" r="55%">
                 <stop offset="0%" stopColor="#1E889B" />
                 <stop offset="45%" stopColor="#0E5866" />
                 <stop offset="85%" stopColor="#083B44" />
@@ -137,187 +141,203 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             </defs>
 
             {/* Matted Gallery Light Background */}
-            <rect width="300" height="420" fill="#F5F7F6" />
-            <rect x="12" y="12" width="276" height="396" fill="none" stroke="rgba(12,75,86,0.18)" strokeWidth="0.8" />
+            <rect width="1000" height="1400" fill="#F5F7F6" />
+            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(12,75,86,0.22)" strokeWidth="1.5" />
 
             {/* Swirling Teal Watercolor Celestial Disk */}
-            <circle cx="150" cy="155" r="95" fill="url(#cat-teal-nebula)" stroke="#0C4B56" strokeWidth="1.4" />
-            <circle cx="150" cy="155" r="88" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="0.6" strokeDasharray="3 2" />
-            <ellipse cx="145" cy="150" rx="55" ry="32" fill="rgba(255,255,255,0.1)" transform="rotate(-20 145 150)" />
+            <circle cx="500" cy="480" r="400" fill="url(#cat-teal-nebula-hq)" stroke="#0C4B56" strokeWidth="3.5" />
+            <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="1.5" strokeDasharray="8 6" />
+            <ellipse cx="485" cy="470" rx="240" ry="140" fill="rgba(255,255,255,0.1)" transform="rotate(-20 485 470)" />
 
             {/* Constellations */}
-            <line x1="110" y1="135" x2="145" y2="118" stroke="rgba(255,255,255,0.55)" strokeWidth="0.8" />
-            <line x1="145" y1="118" x2="188" y2="130" stroke="rgba(255,255,255,0.55)" strokeWidth="0.8" />
-            <line x1="126" y1="184" x2="172" y2="176" stroke="rgba(255,255,255,0.45)" strokeWidth="0.8" />
+            <line x1="330" y1="380" x2="470" y2="320" stroke="rgba(255,255,255,0.55)" strokeWidth="2" />
+            <line x1="470" y1="320" x2="650" y2="360" stroke="rgba(255,255,255,0.55)" strokeWidth="2" />
+            <line x1="390" y1="600" x2="580" y2="570" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
 
-            <circle cx="110" cy="135" r="2.4" fill="#FFFFFF" />
-            <circle cx="145" cy="118" r="3.0" fill="#FFFFFF" />
-            <circle cx="188" cy="130" r="2.4" fill="#FFFFFF" />
-            <circle cx="126" cy="184" r="2.0" fill="#FFFFFF" />
-            <circle cx="172" cy="176" r="2.5" fill="#FFFFFF" />
-            <circle cx="160" cy="150" r="1.3" fill="#FFFFFF" opacity="0.85" />
-            <circle cx="125" cy="160" r="1.2" fill="#FFFFFF" opacity="0.75" />
-            <text x="145" y="111" textAnchor="middle" fill="#FFFFFF" fontSize="9" opacity="0.95">✦</text>
+            <circle cx="330" cy="380" r="8" fill="#FFFFFF" />
+            <circle cx="470" cy="320" r="10" fill="#FFFFFF" />
+            <circle cx="650" cy="360" r="8" fill="#FFFFFF" />
+            <circle cx="390" cy="600" r="7" fill="#FFFFFF" />
+            <circle cx="580" cy="570" r="8.5" fill="#FFFFFF" />
+            <circle cx="530" cy="480" r="4.5" fill="#FFFFFF" opacity="0.85" />
+            <circle cx="410" cy="500" r="4" fill="#FFFFFF" opacity="0.75" />
+            <text x="470" y="295" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
 
             {/* Exact Inscription in Deep Teal */}
-            <text x="150" y="286" textAnchor="middle" fill="#083B44" fontSize="9.5" fontFamily="serif" fontWeight="700" letterSpacing="2.2">
+            <text x="500" y="955" textAnchor="middle" fill="#083B44" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
               THE NIGHT WE MET
             </text>
-            <text x="150" y="310" textAnchor="middle" fill="#1A5A66" fontSize="14" fontFamily="cursive" fontStyle="italic">
+            <text x="500" y="1028" textAnchor="middle" fill="#1A5A66" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
               Emma &amp; Daan
             </text>
-            <text x="150" y="330" textAnchor="middle" fill="#0C4B56" fontSize="9">✧</text>
-            <text x="150" y="348" textAnchor="middle" fill="#1A5A66" fontSize="7.5" fontFamily="sans-serif" letterSpacing="1.8">
+            <g>
+              <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
+              <text x="500" y="1094" textAnchor="middle" fill="#0C4B56" fontSize="22">✧</text>
+              <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
+            </g>
+            <text x="500" y="1144" textAnchor="middle" fill="#1A5A66" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
               22 SEPTEMBER 2026
             </text>
-            <text x="150" y="364" textAnchor="middle" fill="#3B7580" fontSize="6.5" fontFamily="monospace" letterSpacing="1.2">
-              AMSTERDAM, NEDERLAND
+            <text x="500" y="1195" textAnchor="middle" fill="#3B7580" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
+              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
             </text>
           </svg>
         );
 
       case 'emerald_night':
         return (
-          <svg viewBox="0 0 300 420" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+          <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             {/* British Racing Green Background */}
-            <rect width="300" height="420" fill="#081C15" />
-            <rect x="12" y="12" width="276" height="396" fill="none" stroke="rgba(212,175,55,0.25)" strokeWidth="0.8" />
+            <rect width="1000" height="1400" fill="#081C15" />
+            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="1.5" />
 
             {/* Inner Forest Sphere */}
-            <circle cx="150" cy="155" r="95" fill="#04110C" stroke="#D4AF37" strokeWidth="1.4" />
-            <circle cx="150" cy="155" r="88" fill="none" stroke="rgba(212,175,55,0.35)" strokeWidth="0.6" strokeDasharray="3 2" />
-            <circle cx="150" cy="155" r="64" fill="none" stroke="rgba(212,175,55,0.2)" strokeWidth="0.5" />
+            <circle cx="500" cy="480" r="400" fill="#04110C" stroke="#D4AF37" strokeWidth="3.5" />
+            <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(212,175,55,0.38)" strokeWidth="1.5" strokeDasharray="8 6" />
+            <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(212,175,55,0.22)" strokeWidth="1" />
 
             {/* Cardinal Ticks */}
-            <line x1="150" y1="56" x2="150" y2="64" stroke="#D4AF37" strokeWidth="1" />
-            <line x1="150" y1="246" x2="150" y2="254" stroke="#D4AF37" strokeWidth="1" />
-            <line x1="51" y1="155" x2="59" y2="155" stroke="#D4AF37" strokeWidth="1" />
-            <line x1="241" y1="155" x2="249" y2="155" stroke="#D4AF37" strokeWidth="1" />
+            <line x1="500" y1="72" x2="500" y2="92" stroke="#D4AF37" strokeWidth="2.5" />
+            <line x1="500" y1="868" x2="500" y2="888" stroke="#D4AF37" strokeWidth="2.5" />
+            <line x1="92" y1="480" x2="112" y2="480" stroke="#D4AF37" strokeWidth="2.5" />
+            <line x1="888" y1="480" x2="908" y2="480" stroke="#D4AF37" strokeWidth="2.5" />
 
-            <text x="150" y="52" textAnchor="middle" fill="#D4AF37" fontSize="6" fontFamily="sans-serif" fontWeight="bold">N</text>
-            <text x="150" y="262" textAnchor="middle" fill="#D4AF37" fontSize="6" fontFamily="sans-serif" fontWeight="bold">S</text>
-            <text x="46" y="157" textAnchor="middle" fill="#D4AF37" fontSize="6" fontFamily="sans-serif" fontWeight="bold">W</text>
-            <text x="254" y="157" textAnchor="middle" fill="#D4AF37" fontSize="6" fontFamily="sans-serif" fontWeight="bold">E</text>
+            <text x="500" y="60" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
+            <text x="500" y="915" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
+            <text x="75" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
+            <text x="925" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
 
             {/* Cassiopeia W in Gold */}
-            <line x1="102" y1="125" x2="126" y2="142" stroke="#D4AF37" strokeWidth="0.9" opacity="0.8" />
-            <line x1="126" y1="142" x2="150" y2="123" stroke="#D4AF37" strokeWidth="0.9" opacity="0.8" />
-            <line x1="150" y1="123" x2="174" y2="144" stroke="#D4AF37" strokeWidth="0.9" opacity="0.8" />
-            <line x1="174" y1="144" x2="198" y2="130" stroke="#D4AF37" strokeWidth="0.9" opacity="0.8" />
+            <line x1="310" y1="360" x2="400" y2="425" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
+            <line x1="400" y1="425" x2="500" y2="350" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
+            <line x1="500" y1="350" x2="600" y2="435" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
+            <line x1="600" y1="435" x2="690" y2="375" stroke="#D4AF37" strokeWidth="2.2" opacity="0.85" />
 
-            <circle cx="102" cy="125" r="2.4" fill="#D4AF37" />
-            <circle cx="126" cy="142" r="2.6" fill="#D4AF37" />
-            <circle cx="150" cy="123" r="3.0" fill="#D4AF37" />
-            <circle cx="174" cy="144" r="2.6" fill="#D4AF37" />
-            <circle cx="198" cy="130" r="2.4" fill="#D4AF37" />
-            <circle cx="138" cy="180" r="2.0" fill="#D4AF37" />
-            <circle cx="166" cy="188" r="2.4" fill="#D4AF37" />
-            <circle cx="118" cy="168" r="1.2" fill="#D4AF37" opacity="0.75" />
-            <text x="150" y="116" textAnchor="middle" fill="#D4AF37" fontSize="9" opacity="0.95">✦</text>
+            <circle cx="310" cy="360" r="8" fill="#D4AF37" />
+            <circle cx="400" cy="425" r="9" fill="#D4AF37" />
+            <circle cx="500" cy="350" r="10" fill="#D4AF37" />
+            <circle cx="600" cy="435" r="9" fill="#D4AF37" />
+            <circle cx="690" cy="375" r="8" fill="#D4AF37" />
+            <circle cx="450" cy="600" r="7" fill="#D4AF37" />
+            <circle cx="570" cy="630" r="8.5" fill="#D4AF37" />
+            <circle cx="370" cy="540" r="4.5" fill="#D4AF37" opacity="0.75" />
+            <text x="500" y="325" textAnchor="middle" fill="#D4AF37" fontSize="30" opacity="0.95">✦</text>
 
             {/* Exact Inscription in Gold */}
-            <text x="150" y="286" textAnchor="middle" fill="#D4AF37" fontSize="10" fontFamily="serif" fontWeight="700" letterSpacing="2.5">
+            <text x="500" y="955" textAnchor="middle" fill="#D4AF37" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
               THE NIGHT WE MET
             </text>
-            <text x="150" y="310" textAnchor="middle" fill="#F3E5AB" fontSize="14" fontFamily="cursive" fontStyle="italic">
+            <text x="500" y="1028" textAnchor="middle" fill="#F3E5AB" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
               Emma &amp; Daan
             </text>
-            <text x="150" y="330" textAnchor="middle" fill="#D4AF37" fontSize="9">✦</text>
-            <text x="150" y="348" textAnchor="middle" fill="#F3E5AB" fontSize="7.5" fontFamily="sans-serif" letterSpacing="1.8">
+            <g>
+              <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
+              <text x="500" y="1094" textAnchor="middle" fill="#D4AF37" fontSize="20">✦</text>
+              <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
+            </g>
+            <text x="500" y="1144" textAnchor="middle" fill="#F3E5AB" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
               22 SEPTEMBER 2026
             </text>
-            <text x="150" y="364" textAnchor="middle" fill="#C9B06B" fontSize="6.5" fontFamily="monospace" letterSpacing="1.2">
-              52.3676° N • 4.9041° E
+            <text x="500" y="1195" textAnchor="middle" fill="#C9B06B" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
+              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
             </text>
           </svg>
         );
 
       case 'burgundy_sky':
         return (
-          <svg viewBox="0 0 300 420" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+          <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             {/* Velvet Wine Red Background */}
-            <rect width="300" height="420" fill="#38070E" />
-            <rect x="12" y="12" width="276" height="396" fill="none" stroke="rgba(255,235,238,0.18)" strokeWidth="0.8" />
+            <rect width="1000" height="1400" fill="#38070E" />
+            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,235,238,0.22)" strokeWidth="1.5" />
 
             {/* Deep Bordeaux Celestial Disk */}
-            <circle cx="150" cy="155" r="95" fill="#240308" stroke="rgba(255,235,238,0.45)" strokeWidth="1.2" />
-            <circle cx="150" cy="155" r="88" fill="none" stroke="rgba(255,235,238,0.25)" strokeWidth="0.6" strokeDasharray="3 2" />
-            <circle cx="150" cy="155" r="64" fill="none" stroke="rgba(255,235,238,0.15)" strokeWidth="0.5" />
+            <circle cx="500" cy="480" r="400" fill="#240308" stroke="rgba(255,235,238,0.45)" strokeWidth="3" />
+            <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,235,238,0.25)" strokeWidth="1.5" strokeDasharray="8 6" />
+            <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255,235,238,0.15)" strokeWidth="1" />
 
             {/* Constellation Lines */}
-            <line x1="115" y1="125" x2="146" y2="116" stroke="rgba(255,235,238,0.45)" strokeWidth="0.8" />
-            <line x1="146" y1="116" x2="186" y2="138" stroke="rgba(255,235,238,0.45)" strokeWidth="0.8" />
-            <line x1="146" y1="116" x2="155" y2="160" stroke="rgba(255,235,238,0.4)" strokeWidth="0.8" />
-            <line x1="155" y1="160" x2="190" y2="182" stroke="rgba(255,235,238,0.4)" strokeWidth="0.8" />
+            <line x1="340" y1="360" x2="480" y2="330" stroke="rgba(255,235,238,0.48)" strokeWidth="2" />
+            <line x1="480" y1="330" x2="640" y2="410" stroke="rgba(255,235,238,0.48)" strokeWidth="2" />
+            <line x1="480" y1="330" x2="520" y2="510" stroke="rgba(255,235,238,0.42)" strokeWidth="2" />
+            <line x1="520" y1="510" x2="660" y2="600" stroke="rgba(255,235,238,0.42)" strokeWidth="2" />
 
-            <circle cx="115" cy="125" r="2.4" fill="#FFFFFF" />
-            <circle cx="146" cy="116" r="3.0" fill="#FFFFFF" />
-            <circle cx="186" cy="138" r="2.4" fill="#FFFFFF" />
-            <circle cx="155" cy="160" r="2.3" fill="#F7D6DA" />
-            <circle cx="190" cy="182" r="2.6" fill="#FFFFFF" />
-            <circle cx="120" cy="172" r="1.3" fill="#F7D6DA" opacity="0.85" />
-            <circle cx="170" cy="128" r="1.1" fill="#FFFFFF" opacity="0.75" />
-            <text x="146" y="109" textAnchor="middle" fill="#FFFFFF" fontSize="9" opacity="0.95">✦</text>
+            <circle cx="340" cy="360" r="8" fill="#FFFFFF" />
+            <circle cx="480" cy="330" r="10" fill="#FFFFFF" />
+            <circle cx="640" cy="410" r="8" fill="#FFFFFF" />
+            <circle cx="520" cy="510" r="8" fill="#F7D6DA" />
+            <circle cx="660" cy="600" r="9" fill="#FFFFFF" />
+            <circle cx="380" cy="560" r="4.5" fill="#F7D6DA" opacity="0.85" />
+            <circle cx="580" cy="380" r="4" fill="#FFFFFF" opacity="0.75" />
+            <text x="480" y="305" textAnchor="middle" fill="#FFFFFF" fontSize="30" opacity="0.95">✦</text>
 
             {/* Exact Inscription in Rose / Champagne */}
-            <text x="150" y="286" textAnchor="middle" fill="#FFFFFF" fontSize="10" fontFamily="serif" fontWeight="700" letterSpacing="2.5">
+            <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
               THE NIGHT WE MET
             </text>
-            <text x="150" y="310" textAnchor="middle" fill="#F7D6DA" fontSize="14" fontFamily="cursive" fontStyle="italic">
+            <text x="500" y="1028" textAnchor="middle" fill="#F7D6DA" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
               Emma &amp; Daan
             </text>
-            <text x="150" y="330" textAnchor="middle" fill="rgba(255,235,238,0.6)" fontSize="9">✦</text>
-            <text x="150" y="348" textAnchor="middle" fill="#F7D6DA" fontSize="7.5" fontFamily="sans-serif" letterSpacing="1.8">
+            <g>
+              <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
+              <text x="500" y="1094" textAnchor="middle" fill="rgba(255,235,238,0.7)" fontSize="20">✦</text>
+              <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
+            </g>
+            <text x="500" y="1144" textAnchor="middle" fill="#F7D6DA" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
               22 SEPTEMBER 2026
             </text>
-            <text x="150" y="364" textAnchor="middle" fill="#D6A6AD" fontSize="6.5" fontFamily="monospace" letterSpacing="1.2">
-              52.3676° N • 4.9041° E
+            <text x="500" y="1195" textAnchor="middle" fill="#D6A6AD" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
+              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
             </text>
           </svg>
         );
 
       case 'border_text':
         return (
-          <svg viewBox="0 0 300 420" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+          <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <defs>
-              <path id="cat-border-arc" d="M 50 155 A 100 100 0 0 1 250 155" fill="none" />
+              <path id="cat-border-arc-hq" d="M 78 480 A 422 422 0 0 1 922 480" fill="none" />
             </defs>
 
             {/* Deep Navy Canvas */}
-            <rect width="300" height="420" fill="#0B132B" />
-            <rect x="12" y="12" width="276" height="396" fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="0.8" />
+            <rect width="1000" height="1400" fill="#0B132B" />
+            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
             {/* Celestial Sphere Background */}
-            <circle cx="150" cy="155" r="90" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="1.2" />
-            <circle cx="150" cy="155" r="82" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="0.6" strokeDasharray="3 2" />
+            <circle cx="500" cy="480" r="390" fill="#070D1F" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
+            <circle cx="500" cy="480" r="362" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="1.5" strokeDasharray="8 6" />
 
             {/* Signature Curved Inscription Along Outer Arc */}
-            <text fill="#FFFFFF" fontSize="9.5" fontWeight="700" letterSpacing="2.8">
-              <textPath href="#cat-border-arc" startOffset="50%" textAnchor="middle">
+            <text fill="#FFFFFF" fontSize="34" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="8">
+              <textPath href="#cat-border-arc-hq" startOffset="50%" textAnchor="middle">
                 THE NIGHT WE MET
               </textPath>
             </text>
 
             {/* Constellation Lines & Stars */}
-            <line x1="120" y1="168" x2="152" y2="160" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-            <line x1="152" y1="160" x2="182" y2="175" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
-            <circle cx="120" cy="168" r="2.4" fill="#FFFFFF" />
-            <circle cx="152" cy="160" r="3.0" fill="#FFFFFF" />
-            <circle cx="182" cy="175" r="2.4" fill="#FFFFFF" />
-            <circle cx="138" cy="135" r="1.8" fill="#FFFFFF" />
-            <circle cx="168" cy="130" r="2.2" fill="#FFFFFF" />
-            <text x="152" y="152" textAnchor="middle" fill="#FFFFFF" fontSize="9" opacity="0.95">✦</text>
+            <line x1="360" y1="520" x2="490" y2="490" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+            <line x1="490" y1="490" x2="620" y2="550" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+            <circle cx="360" cy="520" r="8" fill="#FFFFFF" />
+            <circle cx="490" cy="490" r="10" fill="#FFFFFF" />
+            <circle cx="620" cy="550" r="8" fill="#FFFFFF" />
+            <circle cx="430" cy="410" r="6" fill="#FFFFFF" />
+            <circle cx="570" cy="395" r="7" fill="#FFFFFF" />
+            <text x="490" y="465" textAnchor="middle" fill="#FFFFFF" fontSize="28" opacity="0.95">✦</text>
 
             {/* Inscription Below */}
-            <text x="150" y="300" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="15" fontFamily="cursive" fontStyle="italic">
+            <text x="500" y="990" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="62" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
               Emma &amp; Daan
             </text>
-            <text x="150" y="324" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="9">✦</text>
-            <text x="150" y="344" textAnchor="middle" fill="rgba(255,255,255,0.8)" fontSize="7.5" fontFamily="sans-serif" letterSpacing="1.8">
+            <g>
+              <line x1="375" y1="1048" x2="465" y2="1048" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+              <text x="500" y="1054" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="20">✦</text>
+              <line x1="535" y1="1048" x2="625" y2="1048" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+            </g>
+            <text x="500" y="1108" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
               22 SEPTEMBER 2026
             </text>
-            <text x="150" y="360" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="6.5" fontFamily="monospace" letterSpacing="1.2">
-              52.3676° N • 4.9041° E
+            <text x="500" y="1158" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
+              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
             </text>
           </svg>
         );
