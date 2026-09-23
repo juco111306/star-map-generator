@@ -1,0 +1,83 @@
+[
+  {
+    "order_id": "STL-90547",
+    "created_at": "2026-09-22T19:30:55.720306Z",
+    "status": "ready_for_print",
+    "customer": {
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "phone": "",
+      "address_line1": "Keizersgracht 100",
+      "address_line2": "",
+      "city": "Amsterdam",
+      "state": "",
+      "postal_code": "1015 CJ",
+      "country": "Netherlands",
+      "gift_note": "",
+      "producer_notes": ""
+    },
+    "poster_size": "50x70",
+    "style_id": "midnight_classic",
+    "frame_style": "none",
+    "title_text": "WHERE IT HAPPENED",
+    "names_text": "Emma & Noah",
+    "date_text": "September 22, 2026",
+    "location_text": "New York, USA",
+    "pdf_filename": "STL-90547_print_ready_300dpi.pdf",
+    "pdf_size_bytes": 1095073
+  },
+  {
+    "order_id": "STL-19565",
+    "created_at": "2026-09-22T10:57:58.647800Z",
+    "status": "ready_for_print",
+    "customer": {
+      "name": "Clara & Julian Sterling",
+      "email": "clara.sterling@atelier-luxury.com",
+      "phone": "+1 (555) 382-9901",
+      "address_line1": "1048 Fifth Avenue",
+      "address_line2": "Apt 9E",
+      "city": "New York",
+      "state": "NY",
+      "postal_code": "10028",
+      "country": "United States",
+      "gift_note": "To a lifetime under our favorite constellations. Forever yours.",
+      "producer_notes": "Print on heavy warm-white rag stock. Hand-embossed atelier seal."
+    },
+    "poster_size": "18x24",
+    "style_id": "midnight_classic",
+    "frame_style": "oak",
+    "title_text": "THE NIGHT WE MET",
+    "names_text": "Clara & Julian",
+    "date_text": "SEPTEMBER 22, 2026",
+    "location_text": "New York, USA",
+    "pdf_filename": "STL-19565_print_ready_300dpi.pdf",
+    "pdf_size_bytes": 1115508
+  },
+  {
+    "order_id": "STL-94199",
+    "created_at": "2026-09-22T09:42:57.302639Z",
+    "status": "ready_for_print",
+    "customer": {
+      "name": "Sophia Reynolds",
+      "email": "sophia@example.com",
+      "phone": "+1 555-0192",
+      "address_line1": "452 Lexington Ave, Suite 12",
+      "address_line2": "",
+      "city": "New York",
+      "state": "NY",
+      "postal_code": "10017",
+      "country": "United States",
+      "gift_note": "Happy 5th Anniversary my love! Under this sky we began.",
+      "producer_notes": "Matte archival paper with Scandinavian Oak frame."
+    },
+    "poster_size": "18x24",
+    "style_id": "midnight_classic",
+    "frame_style": "oak",
+    "title_text": "OUR FIRST KISS",
+    "names_text": "Sophia & Julian",
+    "date_text": "SEPTEMBER 22, 2026",
+    "location_text": "NEW YORK, NY",
+    "pdf_filename": "STL-94199_print_ready_300dpi.pdf",
+    "pdf_size_bytes": 1113669
+  }
+]

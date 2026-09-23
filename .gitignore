@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+backend/.venv/
+tools/
+
+# Next.js Build Outputs
+frontend/.next/
+frontend/out/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+backend/app/__pycache__/
+.pytest_cache/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Raw downloaded catalog (processed parquet is kept)
+hip_main.dat
+
+# Test outputs and customer order PDFs
+backend/tests/output_pdfs/
+backend/tests/*.png
+backend/tests/*.pdf
+backend/data/orders/*.pdf
+*.log
