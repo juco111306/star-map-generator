@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer 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`,,
+        Authorization: `Bearer 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`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
