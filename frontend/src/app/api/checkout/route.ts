@@ -5,37 +5,37 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { email, amount, shippingDetails, designUrl } = body;
 
-    // Use Paystack Live Secret Key directly from environment or fallback safely
-    const paystackKey = process.env.PAYSTACK_SECRET_KEY || '';
+    const formData = new URLSearchParams();
+    formData.append('success_url', 'https://star-map-generator-iota.vercel.app/?success=true');
+    formData.append('cancel_url', 'https://star-map-generator-iota.vercel.app/');
+    formData.append('mode', 'payment');
+    formData.append('customer_email', email || 'customer@stellaireatelier.com');
 
-    const response = await fetch('https://api.paystack.co/transaction/initialize', {
+    formData.append('line_items[0][price_data][currency]', 'eur');
+    formData.append('line_items[0][price_data][product_data][name]', 'Gepersonaliseerde Sterrenposter');
+    formData.append('line_items[0][price_data][unit_amount]', Math.round((amount || 59) * 100).toString());
+    formData.append('line_items[0][quantity]', '1');
+
+    formData.append('payment_method_types[0]', 'ideal');
+    formData.append('payment_method_types[1]', 'bancontact');
+    formData.append('payment_method_types[2]', 'card');
+
+    const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${paystackKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer rk_live_51UJ9XaBVz1Pas2hpvXo8h5rJvWdDE`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        email: email || 'customer@stellaireatelier.com',
-        amount: Math.round((amount || 59) * 100), // Amount in cents/pesewas/cents equivalent
-        currency: 'EUR',
-        callback_url: 'https://star-map-generator-iota.vercel.app/?success=true',
-        metadata: {
-          shipping_details: shippingDetails,
-          design_url: designUrl,
-        },
-      }),
+      body: formData.toString(),
     });
 
-    const data = await response.json();
+    const stripeData = await stripeRes.json();
 
-    if (data.status && data.data?.authorization_url) {
-      return NextResponse.json({ checkoutUrl: data.data.authorization_url });
+    if (stripeData.url) {
+      return NextResponse.json({ checkoutUrl: stripeData.url });
     } else {
-      console.error('Payment gateway error:', data);
-      // Fallback redirect or error message
-      return NextResponse.json({ 
-        error: data.message || 'Payment initialization failed' 
-      }, { status: 400 });
+      console.error('Stripe error:', stripeData);
+      return NextResponse.json({ error: stripeData.error?.message || 'Stripe initialization failed' }, { status: 400 });
     }
   } catch (error) {
     console.error('Checkout error:', error);
