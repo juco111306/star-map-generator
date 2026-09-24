@@ -213,12 +213,12 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                     </h3>
                     <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3 text-[#A37055]" />
-                      <span>Amsterdam • 21:00 • 285 gsm Fine-Art</span>
+                      <span>Amsterdam • 21:00 • Classic Matte & Lijsten</span>
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className="text-[11px] text-[#A8A29E] line-through block">€68,00</span>
-                    <span className="font-serif text-sm font-bold text-[#1C1917]">vanaf €49,00</span>
+                    <span className="text-[11px] text-[#A8A29E] line-through block">€29,00</span>
+                    <span className="font-serif text-sm font-bold text-[#1C1917]">vanaf €19,00</span>
                   </div>
                 </div>
               </div>
@@ -264,7 +264,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
             </div>
             <div>
               <h4 className="text-xs font-bold text-[#1C1917]">Ambachtelijk Ingelijst</h4>
-              <p className="text-[11px] text-[#78716C]">Slanke 8 mm fotolijsten</p>
+              <p className="text-[11px] text-[#78716C]">Gelato houten lijsten</p>
             </div>
           </div>
         </div>

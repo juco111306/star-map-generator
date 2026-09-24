@@ -33,6 +33,7 @@ import { TYPOGRAPHY_PRESETS } from '../constants/presets';
 import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, PosterSize, TextBlockConfig } from '../types';
 import { StyleSelector } from './StyleSelector';
 import { apiFetch } from '../utils/api';
+import { calculatePrice, FRAME_OPTIONS, METRIC_SIZES } from '../utils/pricing';
 
 interface ConfigPanelProps {
   config: MapConfig;
@@ -180,52 +181,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     { id: 'none', label: 'Geen', symbol: 'Geen' },
   ];
 
-  const frames: {
-    id: FrameStyle;
-    label: string;
-    sub: string;
-    desc: string;
-    borderStyle: string;
-    bgStyle: string;
-    innerBg: string;
-  }[] = [
-    {
-      id: 'none',
-      label: 'Zonder Lijst (Print)',
-      sub: 'Archiefpapier 285 gsm',
-      desc: '300 DPI museumkwaliteit fine-art print, klaar om zelf in te lijsten',
-      borderStyle: 'border-dashed border-[#C5BFB5]',
-      bgStyle: 'bg-white',
-      innerBg: 'bg-[#2E3440]',
-    },
-    {
-      id: 'black',
-      label: 'Slank Mat Zwart',
-      sub: 'Dun 8 mm Profiel',
-      desc: 'Strak galerij-aluminium met ontspiegeld kristalglas',
-      borderStyle: 'border-[3px] border-[#181716]',
-      bgStyle: 'bg-[#181716]',
-      innerBg: 'bg-[#0E1526]',
-    },
-    {
-      id: 'oak',
-      label: 'Slank Scandinavisch Eiken',
-      sub: 'Dun 8 mm Profiel',
-      desc: 'Massief natuurlijk eikenhout met een warme, verfijnde houtnerf',
-      borderStyle: 'border-[3px] border-[#A27344]',
-      bgStyle: 'bg-[#A27344]',
-      innerBg: 'bg-[#0E1526]',
-    },
-    {
-      id: 'white',
-      label: 'Slank Galerij Wit',
-      sub: 'Dun 8 mm Profiel',
-      desc: 'Zacht satijnwit museumprofiel voor lichte en minimalistische interieurs',
-      borderStyle: 'border-[3px] border-[#E8E4DC] ring-1 ring-[#D0CAC0]',
-      bgStyle: 'bg-white',
-      innerBg: 'bg-[#0E1526]',
-    },
-  ];
+  const currentPriceDetails = calculatePrice(config.posterSize, config.frameStyle);
 
   const layoutVariations: { id: LayoutVariation; label: string; desc: string; badge?: string }[] = [
     { id: 'standard_stack', label: 'De Standaard Galerij', desc: 'Klassieke tijdloze tekststapel onder de sterrenkaart', badge: 'Populair' },
@@ -233,15 +189,6 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     { id: 'curved_border', label: 'Gebogen Randschrift', desc: 'Titel buigt sierlijk langs de buitenrand van de cirkel' },
     { id: 'moon_phases', label: 'De Maanfasen', desc: '7 opeenvolgende maanstanden als elegant scheidingselement', badge: 'Populair' },
     { id: 'framed', label: 'Galerijkader (Keyline)', desc: 'Verfijnde dubbele binnenrand en passe-partout belijning' },
-  ];
-
-  const formatOptions: { id: PosterSize; label: string; sub: string; aspect: string; popular?: boolean }[] = [
-    { id: '20x30', label: '20 × 30 cm', sub: 'Compact Aandenken (2:3)', aspect: '2:3' },
-    { id: '30x40', label: '30 × 40 cm', sub: 'Klassieke Galerij (3:4)', aspect: '3:4', popular: true },
-    { id: '40x50', label: '40 × 50 cm', sub: 'Medium Statement (4:5)', aspect: '4:5' },
-    { id: '50x70', label: '50 × 70 cm', sub: 'Groot Kunstformaat (5:7)', aspect: '5:7', popular: true },
-    { id: '18x24', label: '18 × 24 in', sub: '45 × 60 cm (3:4)', aspect: '3:4' },
-    { id: '24x36', label: '24 × 36 in', sub: '60 × 90 cm (2:3)', aspect: '2:3' },
   ];
 
   const stepsList: { id: StudioTab; label: string; icon: any }[] = [
@@ -294,8 +241,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </h2>
             </div>
             <div className="text-right">
-              <span className="text-base font-semibold text-[#1C1917]">€49,00</span>
-              <span className="text-[10px] text-[#78716C] block">300 DPI Archiefkwaliteit</span>
+              <div className="flex items-center justify-end gap-1.5">
+                <span className="text-xs text-[#A8A29E] line-through">{currentPriceDetails.formattedOriginalPrice}</span>
+                <span className="text-base font-semibold text-[#1C1917]">{currentPriceDetails.formattedPrice}</span>
+              </div>
+              <span className="text-[10px] text-[#A37055] font-medium block">{currentPriceDetails.typeLabel}</span>
             </div>
           </div>
         </div>
@@ -1189,19 +1139,102 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         {/* ================= STEP 5: FORMAT & PICTURE FRAMING ================= */}
         {activeTab === 'format' && (
           <div className="space-y-4 animate-in fade-in duration-200">
-            {/* Formats: 20x30, 30x40, 40x50, 50x70 cm */}
+            {/* 1. Fulfillment & Framing: Digital, Print Only, or Gelato Wooden Framed */}
+            <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
+                  <span>Uitvoering & Inlijsting (Partner Gelato)</span>
+                </label>
+                <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium">
+                  {config.frameStyle === 'digital' ? 'Digitaal Direct' : 'Classic Matte & FSC® Hout'}
+                </span>
+              </div>
+
+              <p className="text-[11px] text-[#78716C] font-light">
+                Geprint en ambachtelijk ingelijst door onze gecertificeerde partner Gelato op 200 gsm Classic Matte papier, of kies voor een direct print-klaar digitaal PDF bestand.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {FRAME_OPTIONS.map((f) => {
+                  const isSelected = config.frameStyle === f.id;
+                  const itemPrice = calculatePrice(config.posterSize, f.id);
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      onClick={() => onChange({ frameStyle: f.id })}
+                      className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
+                        isSelected
+                          ? 'bg-[#F7F4EE] border-[#1C1917] shadow-sm ring-1 ring-[#1C1917]'
+                          : 'bg-[#FAF8F5] border-[#E2DDD5] hover:border-[#1C1917]'
+                      } ${f.id === 'digital' ? 'sm:col-span-2' : ''}`}
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-center space-x-2.5">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${f.bgStyle} border border-[#D5D0C7] shrink-0 shadow-2xs`}>
+                            {f.id === 'digital' ? (
+                              <Printer className="w-4 h-4 text-sky-600" />
+                            ) : f.id === 'none' ? (
+                              <Maximize2 className="w-4 h-4 text-[#78716C]" />
+                            ) : (
+                              <div className="w-4 h-5 rounded-[2px] border-2 border-current flex items-center justify-center text-[7px]" style={{ color: f.previewBorderColor }}>
+                                ✦
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <span className="font-serif font-bold text-xs block text-[#1C1917]">{f.label}</span>
+                            <span className="text-[10px] text-[#A37055] font-medium">{f.sub}</span>
+                          </div>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <span className="text-xs font-bold text-[#1C1917] block">{itemPrice.formattedPrice}</span>
+                          <span className="text-[9px] text-[#A8A29E] line-through block">{itemPrice.formattedOriginalPrice}</span>
+                        </div>
+                      </div>
+
+                      <p className="text-[10px] text-[#78716C] font-light leading-snug">{f.desc}</p>
+
+                      <div className="mt-2.5 pt-2 border-t border-[#ECE7DE] flex items-center justify-between">
+                        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-white border border-[#E2DDD5] text-[#57534E]">
+                          {f.badge || 'Beschikbaar'}
+                        </span>
+                        {isSelected && (
+                          <span className="text-[10px] font-semibold text-[#1C1917] flex items-center gap-1">
+                            <Check className="w-3 h-3 text-[#1C1917]" /> Geselecteerd
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 2. Metric Sizes Only */}
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Maximize2 className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Posterformaat (Metrische Standaarden)</span>
+                  <span>Posterformaat (Metrisch)</span>
                 </label>
-                <span className="text-[10px] text-[#A37055] font-medium">300 DPI Archiefkwaliteit</span>
+                <span className="text-[10px] text-[#A37055] font-medium">
+                  {config.frameStyle === 'digital' ? 'Schaalbare 300 DPI Vector' : 'Exacte Metrische Maten'}
+                </span>
               </div>
 
+              <p className="text-[11px] text-[#78716C] font-light">
+                {config.frameStyle === 'digital'
+                  ? 'Het print-klare vector PDF bestand is schaalbaar naar elk metrisch formaat zonder kwaliteitsverlies.'
+                  : 'Standaard Europese galerijmaten, perfect passend voor lijsten en muren.'}
+              </p>
+
               <div className="grid grid-cols-2 gap-2.5">
-                {formatOptions.map((fo) => {
+                {METRIC_SIZES.map((fo) => {
                   const isSelected = config.posterSize === fo.id;
+                  const sizePrice = calculatePrice(fo.id, config.frameStyle);
                   return (
                     <button
                       key={fo.id}
@@ -1223,64 +1256,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] opacity-80 block mt-0.5">{fo.sub}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Thin Professional Picture Framing */}
-            <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Slanke Professionele Wissellijsten</span>
-                </label>
-                <span className="text-[10px] text-[#A37055] font-medium">8 mm Galerieprofiel</span>
-              </div>
-
-              <p className="text-[11px] text-[#78716C] font-light">
-                Museumkwaliteit ultra-slanke 8 mm profielen met ontspiegeld mineraalglas, vakkundig met de hand ingelijst.
-              </p>
-
-              <div className="grid grid-cols-2 gap-2.5">
-                {frames.map((f) => {
-                  const isSelected = config.frameStyle === f.id;
-                  return (
-                    <button
-                      key={f.id}
-                      type="button"
-                      onClick={() => onChange({ frameStyle: f.id })}
-                      className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
-                        isSelected
-                          ? 'bg-[#F7F4EE] border-[#1C1917] shadow-sm ring-1 ring-[#1C1917]'
-                          : 'bg-[#FAF8F5] border-[#E2DDD5] hover:border-[#1C1917]'
-                      }`}
-                    >
-                      {/* Mini Visual Frame Mockup Example */}
-                      <div className="flex items-center justify-center py-2.5 mb-2 bg-[#F0ECE1] rounded-lg">
-                        <div className={`w-11 h-15 rounded-[3px] shadow-md flex items-center justify-center transition-all ${f.borderStyle}`}>
-                          <div className={`w-full h-full flex flex-col items-center justify-center p-1 relative overflow-hidden ${f.innerBg}`}>
-                            {/* Visual art representation inside frame */}
-                            <div className="w-6 h-6 rounded-full border border-white/35 flex items-center justify-center">
-                              <span className="text-[7px] text-white/70">✦</span>
-                            </div>
-                            <div className="w-5 h-0.5 bg-white/40 mt-1 rounded-full" />
-                            <div className="w-3 h-0.5 bg-white/25 mt-0.5 rounded-full" />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-serif font-bold text-xs block text-[#1C1917]">{f.label}</span>
-                          {isSelected && (
-                            <span className="w-2 h-2 rounded-full bg-[#1C1917]" />
-                          )}
-                        </div>
-                        <span className="text-[9.5px] font-semibold text-[#A37055] block mt-0.5">{f.sub}</span>
-                        <span className="text-[9.5px] text-[#78716C] block leading-tight mt-1">{f.desc}</span>
+                      <div className="flex items-center justify-between mt-1.5">
+                        <span className="text-[10px] opacity-80 block">{fo.sub}</span>
+                        <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-[#1C1917]'}`}>
+                          {sizePrice.formattedPrice}
+                        </span>
                       </div>
                     </button>
                   );
@@ -1339,8 +1319,15 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       {/* Sticky Bottom Action Card */}
       <div className="pt-4 border-t border-[#EAE5DC] space-y-3 bg-[#FAF8F5]">
         <div className="flex items-center justify-between text-xs text-[#78716C] px-1">
-          <span>Formaat: <strong className="text-[#1C1917]">{config.posterSize.replace('x', ' × ')} cm</strong></span>
-          <span className="text-[#A37055] font-medium">300 DPI Archiefkwaliteit</span>
+          <div className="flex items-center gap-1.5 truncate mr-2">
+            <span className="font-semibold text-[#1C1917] truncate">{currentPriceDetails.typeLabel}</span>
+            <span>•</span>
+            <span className="text-[#57534E]">{config.frameStyle === 'digital' ? 'PDF 300 DPI' : `${config.posterSize.replace('x', ' × ')} cm`}</span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[11px] text-[#A8A29E] line-through">{currentPriceDetails.formattedOriginalPrice}</span>
+            <strong className="text-sm font-bold text-[#1C1917]">{currentPriceDetails.formattedPrice}</strong>
+          </div>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -1362,7 +1349,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             onClick={onOpenOrderModal}
             className="flex-[2] py-3 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 transition transform hover:-translate-y-0.5"
           >
-            <span>Bestellen & Drukken</span>
+            <span>Bestellen ({currentPriceDetails.formattedPrice})</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

@@ -9,7 +9,7 @@ export type LayoutVariation =
 
 export type DividerStyle = 'diamond' | 'star' | 'heart' | 'dot' | 'line' | 'none';
 
-export type FrameStyle = 'none' | 'black' | 'oak' | 'white';
+export type FrameStyle = 'digital' | 'none' | 'black' | 'oak' | 'white';
 
 export interface StyleOption {
   id: string;

@@ -374,9 +374,11 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
     return parts.join(' • ');
   }, [config.locationBlock, config.coordsBlock]);
 
-  // Frame styling wrapper with natural studio light shadows (thin professional gallery profiles)
+  // Frame styling wrapper with natural studio light shadows (Gelato Classic Matte Wooden Frames)
   const frameContainerStyle = useMemo(() => {
     switch (config.frameStyle) {
+      case 'digital':
+        return 'p-0 rounded-sm sm:rounded shadow-[0_20px_45px_-12px_rgba(56,189,248,0.22),0_8px_18px_-6px_rgba(28,25,23,0.1)] border border-[#BAE6FD] ring-2 ring-sky-400/25';
       case 'black':
         return 'p-0 bg-[#161514] rounded-sm sm:rounded shadow-[0_25px_60px_-15px_rgba(0,0,0,0.45),0_10px_25px_-5px_rgba(0,0,0,0.25)] border-[5px] sm:border-[7px] border-[#1C1A18] ring-1 ring-black/50';
       case 'oak':
@@ -400,18 +402,19 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
           <span className="font-serif font-bold text-[#1C1917] tracking-wide">{currentStyle.name}</span>
           <span className="text-[#A8A29E]">&bull;</span>
           <span className="text-[#78716C] font-mono text-[11px]">
-            {['20x30', '30x40', '40x50', '50x70'].includes(config.posterSize) ? `${config.posterSize} cm` : `${config.posterSize}"`}
+            {config.frameStyle === 'digital' ? 'Digitaal PDF (300 DPI)' : `${config.posterSize.replace('x', ' × ')} cm`}
           </span>
         </div>
 
-        {/* Frame Mockup Selector Buttons */}
+        {/* Frame / Fulfillment Mockup Selector Buttons */}
         {onFrameChange && (
           <div className="flex items-center bg-[#FAF8F5] p-0.5 rounded-lg border border-[#E8E4DC] text-[11px]">
             {([
-              { id: 'none', label: 'Zonder lijst', dot: 'bg-[#C5C0B7]' },
-              { id: 'black', label: 'Slank Zwart', dot: 'bg-[#1C1A18]' },
-              { id: 'oak', label: 'Slank Eiken', dot: 'bg-[#9A6B3D]' },
-              { id: 'white', label: 'Slank Wit', dot: 'bg-white border border-[#D5D0C7]' },
+              { id: 'digital', label: 'Digitaal', dot: 'bg-sky-500' },
+              { id: 'none', label: 'Alleen Print', dot: 'bg-[#C5C0B7]' },
+              { id: 'black', label: 'Zwart Hout', dot: 'bg-[#1C1A18]' },
+              { id: 'oak', label: 'Natuurlijk Hout', dot: 'bg-[#9A6B3D]' },
+              { id: 'white', label: 'Wit Hout', dot: 'bg-white border border-[#D5D0C7]' },
             ] as const).map(({ id, label, dot }) => (
               <button
                 key={id}

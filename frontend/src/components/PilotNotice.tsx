@@ -29,16 +29,16 @@ export const PilotNotice: React.FC = () => {
 
             {/* 3 Pillars of the Pilot */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-              {/* Pillar 1: Pilot Status & Registration */}
+              {/* Pillar 1: Local Sustainable Gelato Production */}
               <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#ECE7DE] space-y-2.5">
                 <div className="w-9 h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#A37055] shadow-xs">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <h3 className="font-serif font-bold text-sm text-[#1C1917]">
-                  Waarom nog geen KvK-gegevens?
+                  Lokale Gelato Productie
                 </h3>
                 <p className="text-xs text-[#57534E] font-light leading-relaxed">
-                  Onze officiële ondernemings- en handelsregisterinschrijving (KvK & BTW) bevindt zich momenteel in de laatste notariële afrondingsfase. Om de eerste klantervaringen te verzamelen, draait deze pilot exclusief en kleinschalig.
+                  Elke bestelling wordt via onze gecertificeerde partner Gelato lokaal en on-demand geproduceerd in Nederland en België. Dit garandeert snelle bezorging, minimale CO2-uitstoot en FSC® gecertificeerde lijsten.
                 </p>
               </div>
 

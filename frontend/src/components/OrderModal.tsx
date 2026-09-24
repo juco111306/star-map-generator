@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { CustomerDetails, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
+import { calculatePrice } from '../utils/pricing';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -52,10 +53,18 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
   if (!isOpen) return null;
 
+  const isDigital = config.frameStyle === 'digital';
+  const priceDetails = calculatePrice(config.posterSize, config.frameStyle);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customer.name.trim() || !customer.email.trim() || !customer.address_line1.trim()) {
-      setError('Vul alstublieft uw naam, e-mailadres en bezorgadres in.');
+    if (!customer.name.trim() || !customer.email.trim()) {
+      setError('Vul alstublieft uw naam en e-mailadres in.');
+      return;
+    }
+
+    if (!isDigital && (!customer.address_line1.trim() || !customer.city.trim() || !customer.postal_code.trim())) {
+      setError('Vul alstublieft uw volledige bezorgadres in voor PostNL / Bpost.');
       return;
     }
 
@@ -63,8 +72,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     setError(null);
 
     try {
+      const payloadCustomer = {
+        ...customer,
+        address_line1: customer.address_line1.trim() || 'Digitale Levering per E-mail',
+        city: customer.city.trim() || 'Digitaal',
+        postal_code: customer.postal_code.trim() || '0000',
+        country: customer.country || 'Nederland',
+      };
+
       const payload = {
-        customer,
+        customer: payloadCustomer,
         map_config: {
           latitude: config.latitude,
           longitude: config.longitude,
@@ -120,10 +137,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   };
 
   const frameLabels: Record<string, string> = {
-    none: 'Zonder lijst (Fine Art Kunstdruk)',
-    black: 'Slanke Matzwarte Galerielijst (8 mm)',
-    oak: 'Slanke Scandinavisch Eiken Lijst (8 mm)',
-    white: 'Slanke Galeriewitte Lijst (8 mm)',
+    digital: 'Digitaal Bestand (300 DPI Vector PDF)',
+    none: 'Classic Matte Poster (Alleen print)',
+    black: 'Gelato Zwart Houten Lijst (Classic Matte)',
+    oak: 'Gelato Natuurlijk Houten Lijst (Classic Matte)',
+    white: 'Gelato Wit Houten Lijst (Classic Matte)',
   };
 
   return (
@@ -188,12 +206,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <span className="text-[#1C1917]">{completedOrder.date_text}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Formaat & Lijst:</span>
-                <span className="text-[#1C1917]">{completedOrder.poster_size} cm • {frameLabels[completedOrder.frame_style] || 'Kunstdruk'}</span>
+                <span className="text-[#78716C]">Formaat & Uitvoering:</span>
+                <span className="text-[#1C1917]">{completedOrder.frame_style === 'digital' ? 'Digitaal Bestand' : `${completedOrder.poster_size} cm`} • {frameLabels[completedOrder.frame_style] || 'Kunstdruk'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#78716C]">Totaalbedrag:</span>
+                <span className="text-[#1C1917] font-bold">{priceDetails.formattedPrice}</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-[#F0ECE1]">
-                <span className="text-[#78716C]">Bezorging aan:</span>
-                <span className="text-[#1C1917]">{completedOrder.customer.name}, {completedOrder.customer.city}</span>
+                <span className="text-[#78716C]">{completedOrder.frame_style === 'digital' ? 'Verzonden naar:' : 'Bezorging aan:'}</span>
+                <span className="text-[#1C1917]">{completedOrder.customer.name} ({completedOrder.customer.email})</span>
               </div>
             </div>
 
@@ -244,108 +266,151 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     {config.namesBlock.text || 'Ambachtelijk Kunstwerk'}
                   </p>
                   <p className="text-[10px] text-[#A8A29E]">
-                    {config.posterSize} cm • {frameLabels[config.frameStyle]}
+                    {config.frameStyle === 'digital' ? 'Digitaal PDF (300 DPI)' : `${config.posterSize.replace('x', ' × ')} cm`} • {frameLabels[config.frameStyle]}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium block mb-0.5">
-                  Drukrijp (300 DPI)
+                  {config.frameStyle === 'digital' ? 'Direct digitaal (PDF)' : 'Gelato Productie'}
                 </span>
-                <span className="text-xs font-bold text-[#1C1917]">€49,00</span>
+                <div className="flex items-center justify-end gap-1.5">
+                  <span className="text-[10px] text-[#A8A29E] line-through">{priceDetails.formattedOriginalPrice}</span>
+                  <span className="text-xs font-bold text-[#1C1917]">{priceDetails.formattedPrice}</span>
+                </div>
               </div>
             </div>
 
-            {/* Customer & Recipient Shipping Fields */}
-            <div className="space-y-3">
-              <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                1. Gegevens van de Ontvanger & Bezorgadres
-              </span>
+            {/* Customer & Shipping / Delivery Fields */}
+            {isDigital ? (
+              <div className="space-y-3">
+                <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl text-xs text-sky-900 flex items-center gap-2">
+                  <Download className="w-4 h-4 text-sky-600 shrink-0" />
+                  <span>
+                    <strong>Digitale Editie:</strong> Uw 300 DPI drukklare vector PDF wordt direct gegenereerd en verzonden naar het onderstaande e-mailadres. Geen verzendkosten.
+                  </span>
+                </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
+                  1. Contactgegevens voor Digitale Toezending
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Volledige Naam *</label>
+                    <input
+                      type="text"
+                      required
+                      value={customer.name}
+                      onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+                      placeholder="bijv. Emma van der Meer"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">E-mailadres voor PDF *</label>
+                    <input
+                      type="email"
+                      required
+                      value={customer.email}
+                      onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                      placeholder="emma@voorbeeld.nl"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
+                  1. Gegevens van de Ontvanger & Bezorgadres (Gelato Partner)
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Volledige Naam *</label>
+                    <input
+                      type="text"
+                      required
+                      value={customer.name}
+                      onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+                      placeholder="bijv. Emma van der Meer"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">E-mailadres voor updates *</label>
+                    <input
+                      type="email"
+                      required
+                      value={customer.email}
+                      onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                      placeholder="emma@voorbeeld.nl"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Volledige Naam *</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Straatnaam & Huisnummer *</label>
                   <input
                     type="text"
                     required
-                    value={customer.name}
-                    onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                    placeholder="bijv. Emma van der Meer"
+                    value={customer.address_line1}
+                    onChange={(e) => setCustomer({ ...customer, address_line1: e.target.value })}
+                    placeholder="bijv. Keizersgracht 142"
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
-                <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">E-mailadres voor updates *</label>
-                  <input
-                    type="email"
-                    required
-                    value={customer.email}
-                    onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                    placeholder="emma@voorbeeld.nl"
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
-                  />
-                </div>
-              </div>
 
-              <div>
-                <label className="text-[11px] text-[#57534E] font-medium block mb-1">Straatnaam & Huisnummer *</label>
-                <input
-                  type="text"
-                  required
-                  value={customer.address_line1}
-                  onChange={(e) => setCustomer({ ...customer, address_line1: e.target.value })}
-                  placeholder="bijv. Keizersgracht 142"
-                  className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
-                />
-              </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Plaats *</label>
+                    <input
+                      type="text"
+                      required
+                      value={customer.city}
+                      onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
+                      placeholder="Amsterdam"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Provincie</label>
+                    <input
+                      type="text"
+                      value={customer.state}
+                      onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
+                      placeholder="Noord-Holland"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Postcode *</label>
+                    <input
+                      type="text"
+                      required
+                      value={customer.postal_code}
+                      onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
+                      placeholder="1015 CJ"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    />
+                  </div>
+                </div>
 
-              <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Plaats *</label>
-                  <input
-                    type="text"
-                    required
-                    value={customer.city}
-                    onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
-                    placeholder="Amsterdam"
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Provincie</label>
-                  <input
-                    type="text"
-                    value={customer.state}
-                    onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
-                    placeholder="Noord-Holland"
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Postcode *</label>
-                  <input
-                    type="text"
-                    required
-                    value={customer.postal_code}
-                    onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
-                    placeholder="1015 CJ"
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
-                  />
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Land *</label>
+                  <select
+                    value={customer.country}
+                    onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
+                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                  >
+                    <option value="Nederland">Nederland (PostNL Tracked)</option>
+                    <option value="België">België (Bpost Tracked)</option>
+                  </select>
                 </div>
               </div>
-
-              <div>
-                <label className="text-[11px] text-[#57534E] font-medium block mb-1">Land *</label>
-                <select
-                  value={customer.country}
-                  onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
-                  className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
-                >
-                  <option value="Nederland">Nederland (PostNL Tracked)</option>
-                  <option value="België">België (Bpost Tracked)</option>
-                </select>
-              </div>
-            </div>
+            )}
 
             {/* Optional Gift Message & Print Workshop Instructions */}
             <div className="space-y-3 pt-2 border-t border-[#E8E4DC]">
@@ -374,7 +439,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     rows={2}
                     value={customer.producer_notes}
                     onChange={(e) => setCustomer({ ...customer, producer_notes: e.target.value })}
-                    placeholder="bijv. Zwaar 285 g/m² katoenpapier, extra zorgvuldig centreren."
+                    placeholder="bijv. Classic Matte papier, extra zorgvuldig centreren."
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                   />
                 </div>
@@ -384,7 +449,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">
               <span className="text-[11px] text-[#78716C]">
-                Pilot testbestelling • Direct naar atelier productiewachtrij
+                {isDigital ? 'Digitale instant levering' : 'Productie via partner Gelato • PostNL / Bpost'}
               </span>
 
               <div className="flex items-center space-x-2">
@@ -409,7 +474,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   ) : (
                     <>
                       <Printer className="w-3.5 h-3.5" />
-                      <span>Bestelling Indienen bij Atelier</span>
+                      <span>Bestelling Plaatsen ({priceDetails.formattedPrice})</span>
                     </>
                   )}
                 </button>

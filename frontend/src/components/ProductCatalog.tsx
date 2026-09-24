@@ -413,8 +413,8 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         {meta.title}
                       </h3>
                       <div className="text-right shrink-0 ml-1">
-                        <span className="text-[10px] text-[#A8A29E] line-through mr-1">€68</span>
-                        <span className="text-xs font-bold text-[#1C1917]">€49</span>
+                        <span className="text-[10px] text-[#A8A29E] line-through mr-1">€29</span>
+                        <span className="text-xs font-bold text-[#1C1917]">vanaf €19</span>
                       </div>
                     </div>
                     <p className="text-[10.5px] font-semibold text-[#A37055] truncate">
@@ -446,11 +446,11 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>285 gsm archiefwaardig katoenpapier</span>
+            <span>Classic Matte 200 gsm archiefpapier</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Slanke 8 mm wissellijsten met mineraalglas</span>
+            <span>Gelato massief houten wissellijsten</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
