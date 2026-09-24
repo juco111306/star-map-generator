@@ -159,18 +159,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             <X className="w-4 h-4" />
           </button>
         </div>
-<div className="p-6">
-          <Elements
-            stripe={stripePromise}
-            options={{
-              mode: "payment",
-              amount: convertToSubcurrency(49.99),
-              currency: "usd",
-            }}
-          >
-            <CheckoutPage amount={49.99} />
-          </Elements>
-        </div>
+
         {/* Content Body */}
         {completedOrder ? (
           /* Order Confirmation View */
