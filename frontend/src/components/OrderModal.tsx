@@ -139,8 +139,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         <div className="px-6 py-4 bg-[#F5F2EB] border-b border-[#E8E4DC] flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-9 h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#1C1917] shadow-sm">
-              <Printer className="w-4 h-4" />
-            </div>
+  <Printer className="w-4 h-4" />
+</div>
+            
             <div>
               <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
                 Verzend naar Drukkerij Atelier
