@@ -11,24 +11,20 @@ export async function POST(req: Request) {
     formData.append('mode', 'payment');
     formData.append('customer_email', email);
 
-    // Product details in Euros
     formData.append('line_items[0][price_data][currency]', 'eur');
     formData.append('line_items[0][price_data][product_data][name]', 'Gepersonaliseerde Sterrenposter');
     formData.append('line_items[0][price_data][unit_amount]', (amount * 100).toString());
-    formData.append('line_items[0][quantity]', '1');
+    formData.append('line_items0][quantity]', '1');
 
-    // Trusted Dutch & Belgian payment options
     formData.append('payment_method_types[0]', 'ideal');
     formData.append('payment_method_types[1]', 'bancontact');
     formData.append('payment_method_types[2]', 'card');
 
-    // We use the public publishable key so you never need to worry about secret key permissions!
-    const publishableKey = 'pk_live_...bUKPgf6r'; // Wait, let's use process.env instead
-
+    // Direct hardcoded token to bypass any Vercel env variable bugs
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer rk_live_51UJ...`, // Let's use the token safely via client
+        Authorization: `Bearer rk_live_51UJ9XaBVz1Pas2hpvXo8h5rJvWdDE`, // Your exact key from the screenshot
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
