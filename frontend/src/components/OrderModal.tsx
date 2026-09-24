@@ -19,7 +19,15 @@ import {
 import { CustomerDetails, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
 import { calculatePrice } from '../utils/pricing';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import CheckoutPage from "./CheckoutPage";
+import convertToSubcurrency from "../utils/convertToSubcurrency";
 
+if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
+  throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
+}
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 interface OrderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -132,7 +140,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           <div className="flex items-center space-x-3">
             <div className="w-9 h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#1C1917] shadow-sm">
               <Printer className="w-4 h-4" />
-            </div>
+            </div
             <div>
               <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
                 Verzend naar Drukkerij Atelier
@@ -150,7 +158,18 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             <X className="w-4 h-4" />
           </button>
         </div>
-
+<div className="p-6">
+          <Elements
+            stripe={stripePromise}
+            options={{
+              mode: "payment",
+              amount: convertToSubcurrency(49.99),
+              currency: "usd",
+            }}
+          >
+            <CheckoutPage amount={49.99} />
+          </Elements>
+        </div>
         {/* Content Body */}
         {completedOrder ? (
           /* Order Confirmation View */
