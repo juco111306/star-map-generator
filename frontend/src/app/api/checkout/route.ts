@@ -14,17 +14,16 @@ export async function POST(req: Request) {
     formData.append('line_items[0][price_data][currency]', 'eur');
     formData.append('line_items[0][price_data][product_data][name]', 'Gepersonaliseerde Sterrenposter');
     formData.append('line_items[0][price_data][unit_amount]', (amount * 100).toString());
-    formData.append('line_items0][quantity]', '1');
+    formData.append('line_items[0][quantity]', '1');
 
     formData.append('payment_method_types[0]', 'ideal');
     formData.append('payment_method_types[1]', 'bancontact');
     formData.append('payment_method_types[2]', 'card');
 
-    // Direct hardcoded token to bypass any Vercel env variable bugs
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer rk_live_51UJ9XaBVz1Pas2hpvXo8h5rJvWdDE`, // Your exact key from the screenshot
+        Authorization: `Bearer rk_live_51UJ9XaBVz1Pas2hpvXo8h5rJvWdDE`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),
