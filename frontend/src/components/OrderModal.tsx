@@ -58,11 +58,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!customer.name.trim() || !customer.email.trim()) {
       setError('Vul alstublieft uw naam en e-mailadres in.');
       return;
     }
-
     if (!isDigital && (!customer.address_line1.trim() || !customer.city.trim() || !customer.postal_code.trim())) {
       setError('Vul alstublieft uw volledige bezorgadres in voor PostNL / Bpost.');
       return;
@@ -105,6 +105,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         },
       };
 
+      // 1. Save the order to your backend so the PDF gets generated
       const res = await apiFetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -115,22 +116,35 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         const errText = await res.text();
         throw new Error(errText || 'Het versturen van de bestelling is mislukt');
       }
-
       const orderData: OrderRecord = await res.json();
-      setCompletedOrder(orderData);
-      onOrderSuccess(orderData);
 
-      // Trigger celebration confetti
-      try {
-        confetti({
-          particleCount: 110,
-          spread: 80,
-          origin: { y: 0.6 },
-        });
-      } catch {}
+      // 2. Calculate price (29 for physical, 19 for digital)
+      const amount = config.frameStyle === 'digital' ? 19 : 29;
+
+      // 3. Ping the new Paystack route!
+      const checkoutRes = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: payloadCustomer.email,
+          amount: amount,
+          shippingDetails: payloadCustomer,
+          designUrl: `https://star-map-generator-iota.vercel.app/api/orders/${orderData.order_id}/pdf`
+        })
+      });
+
+      const checkoutData = await checkoutRes.json();
+      
+      // 4. Redirect the user to the secure payment page
+      if (checkoutData.checkoutUrl) {
+        window.location.href = checkoutData.checkoutUrl;
+      } else {
+        throw new Error('Fout bij het aanmaken van de betaling');
+      }
+
     } catch (err: any) {
       console.error('Order creation error:', err);
-      setError(err.message || 'Fout bij het verzenden van de bestelling naar het atelier');
+      setError(err.message || 'Fout bij het verzenden van de bestelling');
     } finally {
       setIsSubmitting(false);
     }
