@@ -56,7 +56,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   const isDigital = config.frameStyle === 'digital';
   const priceDetails = calculatePrice(config.posterSize, config.frameStyle);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+ const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!customer.name.trim() || !customer.email.trim()) {
@@ -80,48 +80,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         country: customer.country || 'Nederland',
       };
 
-      const payload = {
-        customer: payloadCustomer,
-        map_config: {
-          latitude: config.latitude,
-          longitude: config.longitude,
-          date: config.date,
-          time: config.time,
-          date_time: `${config.date}T${config.time || '21:00'}:00Z`,
-          poster_size: config.posterSize,
-          style_id: config.styleId,
-          frame_style: config.frameStyle,
-          titleBlock: config.titleBlock,
-          namesBlock: config.namesBlock,
-          taglineBlock: config.taglineBlock,
-          dateBlock: config.dateBlock,
-          locationBlock: config.locationBlock,
-          coordsBlock: config.coordsBlock,
-          show_matted_border: config.showMattedBorder,
-          show_celestial_grid: config.showCelestialGrid,
-          show_constellation_lines: config.showConstellationLines,
-          show_milky_way: config.showMilkyWay,
-          divider_style: config.dividerStyle,
-        },
-      };
-
-      // 1. Save the order to your backend so the PDF gets generated
-      const res = await apiFetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || 'Het versturen van de bestelling is mislukt');
-      }
-      const orderData: OrderRecord = await res.json();
-
-      // 2. Calculate price (29 for physical, 19 for digital)
+      // 1. Calculate price (29 for physical, 19 for digital)
       const amount = config.frameStyle === 'digital' ? 19 : 29;
 
-      // 3. Ping the new Paystack route!
+      // 2. Ping the new Paystack route directly!
       const checkoutRes = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -129,13 +91,17 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           email: payloadCustomer.email,
           amount: amount,
           shippingDetails: payloadCustomer,
-          designUrl: `https://star-map-generator-iota.vercel.app/api/orders/${orderData.order_id}/pdf`
+          designUrl: `https://star-map-generator-iota.vercel.app/placeholder.pdf`
         })
       });
 
+      if (!checkoutRes.ok) {
+        throw new Error('Kon geen verbinding maken met de kassa.');
+      }
+
       const checkoutData = await checkoutRes.json();
       
-      // 4. Redirect the user to the secure payment page
+      // 3. Redirect the user to the secure payment page
       if (checkoutData.checkoutUrl) {
         window.location.href = checkoutData.checkoutUrl;
       } else {
