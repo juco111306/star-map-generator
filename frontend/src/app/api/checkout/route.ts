@@ -1,44 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, amount, shippingDetails, designUrl } = body;
+    const { amount } = await request.json();
 
-    const formData = new URLSearchParams();
-    formData.append('success_url', 'https://star-map-generator-iota.vercel.app/?success=true');
-    formData.append('cancel_url', 'https://star-map-generator-iota.vercel.app/');
-    formData.append('mode', 'payment');
-    formData.append('customer_email', email || 'customer@stellaireatelier.com');
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: "eur", // Set to eur based on your currency preference
+      automatic_payment_methods: { enabled: true },
+    });
 
-    formData.append('line_items[0][price_data][currency]', 'eur');
-    formData.append('line_items[0][price_data][product_data][name]', 'Gepersonaliseerde Sterrenposter');
-    formData.append('line_items[0][price_data][unit_amount]', Math.round((amount || 59) * 100).toString());
-    formData.append('line_items[0][quantity]', '1');
-
-    formData.append('payment_method_types[0]', 'ideal');
-    formData.append('payment_method_types[1]', 'bancontact');
-    formData.append('payment_method_types[2]', 'card');
-
-    const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-  method: 'POST',
-  headers: {
-    Authorization: `Bearer ${process.env.STRIPE_RESTRICTED_KEY}`,
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-  body: formData.toString(),
-});
-
-    const stripeData = await stripeRes.json();
-
-    if (stripeData.url) {
-      return NextResponse.json({ checkoutUrl: stripeData.url });
-    } else {
-      console.error('Stripe error:', stripeData);
-      return NextResponse.json({ error: stripeData.error?.message || 'Stripe initialization failed' }, { status: 400 });
-    }
+    return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
-    console.error('Checkout error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Internal Error:", error);
+    return NextResponse.json(
+      { error: `Internal Server Error: ${error}` },
+      { status: 500 }
+    );
   }
 }
