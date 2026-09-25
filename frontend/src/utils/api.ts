@@ -15,6 +15,6 @@ export async function apiFetch(path: string, init?: RequestInit): Promise<Respon
   }
 
   // Fallback direct to FastAPI backend
-  const backendBase = 'http://127.0.0.1:8000';
+  const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
   return fetch(`${backendBase}${cleanPath}`, init);
 }
