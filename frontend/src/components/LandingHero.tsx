@@ -214,7 +214,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 </h3>
                 <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
                   <MapPin className="w-3 h-3 text-[#A37055]" />
-                  <span>Amsterdam • Inclusief Gelato Natuurlijk Houten Lijst</span>
+                  <span>Amsterdam • Inclusief Gelato Natuurlijk Houten Lijst (Licht Hout)</span>
                 </p>
               </div>
               <div className="text-right">
