@@ -393,15 +393,15 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 className="group bg-white rounded-3xl p-3.5 sm:p-4 border border-[#E2DDD5] shadow-[0_8px_25px_rgba(28,25,23,0.04)] hover:shadow-[0_18px_40px_rgba(28,25,23,0.12)] hover:border-[#C8BFB0] transition-all duration-300 cursor-pointer flex flex-col justify-between"
               >
                 <div className="space-y-3.5">
-                  {/* Exact Archival Poster Art Presentation (Gallery Frame Mockup) */}
-                  <div className="relative aspect-[300/420] rounded-2xl overflow-hidden bg-[#FAF8F5] p-2 border border-[#E8E4DC] shadow-sm transition-transform duration-500 group-hover:scale-[1.02]">
+                  {/* Gelato Light Wood Frame Mockup - Thin & Sharp 90° Edges, No White Borders */}
+                  <div className="relative aspect-[300/420] rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[6px] sm:p-[7px] shadow-[0_10px_25px_-5px_rgba(40,25,10,0.18)] ring-1 ring-[#C8B28E]/60 transition-transform duration-500 group-hover:scale-[1.02]">
                     {/* Badge */}
-                    <span className="absolute top-3.5 left-3.5 z-10 px-2 py-0.5 rounded-full text-[8.5px] font-bold tracking-wider uppercase bg-white/95 text-[#1C1917] shadow-sm border border-black/5">
+                    <span className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-none text-[8.5px] font-bold tracking-wider uppercase bg-white/95 text-[#1C1917] shadow-xs border border-black/10">
                       {meta.tag}
                     </span>
 
-                    {/* The Exact Vector Poster Art */}
-                    <div className="w-full h-full rounded-xl overflow-hidden shadow-md">
+                    {/* The Exact Vector Poster Art - Flush Fit with Wooden Frame */}
+                    <div className="w-full h-full rounded-none overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.3)]">
                       {renderExactPosterSVG(style.id)}
                     </div>
                   </div>

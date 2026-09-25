@@ -82,16 +82,14 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
               {/* Soft warm shadow */}
               <div className="absolute -inset-2 rounded-[32px] bg-[#E8E1D3]/50 blur-xl opacity-80" />
 
-              {/* Sleek Natural Wood Frame (Gelato Natural Oak Style) */}
-              <div className="relative rounded-[12px] bg-gradient-to-br from-[#BA8E5E] via-[#A87A4A] to-[#8C5E32] p-[10px] sm:p-[13px] shadow-[0_30px_70px_-15px_rgba(75,45,15,0.38),0_15px_30px_-8px_rgba(50,30,10,0.22)] ring-1 ring-[#734A24]/40 group-hover:shadow-[0_35px_80px_-12px_rgba(75,45,15,0.46)] transition-all duration-300">
-                {/* Inner Bevel & Fine Matting Rim */}
-                <div className="relative rounded-[4px] overflow-hidden bg-[#FAF8F5] p-2 sm:p-2.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.25),inset_0_-1px_2px_rgba(255,255,255,0.4)]">
-                  {/* Artwork Thumbnail with exact studio proportions */}
-                  <div
-                    onClick={() => onNavigate('customizer')}
-                    className="relative rounded-none overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer shadow-sm border border-[#E5E0D6]/80 group-hover:border-[#C4BAA9] transition-all"
-                  >
-                    <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+              {/* Gelato Natural Wood Frame (Light Wood) - Thin & Sharp 90° Edges */}
+              <div className="relative rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[8px] sm:p-[10px] shadow-[0_24px_55px_-12px_rgba(40,25,10,0.24),0_8px_20px_-4px_rgba(40,25,10,0.12)] ring-1 ring-[#C8B28E]/60 group-hover:shadow-[0_30px_65px_-10px_rgba(40,25,10,0.3)] transition-all duration-300">
+                {/* Artwork Thumbnail - Perfectly Flush Fit with Wooden Frame (No White Borders) */}
+                <div
+                  onClick={() => onNavigate('customizer')}
+                  className="relative rounded-none overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer shadow-[inset_0_1px_3px_rgba(0,0,0,0.35)]"
+                >
+                  <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
                     <defs>
                       <clipPath id="hero-celestial-mask">
                         <circle cx="500" cy="480" r="399" />
@@ -207,7 +205,6 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                   </div>
                 </div>
               </div>
-            </div>
 
             {/* Card Information */}
             <div className="pt-3.5 px-1 flex items-center justify-between">

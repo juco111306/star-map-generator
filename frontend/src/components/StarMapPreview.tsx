@@ -429,16 +429,16 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   const frameContainerStyle = useMemo(() => {
     switch (config.frameStyle) {
       case 'digital':
-        return 'p-0 rounded-sm sm:rounded shadow-[0_20px_45px_-12px_rgba(56,189,248,0.22),0_8px_18px_-6px_rgba(28,25,23,0.1)] border border-[#BAE6FD] ring-2 ring-sky-400/25';
+        return 'p-0 rounded-none shadow-[0_20px_45px_-12px_rgba(56,189,248,0.22),0_8px_18px_-6px_rgba(28,25,23,0.1)] border border-[#BAE6FD] ring-2 ring-sky-400/25';
       case 'black':
-        return 'p-0 bg-[#161514] rounded-sm sm:rounded shadow-[0_25px_60px_-15px_rgba(0,0,0,0.45),0_10px_25px_-5px_rgba(0,0,0,0.25)] border-[5px] sm:border-[7px] border-[#1C1A18] ring-1 ring-black/50';
+        return 'p-0 bg-[#161514] rounded-none shadow-[0_25px_60px_-15px_rgba(0,0,0,0.45),0_10px_25px_-5px_rgba(0,0,0,0.25)] border-[6px] sm:border-[8px] border-[#1C1A18] ring-1 ring-black/50';
       case 'oak':
-        return 'p-0 bg-gradient-to-br from-[#BA8E5E] via-[#A87A4A] to-[#8C5E32] rounded-sm sm:rounded shadow-[0_28px_65px_-15px_rgba(75,45,15,0.4),0_12px_26px_-6px_rgba(50,30,10,0.22)] border-[6px] sm:border-[8px] border-[#9E6C3B] ring-1 ring-[#6E421B]/40';
+        return 'p-0 bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] rounded-none shadow-[0_25px_60px_-12px_rgba(40,25,10,0.24),0_10px_22px_-5px_rgba(40,25,10,0.14)] border-[6px] sm:border-[8px] border-[#DFC9A6] ring-1 ring-[#C8B28E]/60';
       case 'white':
-        return 'p-0 bg-[#FFFFFF] rounded-sm sm:rounded shadow-[0_25px_60px_-15px_rgba(28,25,23,0.25),0_10px_25px_-5px_rgba(28,25,23,0.12)] border-[5px] sm:border-[7px] border-[#FAF8F5] ring-1 ring-[#D8D4CC]';
+        return 'p-0 bg-[#FFFFFF] rounded-none shadow-[0_25px_60px_-15px_rgba(28,25,23,0.25),0_10px_25px_-5px_rgba(28,25,23,0.12)] border-[6px] sm:border-[8px] border-[#FAF8F5] ring-1 ring-[#D8D4CC]';
       case 'none':
       default:
-        return 'p-0 rounded-sm sm:rounded shadow-[0_20px_45px_-12px_rgba(28,25,23,0.22),0_8px_18px_-6px_rgba(28,25,23,0.1)] border border-[#E7E2D9]';
+        return 'p-0 rounded-none shadow-[0_20px_45px_-12px_rgba(28,25,23,0.22),0_8px_18px_-6px_rgba(28,25,23,0.1)] border border-[#E7E2D9]';
     }
   }, [config.frameStyle]);
 
