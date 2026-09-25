@@ -142,30 +142,6 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   </svg>
                 )}
 
-                {/* 5. Border Text Miniature Artwork */}
-                {style.id === 'border_text' && (
-                  <svg className="w-20 h-20" viewBox="0 0 100 100">
-                    <defs>
-                      <path id="preview-arc" d="M 16 50 A 34 34 0 0 1 84 50" fill="none" />
-                    </defs>
-                    <circle cx="50" cy="50" r="40" fill="#070D1F" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
-                    <circle cx="50" cy="50" r="34" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="0.6" strokeDasharray="1.5 1.5" />
-                    {/* Arched typography perimeter */}
-                    <text fill="#FFFFFF" fontSize="5.2" fontWeight="600" letterSpacing="1.2">
-                      <textPath href="#preview-arc" startOffset="50%" textAnchor="middle">
-                        THE NIGHT WE MET
-                      </textPath>
-                    </text>
-                    {/* Stars inside */}
-                    <line x1="38" y1="56" x2="52" y2="52" stroke="rgba(255,255,255,0.35)" strokeWidth="0.8" />
-                    <line x1="52" y1="52" x2="64" y2="60" stroke="rgba(255,255,255,0.35)" strokeWidth="0.8" />
-                    <circle cx="38" cy="56" r="1.6" fill="#FFFFFF" />
-                    <circle cx="52" cy="52" r="2.0" fill="#FFFFFF" />
-                    <circle cx="64" cy="60" r="1.7" fill="#FFFFFF" />
-                    <circle cx="50" cy="66" r="1.0" fill="#FFFFFF" opacity="0.7" />
-                  </svg>
-                )}
-
                 {/* Active checkmark badge */}
                 {isSelected && (
                   <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white text-[#1C1917] flex items-center justify-center shadow-md">

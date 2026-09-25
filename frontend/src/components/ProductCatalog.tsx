@@ -45,12 +45,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
       desc: 'Rijke bordeauxrode tinten die liefde en warmte uitstralen, afgewerkt met zachte parelwitte typografie.',
       tag: 'ROMANTISCH',
     },
-    border_text: {
-      title: 'Border Text',
-      subtitle: 'Gebogen Randschrift',
-      desc: 'Strakke moderne kunststijl waarbij jouw persoonlijke titel sierlijk rond de sterrencirkel buigt.',
-      tag: 'KLASSIEK',
-    },
   };
 
   const handleCardClick = (styleId: string) => {
@@ -61,51 +55,69 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     }
   };
 
-  // Helper to render authentic starfield inside poster sphere
+  // Helper to render authentic starfield inside poster sphere with rotation for distinct astronomical sky per style
   const renderCelestialSky = (
     maskId: string,
     bgFill: string,
     starColor: string,
     lineColor: string,
     radius: number = 400,
+    rotationDeg: number = 0,
     nebula?: React.ReactNode
-  ) => (
-    <>
-      <defs>
-        <clipPath id={maskId}>
-          <circle cx="500" cy="480" r={radius - 1} />
-        </clipPath>
-      </defs>
-      <g clipPath={`url(#${maskId})`}>
-        <circle cx="500" cy="480" r={radius} fill={bgFill} />
-        {nebula}
-        {SAMPLE_CONSTELLATION_LINES.map((line, idx) => (
-          <line
-            key={idx}
-            x1={500 + line.x1 * radius}
-            y1={480 - line.y1 * radius}
-            x2={500 + line.x2 * radius}
-            y2={480 - line.y2 * radius}
-            stroke={lineColor}
-            strokeWidth="0.85"
-            strokeLinecap="round"
-          />
-        ))}
-        {SAMPLE_STARS.map((s, idx) => (
-          <circle
-            key={idx}
-            cx={500 + s.x * radius}
-            cy={480 - s.y * radius}
-            r={s.r}
-            fill={starColor}
-            opacity={s.bright ? 1.0 : 0.85}
-          />
-        ))}
-      </g>
-    </>
-  );
+  ) => {
+    const rad = (rotationDeg * Math.PI) / 180;
+    const cosR = Math.cos(rad);
+    const sinR = Math.sin(rad);
+
+    return (
+      <>
+        <defs>
+          <clipPath id={maskId}>
+            <circle cx="500" cy="480" r={radius - 1} />
+          </clipPath>
+        </defs>
+        <g clipPath={`url(#${maskId})`}>
+          <circle cx="500" cy="480" r={radius} fill={bgFill} />
+          {nebula}
+          {SAMPLE_CONSTELLATION_LINES.map((line, idx) => {
+            const x1r = line.x1 * cosR - line.y1 * sinR;
+            const y1r = line.x1 * sinR + line.y1 * cosR;
+            const x2r = line.x2 * cosR - line.y2 * sinR;
+            const y2r = line.x2 * sinR + line.y2 * cosR;
+            return (
+              <line
+                key={idx}
+                x1={500 + x1r * radius}
+                y1={480 - y1r * radius}
+                x2={500 + x2r * radius}
+                y2={480 - y2r * radius}
+                stroke={lineColor}
+                strokeWidth="0.9"
+                strokeLinecap="round"
+              />
+            );
+          })}
+          {SAMPLE_STARS.map((s, idx) => {
+            const xr = s.x * cosR - s.y * sinR;
+            const yr = s.x * sinR + s.y * cosR;
+            return (
+              <circle
+                key={idx}
+                cx={500 + xr * radius}
+                cy={480 - yr * radius}
+                r={s.r}
+                fill={starColor}
+                opacity={s.bright ? 1.0 : 0.85}
+              />
+            );
+          })}
+        </g>
+      </>
+    );
+  };
 
   // Render the exact, authentic miniature vector poster for each style matching studio proportions
+  // Each card showcases a unique milestone, distinctive constellation sky, names, and Dutch/Belgian location
   const renderExactPosterSVG = (styleId: string) => {
     switch (styleId) {
       case 'midnight_classic':
@@ -115,13 +127,14 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect width="1000" height="1400" fill="#0B132B" />
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
-            {/* Dense Authentic Celestial Starfield */}
+            {/* Dense Authentic Celestial Starfield (Summer Triangle / Cygnus Sky - 0° orientation) */}
             {renderCelestialSky(
               'cat-sky-midnight',
               '#070D1F',
               '#FFFFFF',
               'rgba(255,255,255,0.42)',
               400,
+              0,
               <ellipse cx="485" cy="470" rx="300" ry="180" fill="rgba(255,255,255,0.075)" transform="rotate(-25 485 470)" />
             )}
 
@@ -141,12 +154,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
             <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
 
-            {/* Exact Proportioned Typography Stack */}
+            {/* Example 1: Romantic First Meeting in Amsterdam */}
             <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
               THE NIGHT WE MET
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Emma &amp; Daan
+              Emma &amp; Lucas
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
@@ -154,7 +167,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              22 SEPTEMBER 2026
+              14 JUNI 2024
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
               AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
@@ -174,29 +187,30 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               </radialGradient>
             </defs>
 
-            {/* Matted Gallery Light Background */}
+            {/* Matted Gallery Light Linen Background */}
             <rect width="1000" height="1400" fill="#F5F7F6" />
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(12,75,86,0.22)" strokeWidth="1.5" />
 
-            {/* Swirling Teal Watercolor Celestial Disk */}
+            {/* Swirling Teal Watercolor Celestial Disk (Spring Sky / Ursa Major - 95° orientation) */}
             {renderCelestialSky(
               'cat-sky-teal',
               'url(#cat-teal-nebula-hq)',
               '#FFFFFF',
               'rgba(255,255,255,0.55)',
               400,
+              95,
               <ellipse cx="485" cy="470" rx="260" ry="150" fill="rgba(255,255,255,0.12)" transform="rotate(-20 485 470)" />
             )}
 
             <circle cx="500" cy="480" r="400" fill="none" stroke="#0C4B56" strokeWidth="3.5" />
             <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="1.5" strokeDasharray="8 6" />
 
-            {/* Exact Inscription in Deep Teal */}
+            {/* Example 2: Birth of a Child in Utrecht */}
             <text x="500" y="955" textAnchor="middle" fill="#083B44" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              THE NIGHT WE MET
+              TOEN EEN STER WERD GEBOREN
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="#1A5A66" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Emma &amp; Daan
+              Liam Noah
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
@@ -204,10 +218,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="#1A5A66" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              22 SEPTEMBER 2026
+              08 MEI 2025
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="#3B7580" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
+              UTRECHT, NEDERLAND • 52.0907° N • 5.1214° E
             </text>
           </svg>
         );
@@ -219,13 +233,14 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect width="1000" height="1400" fill="#081C15" />
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="1.5" />
 
-            {/* Inner Forest Sphere with Gold Stars */}
+            {/* Inner Forest Sphere with Gold Stars (Autumn Sky / Cassiopeia & Pegasus - 190° orientation) */}
             {renderCelestialSky(
               'cat-sky-emerald',
               '#04110C',
               '#D4AF37',
               'rgba(212,175,55,0.48)',
-              400
+              400,
+              190
             )}
 
             <circle cx="500" cy="480" r="400" fill="none" stroke="#D4AF37" strokeWidth="3.5" />
@@ -243,12 +258,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <text x="75" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
             <text x="925" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
 
-            {/* Exact Inscription in Gold */}
+            {/* Example 3: Wedding Day in Antwerpen */}
             <text x="500" y="955" textAnchor="middle" fill="#D4AF37" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              THE NIGHT WE MET
+              DE DAG DAT WE &apos;JA&apos; ZEIDEN
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="#F3E5AB" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Emma &amp; Daan
+              Sophie &amp; Thomas
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
@@ -256,10 +271,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="#F3E5AB" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              22 SEPTEMBER 2026
+              18 SEPTEMBER 2023
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="#C9B06B" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
+              ANTWERPEN, BELGIË • 51.2194° N • 4.4025° E
             </text>
           </svg>
         );
@@ -271,85 +286,37 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <rect width="1000" height="1400" fill="#38070E" />
             <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,235,238,0.22)" strokeWidth="1.5" />
 
-            {/* Deep Bordeaux Celestial Disk */}
+            {/* Deep Bordeaux Celestial Disk (Winter Sky / Orion & Sirius - 280° orientation) */}
             {renderCelestialSky(
               'cat-sky-burgundy',
               '#240308',
               '#FFFFFF',
               'rgba(255,235,238,0.45)',
-              400
+              400,
+              280
             )}
 
             <circle cx="500" cy="480" r="400" fill="none" stroke="rgba(255,235,238,0.45)" strokeWidth="3" />
             <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,235,238,0.25)" strokeWidth="1.5" strokeDasharray="8 6" />
             <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255,235,238,0.15)" strokeWidth="1" />
 
-            {/* Exact Inscription in Rose / Champagne */}
+            {/* Example 4: Anniversary / Under The Same Stars in Rotterdam */}
             <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              THE NIGHT WE MET
+              ONDER DEZELFDE STERREN
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="#F7D6DA" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Emma &amp; Daan
+              Mila &amp; Daan
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
-              <text x="500" y="1094" textAnchor="middle" fill="rgba(255,235,238,0.7)" fontSize="20">✦</text>
+              <text x="500" y="1094" textAnchor="middle" fill="#F7D6DA" fontSize="20">♥</text>
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="#F7D6DA" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              22 SEPTEMBER 2026
+              31 DECEMBER 2022
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="#D6A6AD" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
-            </text>
-          </svg>
-        );
-
-      case 'border_text':
-        return (
-          <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <path id="cat-border-arc-hq" d="M 78 480 A 422 422 0 0 1 922 480" fill="none" />
-            </defs>
-
-            {/* Deep Navy Canvas */}
-            <rect width="1000" height="1400" fill="#0B132B" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
-
-            {/* Celestial Sphere with Dense Starfield */}
-            {renderCelestialSky(
-              'cat-sky-border',
-              '#070D1F',
-              '#FFFFFF',
-              'rgba(255,255,255,0.42)',
-              390,
-              <ellipse cx="485" cy="470" rx="280" ry="160" fill="rgba(255,255,255,0.07)" transform="rotate(-25 485 470)" />
-            )}
-
-            <circle cx="500" cy="480" r="390" fill="none" stroke="rgba(255, 255, 255, 0.45)" strokeWidth="3" />
-            <circle cx="500" cy="480" r="362" fill="none" stroke="rgba(255, 255, 255, 0.22)" strokeWidth="1.5" strokeDasharray="8 6" />
-
-            {/* Signature Curved Inscription Along Outer Arc */}
-            <text fill="#FFFFFF" fontSize="34" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="8">
-              <textPath href="#cat-border-arc-hq" startOffset="50%" textAnchor="middle">
-                THE NIGHT WE MET
-              </textPath>
-            </text>
-
-            {/* Inscription Below */}
-            <text x="500" y="990" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="62" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Emma &amp; Daan
-            </text>
-            <g>
-              <line x1="375" y1="1048" x2="465" y2="1048" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
-              <text x="500" y="1054" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="20">✦</text>
-              <line x1="535" y1="1048" x2="625" y2="1048" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
-            </g>
-            <text x="500" y="1108" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              22 SEPTEMBER 2026
-            </text>
-            <text x="500" y="1158" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
+              ROTTERDAM, NEDERLAND • 51.9244° N • 4.4777° E
             </text>
           </svg>
         );
@@ -376,8 +343,8 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           </p>
         </div>
 
-        {/* 5 Styles - Placed in 1 line on desktop (lg:grid-cols-5) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-4 xl:gap-5">
+        {/* 4 Flagship Art Styles - 4 balanced columns on desktop (lg:grid-cols-4) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {DESIGN_STYLES.map((style) => {
             const meta = dutchStyleDetails[style.id] || {
               title: style.name,

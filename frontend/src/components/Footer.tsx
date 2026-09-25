@@ -59,7 +59,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   onClick={() => handleScrollTo('stijlen')}
                   className="hover:text-[#1C1917] transition-colors"
                 >
-                  Bekijk de 5 Kunststijlen
+                  Bekijk de Kunststijlen
                 </button>
               </li>
               <li>

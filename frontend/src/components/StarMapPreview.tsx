@@ -447,58 +447,36 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       {/* Soft natural studio gallery light behind preview */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-b from-white/80 via-white/40 to-transparent rounded-full blur-[100px] pointer-events-none -z-10" />
 
-      {/* Top Toolbar Controls */}
-      <div className="w-full max-w-[640px] flex items-center justify-between gap-2 mb-2 sm:mb-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-[#E2DDD5] text-xs shadow-sm">
-        <div className="flex items-center space-x-2 text-[#1C1917]">
-          <span className="font-serif font-bold text-[#1C1917] tracking-wide">{currentStyle.name}</span>
-          <span className="text-[#A8A29E]">&bull;</span>
-          <span className="text-[#78716C] font-mono text-[11px]">
-            {config.frameStyle === 'digital'
-              ? 'Digitaal PDF (300 DPI)'
-              : config.frameStyle === 'oak'
-              ? `${config.posterSize.replace('x', ' × ')} cm • Natuurlijk Hout (Licht)`
-              : config.frameStyle === 'black'
-              ? `${config.posterSize.replace('x', ' × ')} cm • Mat Zwart Hout`
-              : config.frameStyle === 'white'
-              ? `${config.posterSize.replace('x', ' × ')} cm • Zuiver Wit Hout`
-              : `${config.posterSize.replace('x', ' × ')} cm • Classic Matte Poster`}
-          </span>
-        </div>
-
-        {/* Zoom & View Controls */}
-        <div className="flex items-center space-x-1">
-          <button
-            onClick={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
-            className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Uitzoomen"
-          >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
-          <span className="text-[11px] font-mono text-[#78716C] w-9 text-center">
-            {Math.round(zoomLevel * 100)}%
-          </span>
-          <button
-            onClick={() => setZoomLevel((z) => Math.min(1.8, z + 0.1))}
-            className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Inzoomen"
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setZoomLevel(1.0)}
-            className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Standaard zoom"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-1.5 rounded-lg text-[#78716C] hover:text-[#1C1917] hover:bg-[#F5F2EC] transition"
-            title="Volledig scherm"
-          >
-            <Maximize2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
+      {/* Discreet Minimal Zoom & Fullscreen Controls in Corner */}
+      <div className="absolute bottom-4 right-4 z-20 hidden sm:flex items-center space-x-1 bg-white/80 backdrop-blur-md px-2 py-1 rounded-xl border border-[#E2DDD5] text-xs shadow-xs">
+        <button
+          onClick={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
+          className="p-1 rounded text-[#78716C] hover:text-[#1C1917] transition"
+          title="Uitzoomen"
+        >
+          <ZoomOut className="w-3.5 h-3.5" />
+        </button>
+        <button
+          onClick={() => setZoomLevel(1.0)}
+          className="text-[10px] font-mono text-[#78716C] px-1 hover:text-[#1C1917]"
+          title="Herstel naar 100%"
+        >
+          {Math.round(zoomLevel * 100)}%
+        </button>
+        <button
+          onClick={() => setZoomLevel((z) => Math.min(1.8, z + 0.1))}
+          className="p-1 rounded text-[#78716C] hover:text-[#1C1917] transition"
+          title="Inzoomen"
+        >
+          <ZoomIn className="w-3.5 h-3.5" />
+        </button>
+        <button
+          onClick={() => setIsFullscreen(!isFullscreen)}
+          className="p-1 rounded text-[#78716C] hover:text-[#1C1917] transition"
+          title="Volledig scherm"
+        >
+          <Maximize2 className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* Main Poster Preview Box */}

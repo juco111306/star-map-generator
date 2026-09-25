@@ -74,24 +74,6 @@ export const DESIGN_STYLES: StyleOption[] = [
     curvedText: false,
     constellationsOnly: false,
   },
-  {
-    id: 'border_text',
-    name: 'Border Text',
-    subtitle: 'Curved Outer Perimeter Inscription',
-    description: 'Primary title curves gracefully along the outer rim of the circular celestial dial',
-    bgColor: '#0B132B',
-    mapBgColor: '#070D1F',
-    starColor: '#FFFFFF',
-    constellationColor: 'rgba(255, 255, 255, 0.38)',
-    maskShape: 'circle',
-    borderColor: 'rgba(255, 255, 255, 0.45)',
-    ringColor: 'rgba(255, 255, 255, 0.25)',
-    textColor: '#FFFFFF',
-    subtitleColor: 'rgba(255, 255, 255, 0.85)',
-    footerColor: 'rgba(255, 255, 255, 0.65)',
-    curvedText: true,
-    constellationsOnly: false,
-  },
 ];
 
 export const GOOGLE_FONTS = [
