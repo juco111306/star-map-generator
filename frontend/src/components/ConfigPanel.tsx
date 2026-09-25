@@ -547,9 +547,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
             {/* 4. Art Style & Color Palette */}
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center justify-between">
-                <span>4. Kunststijl & Kleurenpalet</span>
-                <span className="text-[10px] text-[#A37055]">5 Samengestelde Stijlen</span>
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C]">
+                4. Kunststijl & Kleurenpalet
               </label>
 
               <StyleSelector
