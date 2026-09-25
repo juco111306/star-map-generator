@@ -139,6 +139,10 @@ export interface OrderRecord {
   carrier?: string;
   tracking_number?: string;
   tracking_url?: string;
+  gelato_order_id?: string;
+  gelato_status?: string;
+  gelato_submitted_at?: string;
+  gelato_error?: string;
   timeline?: TimelineEvent[];
 }
 

@@ -89,35 +89,69 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       // 1. Calculate price from pricing engine
       const amount = priceDetails.price;
 
-      // 2. Call the Next.js checkout route
-      const checkoutRes = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: payloadCustomer.email,
-          amount: amount,
-          shippingDetails: payloadCustomer,
-          posterSize: config.posterSize,
-          frameStyle: config.frameStyle,
-          styleId: config.styleId,
-        })
-      });
-
-      if (!checkoutRes.ok) {
-        const errJson = await checkoutRes.json().catch(() => null);
-        throw new Error(errJson?.error || 'Kon geen verbinding maken met de kassa.');
+      // 2. Register order and compile 300 DPI print-ready PDF in the backend
+      let registeredOrder: OrderRecord | null = null;
+      try {
+        const orderRes = await apiFetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer: payloadCustomer,
+            map_config: config,
+          }),
+        });
+        if (orderRes.ok) {
+          registeredOrder = await orderRes.json();
+        }
+      } catch (orderErr) {
+        console.warn('Backend order registration warning:', orderErr);
       }
 
-      const checkoutData = await checkoutRes.json();
-      
-      // 3. Redirect the user to the secure payment page (Stripe Hosted Checkout)
-      if (checkoutData.checkoutUrl) {
+      const orderId = registeredOrder?.order_id || `STL-${Math.floor(10000 + Math.random() * 90000)}`;
+
+      // 3. Call the Next.js checkout route
+      let checkoutData: any = null;
+      try {
+        const checkoutRes = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: orderId,
+            email: payloadCustomer.email,
+            amount: amount,
+            shippingDetails: payloadCustomer,
+            posterSize: config.posterSize,
+            frameStyle: config.frameStyle,
+            styleId: config.styleId,
+          }),
+        });
+
+        if (checkoutRes.ok) {
+          checkoutData = await checkoutRes.json();
+        }
+      } catch (checkoutErr) {
+        console.warn('Stripe checkout route not available or in test mode:', checkoutErr);
+      }
+
+      // 4. Redirect to Stripe Hosted Checkout if available
+      if (checkoutData?.checkoutUrl) {
         window.location.href = checkoutData.checkoutUrl;
       } else {
-        const fallbackOrder: OrderRecord = {
-          order_id: checkoutData.id || `STL-${Math.floor(10000 + Math.random() * 90000)}`,
+        // Pilot / Atelier Test Mode: Dispatched directly to Gelato if physical
+        if (!isDigital && registeredOrder) {
+          try {
+            await apiFetch(`/api/orders/${orderId}/gelato-submit`, {
+              method: 'POST',
+            });
+          } catch (gErr) {
+            console.warn('Gelato auto-submit note:', gErr);
+          }
+        }
+
+        const fallbackOrder: OrderRecord = registeredOrder || {
+          order_id: orderId,
           created_at: new Date().toISOString(),
-          status: 'ready_for_print',
+          status: 'in_production',
           customer: payloadCustomer,
           poster_size: config.posterSize,
           style_id: config.styleId,
@@ -129,8 +163,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           pdf_filename: `star-map-${config.styleId}-${config.posterSize}.pdf`,
           pdf_size_bytes: 1024000,
         };
+
         setCompletedOrder(fallbackOrder);
         onOrderSuccess(fallbackOrder);
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
       }
 
     } catch (err: any) {

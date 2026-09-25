@@ -6,7 +6,7 @@ import json
 from typing import Any, Dict, List, Optional
 import urllib.parse
 
-from fastapi import FastAPI, HTTPException, Query, Response
+from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 from pydantic import BaseModel, Field
@@ -22,6 +22,7 @@ from app.orders import (
     get_orders_by_email,
     get_order_by_id_and_email,
     update_order_status,
+    dispatch_order_to_gelato,
 )
 from app.pdf_generator import STYLE_CONFIGS, generate_star_map_pdf, register_fonts
 
@@ -302,5 +303,62 @@ def api_update_order_status(order_id: str, req: UpdateOrderStatusRequest):
     if not updated:
         raise HTTPException(status_code=404, detail="Order not found")
     return updated
+
+
+@app.post("/api/orders/{order_id}/gelato-submit")
+def api_submit_to_gelato(order_id: str):
+    """
+    Dispatch an existing order's 300 DPI PDF and customer shipping address to Gelato.
+    """
+    result = dispatch_order_to_gelato(order_id)
+    if not result.get("success"):
+        raise HTTPException(
+            status_code=400,
+            detail=result.get("error") or "Fout bij het verzenden van de order naar Gelato",
+        )
+    return result
+
+
+@app.post("/api/webhook/gelato")
+async def api_gelato_webhook(request: Request):
+    """
+    Handle Gelato print and shipment status webhooks to update the customer tracking timeline.
+    """
+    try:
+        data = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON payload")
+
+    order_ref = data.get("orderReferenceId") or data.get("order_reference_id")
+    if not order_ref:
+        return {"received": True, "message": "No orderReferenceId in webhook"}
+
+    status = (data.get("fulfillmentStatus") or data.get("status") or "").lower()
+    tracking_code = data.get("trackingCode") or data.get("tracking_number") or ""
+    carrier = data.get("carrier") or data.get("carrier_name") or "PostNL"
+
+    # Map Gelato statuses to our customer timeline statuses
+    new_status = "in_production"
+    note = None
+    if "ship" in status or tracking_code:
+        new_status = "shipped"
+        note = f"Gelato heeft het pakket overgedragen aan {carrier}."
+    elif "print" in status or "produced" in status:
+        new_status = "printed"
+        note = "Poster is gedrukt door Gelato en doorstaat kwaliteitscontrole."
+    elif "deliver" in status:
+        new_status = "delivered"
+        note = "Pakket is succesvol bezorgd."
+
+    update_order_status(
+        order_id=order_ref,
+        new_status=new_status,
+        carrier=carrier,
+        tracking_number=tracking_code,
+        note=note,
+    )
+
+    return {"received": True, "orderReferenceId": order_ref, "status": new_status}
+
 
 

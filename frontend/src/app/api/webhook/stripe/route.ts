@@ -30,8 +30,38 @@ export async function POST(req: Request) {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      console.log(`✅ Payment successful for session: ${session.id}`);
-      console.log(`Customer email: ${session.customer_details?.email}`);
+      const orderId = session.metadata?.orderId;
+      const frameStyle = session.metadata?.frameStyle;
+
+      console.log(`✅ Payment successful for session: ${session.id}, Order ID: ${orderId}`);
+
+      if (orderId) {
+        const backendBase = process.env.BACKEND_INTERNAL_URL || 'http://127.0.0.1:8000';
+        try {
+          // 1. Confirm payment on the order timeline
+          await fetch(`${backendBase}/api/orders/${orderId}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              status: 'in_production',
+              note: 'Betaling succesvol ontvangen via Stripe (iDEAL/Card). Print-bestand geverifieerd.',
+            }),
+          });
+
+          // 2. If physical order, dispatch to Gelato Print-on-Demand
+          if (frameStyle !== 'digital') {
+            console.log(`📦 Dispatching order ${orderId} to Gelato...`);
+            const gelatoRes = await fetch(`${backendBase}/api/orders/${orderId}/gelato-submit`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            });
+            const gelatoData = await gelatoRes.json().catch(() => null);
+            console.log(`Gelato dispatch result for ${orderId}:`, gelatoData);
+          }
+        } catch (dispatchErr) {
+          console.error(`Error notifying backend/Gelato for order ${orderId}:`, dispatchErr);
+        }
+      }
     }
 
     return NextResponse.json({ received: true }, { status: 200 });

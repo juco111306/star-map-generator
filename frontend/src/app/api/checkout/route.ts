@@ -11,7 +11,7 @@ const stripe = stripeKey
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { amount, email, shippingDetails, posterSize, frameStyle } = body;
+    const { amount, email, shippingDetails, posterSize, frameStyle, orderId } = body;
 
     if (!stripe) {
       console.warn("STRIPE_SECRET_KEY or STRIPE_RESTRICTED_KEY is not defined in environment variables.");
@@ -52,9 +52,10 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}&amount=${numericAmount}`,
+      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId || ""}&amount=${numericAmount}`,
       cancel_url: `${origin}/`,
       metadata: {
+        orderId: orderId || "",
         customerEmail: email || "",
         customerName: shippingDetails?.name || "",
         shippingAddress: JSON.stringify(shippingDetails || {}),

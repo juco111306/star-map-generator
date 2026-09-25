@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 from app.pdf_generator import generate_star_map_pdf
+from app.gelato import submit_order_to_gelato
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 ORDERS_DIR = DATA_DIR / "orders"
@@ -60,6 +61,10 @@ class OrderRecord(BaseModel):
     carrier: Optional[str] = "PostNL"
     tracking_number: Optional[str] = ""
     tracking_url: Optional[str] = ""
+    gelato_order_id: Optional[str] = ""
+    gelato_status: Optional[str] = ""
+    gelato_submitted_at: Optional[str] = ""
+    gelato_error: Optional[str] = ""
     timeline: List[TimelineEvent] = Field(default_factory=list)
 
 
@@ -148,6 +153,12 @@ def _normalize_order(order: Dict[str, Any]) -> Dict[str, Any]:
             normalized["tracking_url"] = f"https://track.bpost.cloud/btr/web/#/search?itemCode={tracking_num}"
         else:
             normalized["tracking_url"] = ""
+
+    # Ensure Gelato fields exist
+    normalized["gelato_order_id"] = normalized.get("gelato_order_id", "")
+    normalized["gelato_status"] = normalized.get("gelato_status", "")
+    normalized["gelato_submitted_at"] = normalized.get("gelato_submitted_at", "")
+    normalized["gelato_error"] = normalized.get("gelato_error", "")
 
     # Ensure timeline exists
     if not normalized.get("timeline"):
@@ -391,6 +402,10 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
         "carrier": carrier,
         "tracking_number": "",
         "tracking_url": "",
+        "gelato_order_id": "",
+        "gelato_status": "",
+        "gelato_submitted_at": "",
+        "gelato_error": "",
         "timeline": initial_timeline,
     }
 
@@ -403,3 +418,64 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
     ORDERS_JSON.write_text(json.dumps(raw_orders, indent=2), encoding="utf-8")
 
     return order_record
+
+
+def dispatch_order_to_gelato(order_id: str) -> Dict[str, Any]:
+    """
+    Dispatch an order to the Gelato Print-on-Demand API and update its record and timeline.
+    """
+    _init_storage()
+    clean_id = order_id.strip().upper()
+    if not clean_id.startswith("STL-") and clean_id.isdigit():
+        clean_id = f"STL-{clean_id}"
+
+    try:
+        raw_orders = json.loads(ORDERS_JSON.read_text(encoding="utf-8"))
+    except Exception:
+        raw_orders = []
+
+    target_idx = None
+    for idx, o in enumerate(raw_orders):
+        if o.get("order_id") == clean_id:
+            target_idx = idx
+            break
+
+    if target_idx is None:
+        return {"success": False, "error": f"Bestelling {clean_id} niet gevonden."}
+
+    order = _normalize_order(raw_orders[target_idx])
+    result = submit_order_to_gelato(order)
+
+    now_iso = datetime.utcnow().isoformat() + "Z"
+    order["gelato_submitted_at"] = now_iso
+
+    if result.get("success"):
+        gelato_id = result.get("gelato_order_id") or ""
+        gelato_status = result.get("status") or "submitted"
+        order["gelato_order_id"] = gelato_id
+        order["gelato_status"] = gelato_status
+        order["gelato_error"] = ""
+
+        if result.get("status") != "skipped":
+            timeline_event = {
+                "status": "in_production",
+                "timestamp": now_iso,
+                "title": "Verzonden naar Gelato Print-on-Demand",
+                "description": f"Printorder #{gelato_id or clean_id} is succesvol aangemeld bij inlijstpartner Gelato voor productie en bezorging.",
+            }
+            order.setdefault("timeline", []).append(timeline_event)
+    else:
+        err_msg = result.get("error", "Onbekende fout bij verzending naar Gelato")
+        order["gelato_error"] = err_msg
+        timeline_event = {
+            "status": order.get("status", "in_production"),
+            "timestamp": now_iso,
+            "title": "Gelato Verzending Mislukt",
+            "description": f"Foutmelding bij aanmelden: {err_msg}",
+        }
+        order.setdefault("timeline", []).append(timeline_event)
+
+    raw_orders[target_idx] = order
+    ORDERS_JSON.write_text(json.dumps(raw_orders, indent=2), encoding="utf-8")
+    return {"success": result.get("success", False), "order": order, "gelato_result": result}
+

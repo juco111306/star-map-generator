@@ -15,6 +15,7 @@ import {
   FileText,
   Truck,
   Check,
+  Send,
 } from 'lucide-react';
 import { OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
@@ -240,6 +241,8 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
   const [trackingNumber, setTrackingNumber] = useState(order.tracking_number || '');
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isSendingGelato, setIsSendingGelato] = useState(false);
+  const [gelatoMessage, setGelatoMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setCurrentStatus(order.status || 'in_production');
@@ -259,6 +262,30 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
     }
   };
 
+  const handleSendToGelato = async () => {
+    setIsSendingGelato(true);
+    setGelatoMessage(null);
+    try {
+      const res = await apiFetch(`/api/orders/${order.order_id}/gelato-submit`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (data.success && data.order) {
+        setGelatoMessage('Succesvol verzonden naar Gelato!');
+        await onUpdateStatus(order.order_id, data.order.status, data.order.carrier, data.order.tracking_number);
+      } else {
+        setGelatoMessage(data.error || 'Verzending naar Gelato mislukt');
+      }
+    } catch (err: any) {
+      setGelatoMessage(err.message || 'Verbinding met server mislukt');
+    } finally {
+      setIsSendingGelato(false);
+      setTimeout(() => setGelatoMessage(null), 4000);
+    }
+  };
+
+  const isDigital = order.frame_style === 'digital';
+
   const statusBadges: Record<string, { label: string; color: string }> = {
     confirmed: { label: 'Ontvangen', color: 'bg-amber-50 text-amber-800 border-amber-200' },
     in_production: { label: 'In Productie', color: 'bg-sky-50 text-sky-800 border-sky-200' },
@@ -272,7 +299,7 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
         {/* Left Info: Product & Specs */}
         <div className="space-y-2 flex-1">
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="px-3 py-1 rounded-full bg-[#F5F2EB] border border-[#E2DDD5] text-[#1C1917] font-mono font-bold text-xs tracking-wider">
               {order.order_id}
             </span>
@@ -287,6 +314,25 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
             >
               {statusBadges[order.status]?.label || order.status}
             </span>
+
+            {/* Gelato Print-on-Demand Badge */}
+            {isDigital ? (
+              <span className="px-2.5 py-0.5 rounded-full border text-[10px] font-medium bg-zinc-50 text-zinc-600 border-zinc-200">
+                Digitaal (Geen print)
+              </span>
+            ) : order.gelato_order_id ? (
+              <span
+                className="px-2.5 py-0.5 rounded-full border text-[10px] font-medium bg-emerald-50 text-emerald-800 border-emerald-200 flex items-center gap-1 font-mono"
+                title={`Gelato Status: ${order.gelato_status || 'submitted'}`}
+              >
+                <CheckCircle className="w-3 h-3 text-emerald-600" />
+                <span>Gelato: {order.gelato_order_id}</span>
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full border text-[10px] font-medium bg-amber-50 text-amber-800 border-amber-200">
+                Gelato: Nog niet verzonden
+              </span>
+            )}
           </div>
 
           <div>
@@ -356,6 +402,33 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
             <ExternalLink className="w-3.5 h-3.5 text-[#78716C]" />
             <span>Openen in Browser</span>
           </a>
+
+          {/* Gelato Print-on-Demand Action Button */}
+          {!isDigital && (
+            <button
+              onClick={handleSendToGelato}
+              disabled={isSendingGelato}
+              className="w-full px-4 py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition shadow-sm disabled:opacity-50"
+              title="Stuur 300 DPI PDF en klant bezorgadres direct door naar Gelato"
+            >
+              {isSendingGelato ? (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Send className="w-3.5 h-3.5" />
+              )}
+              <span>{order.gelato_order_id ? 'Opnieuw naar Gelato' : 'Verzend naar Gelato'}</span>
+            </button>
+          )}
+
+          {gelatoMessage && (
+            <p
+              className={`text-[10px] text-center font-medium max-w-[180px] leading-tight ${
+                gelatoMessage.includes('Succesvol') ? 'text-emerald-700' : 'text-amber-700'
+              }`}
+            >
+              {gelatoMessage}
+            </p>
+          )}
         </div>
       </div>
 
