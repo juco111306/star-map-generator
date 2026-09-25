@@ -35,10 +35,10 @@ export const PilotNotice: React.FC = () => {
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <h3 className="font-serif font-bold text-sm text-[#1C1917]">
-                  Lokale Gelato Productie
+                  Lokale Kwaliteitsproductie
                 </h3>
                 <p className="text-xs text-[#57534E] font-light leading-relaxed">
-                  Elke bestelling wordt via onze gecertificeerde partner Gelato lokaal en on-demand geproduceerd in Nederland en België. Dit garandeert snelle bezorging, minimale CO2-uitstoot en FSC® gecertificeerde lijsten.
+                  Elke bestelling wordt via onze ervaren partner met jarenlange ervaring en prachtige kwaliteitslijsten lokaal en on-demand geproduceerd in Nederland en België. Dit garandeert snelle bezorging, minimale CO2-uitstoot en FSC® gecertificeerde lijsten.
                 </p>
               </div>
 

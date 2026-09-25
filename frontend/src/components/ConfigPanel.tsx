@@ -229,11 +229,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           </button>
         </div>
 
-        {/* Studio 5-Step Stepper: Full text visible across all steps */}
-        <div className="space-y-2">
+        {/* Studio 5-Step Stepper */}
+        <div>
           <div className="grid grid-cols-5 p-1 rounded-2xl bg-[#EFE9DF] border border-[#E2DDD5] gap-1 shadow-inner">
             {stepsList.map((step) => {
-              const Icon = step.icon;
               const isCurrent = activeTab === step.id;
               return (
                 <button
@@ -246,39 +245,21 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       : 'text-[#6B655F] hover:text-[#1C1917] hover:bg-white/60'
                   }`}
                 >
-                  <div className="flex items-center gap-1">
-                    <span
-                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                        isCurrent
-                          ? 'bg-[#1C1917] text-[#FAF8F5]'
-                          : 'bg-[#DCD5C9] text-[#57534E]'
-                      }`}
-                    >
-                      {step.num}
-                    </span>
-                    <Icon className={`w-3 h-3 ${isCurrent ? 'text-[#A37055]' : 'text-[#78716C]'}`} />
-                  </div>
+                  <span
+                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold transition-colors ${
+                      isCurrent
+                        ? 'bg-[#1C1917] text-[#FAF8F5]'
+                        : 'bg-[#DCD5C9] text-[#57534E]'
+                    }`}
+                  >
+                    {step.num}
+                  </span>
                   <span className="text-[10px] sm:text-[11px] leading-tight font-medium text-center break-words max-w-full">
                     {step.title}
                   </span>
                 </button>
               );
             })}
-          </div>
-
-          {/* Active Step Indicator Pill */}
-          <div className="flex items-center justify-between px-3.5 py-2 bg-white rounded-xl border border-[#EBE7DF] text-xs shadow-2xs">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-[#1C1917] text-[#FAF8F5] text-[10px] font-bold flex items-center justify-center">
-                {currentStepIdx + 1}
-              </span>
-              <span className="font-serif font-bold text-[#1C1917]">
-                {stepsList[currentStepIdx].label}
-              </span>
-            </div>
-            <span className="text-[10.5px] text-[#A37055] font-medium tracking-wide">
-              Stap {currentStepIdx + 1} van 5
-            </span>
           </div>
         </div>
 
@@ -1153,7 +1134,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Uitvoering & Inlijsting (Partner Gelato)</span>
+                  <span>Uitvoering & Inlijsting (Ervaren Partner)</span>
                 </label>
                 <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium">
                   {config.frameStyle === 'digital' ? 'Digitaal Direct' : 'Classic Matte & FSC® Hout'}
@@ -1161,7 +1142,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </div>
 
               <p className="text-[11px] text-[#78716C] font-light">
-                Geprint en ambachtelijk ingelijst door onze gecertificeerde partner Gelato op 200 gsm Classic Matte papier, of kies voor een direct print-klaar digitaal PDF bestand.
+                Geprint en met zorg ingelijst door onze partner met jarenlange ervaring en prachtige kwaliteitslijsten op 200 gsm Classic Matte papier, of kies voor een direct print-klaar digitaal PDF bestand.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

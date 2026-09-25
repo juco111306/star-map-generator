@@ -31,7 +31,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
             {/* Pill Badge */}
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#F3EFE7] border border-[#E4DDD0] text-[#78716C] text-xs font-medium">
               <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-              <span>Exclusieve Pilot Editie • Nederland & België</span>
+              <span>Museumkwaliteit Sterrenposters • Nederland & België</span>
             </div>
 
             {/* Main Emotive Headline */}
@@ -59,7 +59,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 onClick={handleScrollToStyles}
                 className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#292524] border border-[#D6D0C7] font-medium text-xs tracking-wide transition-all shadow-sm"
               >
-                Bekijk de 5 Kunststijlen
+                Bekijk Kunststijlen
               </button>
             </div>
 
@@ -193,7 +193,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
 
                   {/* Understated Minimalist Badge */}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md border border-[#E7E3DC] px-3 py-1 rounded-full text-[10px] font-medium text-[#1C1917] tracking-wider shadow-sm">
-                    EXCLUSIEVE PILOT EDITIE
+                    MUSEUMKWALITEIT PRINT
                   </div>
 
                   {/* Hover Prompt */}
@@ -214,7 +214,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 </h3>
                 <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
                   <MapPin className="w-3 h-3 text-[#A37055]" />
-                  <span>Amsterdam • Inclusief Gelato Natuurlijk Houten Lijst (Licht Hout)</span>
+                  <span>Amsterdam • Inclusief Natuurlijk Houten Kwaliteitslijst (Licht Hout)</span>
                 </p>
               </div>
               <div className="text-right">
@@ -264,7 +264,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
             </div>
             <div>
               <h4 className="text-xs font-bold text-[#1C1917]">Ambachtelijk Ingelijst</h4>
-              <p className="text-[11px] text-[#78716C]">Gelato houten lijsten</p>
+              <p className="text-[11px] text-[#78716C]">Ervaren inlijstpartner</p>
             </div>
           </div>
         </div>

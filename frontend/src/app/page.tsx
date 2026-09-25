@@ -122,7 +122,7 @@ export default function Home() {
     showMilkyWay: true,
     dividerStyle: 'diamond',
     dividerSize: 34,
-    frameStyle: 'none',
+    frameStyle: 'digital',
   });
 
   const [celestialData, setCelestialData] = useState<CelestialData | null>(INITIAL_CELESTIAL_DATA);

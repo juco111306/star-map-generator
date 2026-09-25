@@ -456,11 +456,11 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
             {config.frameStyle === 'digital'
               ? 'Digitaal PDF (300 DPI)'
               : config.frameStyle === 'oak'
-              ? `${config.posterSize.replace('x', ' × ')} cm • Gelato Natuurlijk Hout`
+              ? `${config.posterSize.replace('x', ' × ')} cm • Natuurlijk Hout (Licht)`
               : config.frameStyle === 'black'
-              ? `${config.posterSize.replace('x', ' × ')} cm • Gelato Zwart Hout`
+              ? `${config.posterSize.replace('x', ' × ')} cm • Mat Zwart Hout`
               : config.frameStyle === 'white'
-              ? `${config.posterSize.replace('x', ' × ')} cm • Gelato Wit Hout`
+              ? `${config.posterSize.replace('x', ' × ')} cm • Zuiver Wit Hout`
               : `${config.posterSize.replace('x', ' × ')} cm • Classic Matte Poster`}
           </span>
         </div>

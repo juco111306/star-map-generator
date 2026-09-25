@@ -144,9 +144,9 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   const frameLabels: Record<string, string> = {
     digital: 'Digitaal Bestand (300 DPI Vector PDF)',
     none: 'Classic Matte Poster (Alleen print)',
-    black: 'Gelato Zwart Houten Lijst (Classic Matte)',
-    oak: 'Gelato Natuurlijk Houten Lijst (Classic Matte)',
-    white: 'Gelato Wit Houten Lijst (Classic Matte)',
+    black: 'Mat Zwart Houten Lijst (Classic Matte)',
+    oak: 'Natuurlijk Houten Lijst (Licht Hout)',
+    white: 'Zuiver Wit Houten Lijst (Classic Matte)',
   };
 
   return (
@@ -278,7 +278,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </div>
               <div className="text-right">
                 <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium block mb-0.5">
-                  {config.frameStyle === 'digital' ? 'Direct digitaal (PDF)' : 'Gelato Productie'}
+                  {config.frameStyle === 'digital' ? 'Direct digitaal (PDF)' : 'Lokaal Ingelijst'}
                 </span>
                 <div className="flex items-center justify-end gap-1.5">
                   <span className="text-[10px] text-[#A8A29E] line-through">{priceDetails.formattedOriginalPrice}</span>
@@ -329,7 +329,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             ) : (
               <div className="space-y-3">
                 <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                  1. Gegevens van de Ontvanger & Bezorgadres (Gelato Partner)
+                  1. Gegevens van de Ontvanger & Bezorgadres
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -455,7 +455,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">
               <span className="text-[11px] text-[#78716C]">
-                {isDigital ? 'Digitale instant levering' : 'Productie via partner Gelato • PostNL / Bpost'}
+                {isDigital ? 'Digitale instant levering' : 'Productie via ervaren inlijstpartner • PostNL / Bpost'}
               </span>
 
               <div className="flex items-center space-x-2">

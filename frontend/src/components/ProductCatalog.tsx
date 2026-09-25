@@ -366,13 +366,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#EFE9DF] border border-[#E0D7C9] text-[#78716C] text-xs font-medium">
             <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>5 AMBACHTELIJKE KUNSTSTIJLEN</span>
+            <span>AMBACHTELIJKE KUNSTSTIJLEN</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-[#1C1917]">
-            Eén Tijdloos Product, Vijf Verfijnde Stijlen
+            Eén Tijdloos Product, Verfijnde Kunststijlen
           </h2>
           <p className="text-[#57534E] text-sm sm:text-base font-light leading-relaxed">
-            In onze exclusieve pilot focussen wij ons 100% op het perfectioneren van de gepersonaliseerde sterrenposter. Kies jouw favoriete esthetiek en open direct onze ontwerpstudio.
+            Wij focussen ons 100% op het perfectioneren van de gepersonaliseerde sterrenposter. Kies jouw favoriete esthetiek en open direct onze ontwerpstudio.
           </p>
         </div>
 
@@ -450,7 +450,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Gelato massief houten wissellijsten</span>
+            <span>Massief houten wissellijsten van onze ervaren inlijstpartner</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />

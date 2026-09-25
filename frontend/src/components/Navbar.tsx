@@ -32,12 +32,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/92 backdrop-blur-md border-b border-[#EBE7DF] transition-colors">
-      {/* Top Pilot Announcement Bar */}
+      {/* Top Announcement Bar */}
       <div className="bg-[#F2ECE1] border-b border-[#E5DECF] py-1.5 px-4 text-center">
         <p className="text-[11px] font-medium tracking-wide text-[#57534E] flex items-center justify-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#A37055]" />
-          <span className="font-semibold text-[#1C1917]">EXCLUSIEVE PILOT EDITIE</span>
-          <span className="text-[#D6D0C7]">•</span>
           <span>Gratis verzending in Nederland & België (PostNL / Bpost)</span>
           <span className="text-[#D6D0C7] hidden sm:inline">•</span>
           <span className="text-[#78716C] hidden sm:inline">100% Ambachtelijke Kwaliteitsgarantie</span>
@@ -81,25 +79,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleScrollToSection('stijlen')}
             className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-[#F2EFE9] transition-all"
           >
-            5 Kunststijlen
-          </button>
-          <button
-            onClick={() => handleScrollToSection('pilot')}
-            className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-[#F2EFE9] transition-all flex items-center gap-1.5"
-          >
-            <Info className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>Over de Pilot</span>
+            Kunststijlen
           </button>
           <button
             onClick={() => onNavigate('customizer')}
-            className={`px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5 ${
+            className={`px-4 py-1.5 rounded-full transition-all flex items-center gap-1.5 font-semibold shadow-xs ${
               currentView === 'customizer'
-                ? 'bg-[#1C1917] text-[#FAF8F5] font-semibold shadow-xs'
-                : 'text-[#57534E] hover:text-[#1C1917] hover:bg-[#F2EFE9]'
+                ? 'bg-[#1C1917] text-[#FAF8F5] ring-2 ring-[#A37055]/30'
+                : 'bg-[#F2ECE1] text-[#1C1917] hover:bg-[#1C1917] hover:text-white border border-[#E0D7C9]'
             }`}
           >
-            <Compass className="w-3.5 h-3.5 text-[#A37055]" />
             <span>Ontwerpstudio</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#A37055]" />
           </button>
           {onOpenTrackingModal && (
             <button
