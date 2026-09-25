@@ -2,7 +2,7 @@
   {
     "order_id": "STL-90547",
     "created_at": "2026-09-22T19:30:55.720306Z",
-    "status": "ready_for_print",
+    "status": "printed",
     "customer": {
       "name": "Jane Doe",
       "email": "jane@example.com",
@@ -24,7 +24,60 @@
     "date_text": "September 22, 2026",
     "location_text": "New York, USA",
     "pdf_filename": "STL-90547_print_ready_300dpi.pdf",
-    "pdf_size_bytes": 1095073
+    "pdf_size_bytes": 1095073,
+    "carrier": "PostNL",
+    "tracking_number": "3STEST9999",
+    "timeline": [
+      {
+        "status": "confirmed",
+        "timestamp": "2026-09-22T19:30:55.720306Z",
+        "title": "Bestelling Ontvangen",
+        "description": "Uw sterrenkaart compositie en gegevens zijn succesvol vastgelegd in ons atelier."
+      },
+      {
+        "status": "in_production",
+        "timestamp": "2026-09-22T19:30:55.720306Z",
+        "title": "In Atelier Productie",
+        "description": "300 DPI archiefwaardige print-PDF is met astronomische precisie berekend."
+      },
+      {
+        "status": "shipped",
+        "timestamp": "2026-09-25T07:10:23.150137Z",
+        "title": "Verzonden",
+        "description": "Pakket verzonden met PostNL Track & Trace"
+      },
+      {
+        "status": "printed",
+        "timestamp": "2026-09-25T07:11:14.645290Z",
+        "title": "Gedrukt & Ge\u00efnspecteerd",
+        "description": "Print gereed voor verzending"
+      },
+      {
+        "status": "shipped",
+        "timestamp": "2026-09-25T07:18:05.509360Z",
+        "title": "Verzonden",
+        "description": "Pakket verzonden met PostNL Track & Trace"
+      },
+      {
+        "status": "printed",
+        "timestamp": "2026-09-25T07:18:17.278778Z",
+        "title": "Gedrukt & Ge\u00efnspecteerd",
+        "description": "Print gereed voor verzending"
+      },
+      {
+        "status": "shipped",
+        "timestamp": "2026-09-25T08:07:09.233941Z",
+        "title": "Verzonden",
+        "description": "Pakket verzonden met PostNL Track & Trace"
+      },
+      {
+        "status": "printed",
+        "timestamp": "2026-09-25T08:07:11.581437Z",
+        "title": "Gedrukt & Ge\u00efnspecteerd",
+        "description": "Print gereed voor verzending"
+      }
+    ],
+    "tracking_url": "https://jouw.postnl.nl/track-and-trace/3STEST9999-NL-1015CJ"
   },
   {
     "order_id": "STL-19565",

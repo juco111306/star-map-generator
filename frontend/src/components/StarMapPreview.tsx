@@ -5,6 +5,10 @@ import { DESIGN_STYLES } from '../constants/styles';
 import { CelestialData, FrameStyle, MapConfig } from '../types';
 import { MoonPhasesDivider } from './MoonPhasesDivider';
 import {
+  SAMPLE_STARS,
+  SAMPLE_CONSTELLATION_LINES,
+} from '../constants/sampleCelestialData';
+import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
@@ -181,6 +185,53 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
     }
     return ticks;
   }, [cx, cy, radius]);
+
+  // Active star points: prioritize real astronomy data, fallback immediately to authentic sample stars
+  const activeStars = useMemo(() => {
+    if (currentStyle.constellationsOnly) {
+      if (celestialData?.constellation_stars && celestialData.constellation_stars.length > 0) {
+        return celestialData.constellation_stars;
+      }
+      return SAMPLE_STARS.filter((s) => s.bright).map((s) => ({
+        x: s.x,
+        y: s.y,
+        mag: 1.5,
+        size: s.r * 1.8,
+        is_constellation: true,
+      }));
+    }
+
+    if (celestialData?.stars && celestialData.stars.length > 0) {
+      return celestialData.stars;
+    }
+
+    return SAMPLE_STARS.map((s) => ({
+      x: s.x,
+      y: s.y,
+      mag: s.bright ? 1.5 : 4.0,
+      size: s.r * 1.3,
+      is_constellation: s.bright,
+    }));
+  }, [celestialData, currentStyle.constellationsOnly]);
+
+  // Active constellation lines
+  const activeLines = useMemo(() => {
+    if (celestialData?.lines && celestialData.lines.length > 0) {
+      return celestialData.lines.map((l) => ({
+        x1: l.p1[0],
+        y1: l.p1[1],
+        x2: l.p2[0],
+        y2: l.p2[1],
+      }));
+    }
+
+    return SAMPLE_CONSTELLATION_LINES.map((l) => ({
+      x1: l.x1,
+      y1: l.y1,
+      x2: l.x2,
+      y2: l.y2,
+    }));
+  }, [celestialData]);
 
   // Dynamic vertical positions for typography elements
   const typographyLayout = useMemo(() => {
@@ -382,7 +433,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       case 'black':
         return 'p-0 bg-[#161514] rounded-sm sm:rounded shadow-[0_25px_60px_-15px_rgba(0,0,0,0.45),0_10px_25px_-5px_rgba(0,0,0,0.25)] border-[5px] sm:border-[7px] border-[#1C1A18] ring-1 ring-black/50';
       case 'oak':
-        return 'p-0 bg-[#9A6B3D] rounded-sm sm:rounded shadow-[0_25px_60px_-15px_rgba(90,55,20,0.38),0_10px_25px_-5px_rgba(90,55,20,0.2)] border-[5px] sm:border-[7px] border-[#936034] ring-1 ring-[#6B4420]/35';
+        return 'p-0 bg-gradient-to-br from-[#BA8E5E] via-[#A87A4A] to-[#8C5E32] rounded-sm sm:rounded shadow-[0_28px_65px_-15px_rgba(75,45,15,0.4),0_12px_26px_-6px_rgba(50,30,10,0.22)] border-[6px] sm:border-[8px] border-[#9E6C3B] ring-1 ring-[#6E421B]/40';
       case 'white':
         return 'p-0 bg-[#FFFFFF] rounded-sm sm:rounded shadow-[0_25px_60px_-15px_rgba(28,25,23,0.25),0_10px_25px_-5px_rgba(28,25,23,0.12)] border-[5px] sm:border-[7px] border-[#FAF8F5] ring-1 ring-[#D8D4CC]';
       case 'none':
@@ -397,41 +448,22 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-b from-white/80 via-white/40 to-transparent rounded-full blur-[100px] pointer-events-none -z-10" />
 
       {/* Top Toolbar Controls */}
-      <div className="w-full max-w-[640px] flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-[#E2DDD5] text-xs shadow-sm">
+      <div className="w-full max-w-[640px] flex items-center justify-between gap-2 mb-2 sm:mb-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl border border-[#E2DDD5] text-xs shadow-sm">
         <div className="flex items-center space-x-2 text-[#1C1917]">
           <span className="font-serif font-bold text-[#1C1917] tracking-wide">{currentStyle.name}</span>
           <span className="text-[#A8A29E]">&bull;</span>
           <span className="text-[#78716C] font-mono text-[11px]">
-            {config.frameStyle === 'digital' ? 'Digitaal PDF (300 DPI)' : `${config.posterSize.replace('x', ' × ')} cm`}
+            {config.frameStyle === 'digital'
+              ? 'Digitaal PDF (300 DPI)'
+              : config.frameStyle === 'oak'
+              ? `${config.posterSize.replace('x', ' × ')} cm • Gelato Natuurlijk Hout`
+              : config.frameStyle === 'black'
+              ? `${config.posterSize.replace('x', ' × ')} cm • Gelato Zwart Hout`
+              : config.frameStyle === 'white'
+              ? `${config.posterSize.replace('x', ' × ')} cm • Gelato Wit Hout`
+              : `${config.posterSize.replace('x', ' × ')} cm • Classic Matte Poster`}
           </span>
         </div>
-
-        {/* Frame / Fulfillment Mockup Selector Buttons */}
-        {onFrameChange && (
-          <div className="flex items-center bg-[#FAF8F5] p-0.5 rounded-lg border border-[#E8E4DC] text-[11px]">
-            {([
-              { id: 'digital', label: 'Digitaal', dot: 'bg-sky-500' },
-              { id: 'none', label: 'Alleen Print', dot: 'bg-[#C5C0B7]' },
-              { id: 'black', label: 'Zwart Hout', dot: 'bg-[#1C1A18]' },
-              { id: 'oak', label: 'Natuurlijk Hout', dot: 'bg-[#9A6B3D]' },
-              { id: 'white', label: 'Wit Hout', dot: 'bg-white border border-[#D5D0C7]' },
-            ] as const).map(({ id, label, dot }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => onFrameChange(id as FrameStyle)}
-                className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md transition-all ${
-                  config.frameStyle === id
-                    ? 'bg-[#1C1917] text-[#FAF8F5] font-medium shadow-sm'
-                    : 'text-[#78716C] hover:text-[#1C1917]'
-                }`}
-              >
-                <span className={`w-2 h-2 rounded-full ${dot} shrink-0`} />
-                <span>{label}</span>
-              </button>
-            ))}
-          </div>
-        )}
 
         {/* Zoom & View Controls */}
         <div className="flex items-center space-x-1">
@@ -607,6 +639,28 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                 />
               )}
 
+              {/* Milky Way Soft Luminous Nebula Ellipses */}
+              {config.showMilkyWay && !currentStyle.isWatercolor && !currentStyle.constellationsOnly && (
+                <g opacity="0.85">
+                  <ellipse
+                    cx={cx - 15}
+                    cy={cy - 10}
+                    rx={radius * 0.75}
+                    ry={radius * 0.45}
+                    fill="rgba(255,255,255,0.08)"
+                    transform={`rotate(-25 ${cx - 15} ${cy - 10})`}
+                  />
+                  <ellipse
+                    cx={cx + 10}
+                    cy={cy + 15}
+                    rx={radius * 0.6}
+                    ry={radius * 0.3}
+                    fill="rgba(255,255,255,0.05)"
+                    transform={`rotate(-32 ${cx + 10} ${cy + 15})`}
+                  />
+                </g>
+              )}
+
               {/* Milky Way Stardust Nebula Overlay (if enabled) */}
               {config.showMilkyWay && !currentStyle.isWatercolor && !currentStyle.constellationsOnly && (
                 <image
@@ -623,47 +677,91 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
               {/* Stardust nebula glow */}
               <circle cx={cx} cy={cy} r={radius} fill="url(#celestial-nebula-glow)" />
 
-              {/* Delicate Celestial Equator & Zenith Crosshair */}
+              {/* Delicate Celestial Grid: Altitude Circles, Equator, Meridian & Prime Vertical Axes */}
               {config.showCelestialGrid && (
                 <g>
+                  {/* 30° Altitude Ring */}
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={radius * 0.66}
+                    fill="none"
+                    stroke={currentStyle.ringColor}
+                    strokeWidth="0.5"
+                    strokeDasharray="2 3"
+                    opacity={0.65}
+                  />
+                  {/* 60° Altitude Ring */}
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={radius * 0.33}
+                    fill="none"
+                    stroke={currentStyle.ringColor}
+                    strokeWidth="0.5"
+                    strokeDasharray="2 3"
+                    opacity={0.5}
+                  />
                   {/* Celestial Equator */}
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={radius * 0.65}
+                    r={radius * 0.78}
                     fill="none"
                     stroke={currentStyle.ringColor}
-                    strokeWidth="0.6"
-                    strokeDasharray="3 3"
-                    opacity={0.65}
+                    strokeWidth="0.65"
+                    strokeDasharray="4 3"
+                    opacity={0.7}
+                  />
+                  {/* North-South Meridian Line */}
+                  <line
+                    x1={cx}
+                    y1={cy - radius}
+                    x2={cx}
+                    y2={cy + radius}
+                    stroke={currentStyle.ringColor}
+                    strokeWidth="0.5"
+                    strokeDasharray="2 3"
+                    opacity={0.45}
+                  />
+                  {/* East-West Prime Vertical Line */}
+                  <line
+                    x1={cx - radius}
+                    y1={cy}
+                    x2={cx + radius}
+                    y2={cy}
+                    stroke={currentStyle.ringColor}
+                    strokeWidth="0.5"
+                    strokeDasharray="2 3"
+                    opacity={0.45}
                   />
                   {/* Zenith Crosshair */}
                   <line
-                    x1={cx - 7}
+                    x1={cx - 8}
                     y1={cy}
-                    x2={cx + 7}
+                    x2={cx + 8}
                     y2={cy}
                     stroke={currentStyle.ringColor}
-                    strokeWidth="0.75"
+                    strokeWidth="0.85"
                   />
                   <line
                     x1={cx}
-                    y1={cy - 7}
+                    y1={cy - 8}
                     x2={cx}
-                    y2={cy + 7}
+                    y2={cy + 8}
                     stroke={currentStyle.ringColor}
-                    strokeWidth="0.75"
+                    strokeWidth="0.85"
                   />
                 </g>
               )}
 
               {/* Constellation Lines */}
               {config.showConstellationLines &&
-                celestialData?.lines?.map((line, idx) => {
-                  const x1 = cx + line.p1[0] * radius;
-                  const y1 = cy - line.p1[1] * radius;
-                  const x2 = cx + line.p2[0] * radius;
-                  const y2 = cy - line.p2[1] * radius;
+                activeLines.map((line, idx) => {
+                  const x1 = cx + line.x1 * radius;
+                  const y1 = cy - line.y1 * radius;
+                  const x2 = cx + line.x2 * radius;
+                  const y2 = cy - line.y2 * radius;
 
                   return (
                     <line
@@ -682,10 +780,10 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
               {/* Stars rendering */}
               {currentStyle.constellationsOnly
                 ? // Style 10: Only constellation vertex stars
-                  celestialData?.constellation_stars?.map((s, idx) => {
+                  activeStars.map((s, idx) => {
                     const sx = cx + s.x * radius;
                     const sy = cy - s.y * radius;
-                    const r = Math.max(1.5, s.size * 0.95);
+                    const r = Math.max(1.5, (s.size || 1.8) * 0.95);
                     return (
                       <circle
                         key={idx}
@@ -698,11 +796,11 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                     );
                   })
                 : // All visible stars
-                  celestialData?.stars?.map((s, idx) => {
+                  activeStars.map((s, idx) => {
                     const sx = cx + s.x * radius;
                     const sy = cy - s.y * radius;
-                    const r = Math.max(0.6, s.size * 0.85);
-                    const isBright = s.mag < 2.0;
+                    const r = Math.max(0.6, (s.size || 1.0) * 0.85);
+                    const isBright = (s.mag ?? 3) < 2.0;
                     return (
                       <circle
                         key={idx}
@@ -710,7 +808,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                         cy={sy}
                         r={r}
                         fill={currentStyle.starColor}
-                        opacity={s.mag < 3.5 ? 1.0 : 0.85}
+                        opacity={(s.mag ?? 3) < 3.5 ? 1.0 : 0.85}
                         filter={isBright ? 'url(#star-glow)' : undefined}
                       />
                     );

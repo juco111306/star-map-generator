@@ -82,14 +82,16 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
               {/* Soft warm shadow */}
               <div className="absolute -inset-2 rounded-[32px] bg-[#E8E1D3]/50 blur-xl opacity-80" />
 
-              {/* Framed Artwork Presentation */}
-              <div className="relative rounded-[28px] bg-white border border-[#EBE7DF] p-4 shadow-[0_20px_50px_rgba(40,30,20,0.08)]">
-                {/* Artwork Thumbnail with exact studio proportions */}
-                <div
-                  onClick={() => onNavigate('customizer')}
-                  className="relative rounded-2xl overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer border border-[#E5E0D6] group-hover:border-[#C4BAA9] transition-all shadow-inner"
-                >
-                  <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
+              {/* Sleek Natural Wood Frame (Gelato Natural Oak Style) */}
+              <div className="relative rounded-[12px] bg-gradient-to-br from-[#BA8E5E] via-[#A87A4A] to-[#8C5E32] p-[10px] sm:p-[13px] shadow-[0_30px_70px_-15px_rgba(75,45,15,0.38),0_15px_30px_-8px_rgba(50,30,10,0.22)] ring-1 ring-[#734A24]/40 group-hover:shadow-[0_35px_80px_-12px_rgba(75,45,15,0.46)] transition-all duration-300">
+                {/* Inner Bevel & Fine Matting Rim */}
+                <div className="relative rounded-[4px] overflow-hidden bg-[#FAF8F5] p-2 sm:p-2.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.25),inset_0_-1px_2px_rgba(255,255,255,0.4)]">
+                  {/* Artwork Thumbnail with exact studio proportions */}
+                  <div
+                    onClick={() => onNavigate('customizer')}
+                    className="relative rounded-none overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer shadow-sm border border-[#E5E0D6]/80 group-hover:border-[#C4BAA9] transition-all"
+                  >
+                    <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
                     <defs>
                       <clipPath id="hero-celestial-mask">
                         <circle cx="500" cy="480" r="399" />
@@ -204,27 +206,28 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                     </span>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                {/* Card Information */}
-                <div className="pt-3.5 px-1 flex items-center justify-between">
-                  <div>
-                    <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
-                      De Gepersonaliseerde Sterrenposter
-                    </h3>
-                    <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
-                      <MapPin className="w-3 h-3 text-[#A37055]" />
-                      <span>Amsterdam • 21:00 • Classic Matte & Lijsten</span>
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[11px] text-[#A8A29E] line-through block">€29,00</span>
-                    <span className="font-serif text-sm font-bold text-[#1C1917]">vanaf €19,00</span>
-                  </div>
-                </div>
+            {/* Card Information */}
+            <div className="pt-3.5 px-1 flex items-center justify-between">
+              <div>
+                <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
+                  De Gepersonaliseerde Sterrenposter
+                </h3>
+                <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
+                  <MapPin className="w-3 h-3 text-[#A37055]" />
+                  <span>Amsterdam • Inclusief Gelato Natuurlijk Houten Lijst</span>
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="text-[11px] text-[#A8A29E] line-through block">€29,00</span>
+                <span className="font-serif text-sm font-bold text-[#1C1917]">vanaf €19,00</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
         {/* Feature Highlights Grid */}
         <div className="mt-14 pt-10 border-t border-[#EAE5DC] grid grid-cols-2 md:grid-cols-4 gap-6 text-center sm:text-left">

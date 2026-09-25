@@ -115,6 +115,13 @@ export interface CustomerDetails {
   producer_notes?: string;
 }
 
+export interface TimelineEvent {
+  status: string;
+  timestamp: string;
+  title: string;
+  description: string;
+}
+
 export interface OrderRecord {
   order_id: string;
   created_at: string;
@@ -129,6 +136,10 @@ export interface OrderRecord {
   location_text: string;
   pdf_filename: string;
   pdf_size_bytes: number;
+  carrier?: string;
+  tracking_number?: string;
+  tracking_url?: string;
+  timeline?: TimelineEvent[];
 }
 
 export interface ProductItem {

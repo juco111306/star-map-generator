@@ -11,14 +11,41 @@ import { Footer } from '../components/Footer';
 import { ConfigPanel } from '../components/ConfigPanel';
 import { StarMapPreview } from '../components/StarMapPreview';
 import { OrderModal } from '../components/OrderModal';
+import { CustomerTrackingModal } from '../components/CustomerTrackingModal';
 import { ProducerPortal } from '../components/ProducerPortal';
 import { PilotNotice } from '../components/PilotNotice';
 import { AppView, CelestialData, FrameStyle, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
+import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
+
+const INITIAL_CELESTIAL_DATA: CelestialData = {
+  stars: SAMPLE_STARS.map((s) => ({
+    x: s.x,
+    y: s.y,
+    mag: s.bright ? 1.5 : 4.0,
+    size: s.r * 1.3,
+    is_constellation: s.bright,
+  })),
+  lines: SAMPLE_CONSTELLATION_LINES.map((l) => ({
+    constellation: 'Major Constellations',
+    p1: [l.x1, l.y1],
+    p2: [l.x2, l.y2],
+  })),
+  constellation_stars: SAMPLE_STARS.filter((s) => s.bright).map((s) => ({
+    x: s.x,
+    y: s.y,
+    mag: 1.5,
+    size: s.r * 1.8,
+    is_constellation: true,
+  })),
+  total_visible_stars: SAMPLE_STARS.length,
+  total_visible_lines: SAMPLE_CONSTELLATION_LINES.length,
+};
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<AppView>('landing');
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [orders, setOrders] = useState<OrderRecord[]>([]);
 
   const [config, setConfig] = useState<MapConfig>({
@@ -98,7 +125,7 @@ export default function Home() {
     frameStyle: 'none',
   });
 
-  const [celestialData, setCelestialData] = useState<CelestialData | null>(null);
+  const [celestialData, setCelestialData] = useState<CelestialData | null>(INITIAL_CELESTIAL_DATA);
   const [isLoadingStars, setIsLoadingStars] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
@@ -251,6 +278,7 @@ export default function Home() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         orderCount={orders.length}
+        onOpenTrackingModal={() => setIsTrackingModalOpen(true)}
       />
 
       {/* Main Content Router */}
@@ -317,12 +345,11 @@ export default function Home() {
             onBackToProducts={() => setCurrentView('products')}
           />
 
-          {/* Right: Floating Sticky Live Preview with Frame Controls */}
+          {/* Right: Floating Sticky Live Preview */}
           <StarMapPreview
             config={config}
             celestialData={celestialData}
             isLoading={isLoadingStars}
-            onFrameChange={(f: FrameStyle) => handleConfigChange({ frameStyle: f })}
           />
 
           {/* Export Error Alert if any */}
@@ -348,6 +375,12 @@ export default function Home() {
         onClose={() => setIsOrderModalOpen(false)}
         config={config}
         onOrderSuccess={handleOrderSuccess}
+      />
+
+      {/* Customer Order Tracking & History Dashboard Modal */}
+      <CustomerTrackingModal
+        isOpen={isTrackingModalOpen}
+        onClose={() => setIsTrackingModalOpen(false)}
       />
     </div>
   );

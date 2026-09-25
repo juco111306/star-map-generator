@@ -1,19 +1,21 @@
 'use client';
 
 import React from 'react';
-import { Sparkles, Compass, Printer, ArrowRight, Info } from 'lucide-react';
+import { Sparkles, Compass, Printer, ArrowRight, Info, Package } from 'lucide-react';
 import { AppView } from '../types';
 
 interface NavbarProps {
   currentView: AppView;
   onNavigate: (view: AppView) => void;
   orderCount?: number;
+  onOpenTrackingModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onNavigate,
   orderCount = 0,
+  onOpenTrackingModal,
 }) => {
   const handleScrollToSection = (sectionId: string) => {
     if (currentView !== 'landing') {
@@ -99,14 +101,35 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Compass className="w-3.5 h-3.5 text-[#A37055]" />
             <span>Ontwerpstudio</span>
           </button>
+          {onOpenTrackingModal && (
+            <button
+              onClick={onOpenTrackingModal}
+              className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-[#F2EFE9] transition-all flex items-center gap-1.5"
+            >
+              <Package className="w-3.5 h-3.5 text-[#A37055]" />
+              <span>Bestelling Volgen</span>
+            </button>
+          )}
         </nav>
 
         {/* Right Action Buttons */}
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-2">
+          {/* Customer Order Tracking (Mobile + Quick Access) */}
+          {onOpenTrackingModal && (
+            <button
+              onClick={onOpenTrackingModal}
+              className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all border bg-[#FAF8F5] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917] hover:text-[#1C1917]"
+              title="Volg uw bestelling"
+            >
+              <Package className="w-3.5 h-3.5 text-[#A37055]" />
+              <span className="hidden md:inline">Volgen</span>
+            </button>
+          )}
+
           {/* Print Workshop Queue button */}
           <button
             onClick={() => onNavigate('producer')}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all border ${
+            className={`px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all border ${
               currentView === 'producer'
                 ? 'bg-[#1C1917] text-[#FAF8F5] border-[#1C1917]'
                 : 'bg-[#FBF9F6] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917] hover:text-[#1C1917]'
@@ -114,8 +137,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="Drukkerij bestellingenoverzicht"
           >
             <Printer className="w-3.5 h-3.5 text-[#A37055]" />
-            <span className="hidden sm:inline">Drukkerij Portaal</span>
-            <span className="sm:hidden">Orders</span>
+            <span className="hidden sm:inline">Drukkerij</span>
             {orderCount > 0 && (
               <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-[#A37055] text-white font-bold text-[10px]">
                 {orderCount}
@@ -126,10 +148,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Primary CTA */}
           <button
             onClick={() => onNavigate('customizer')}
-            className="flex items-center space-x-1.5 px-4 py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm transform hover:-translate-y-0.5"
+            className="flex items-center space-x-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm transform hover:-translate-y-0.5"
           >
             <Compass className="w-3.5 h-3.5 text-[#E6C285]" />
-            <span>Ontwerp sterrenkaart</span>
+            <span className="hidden sm:inline">Ontwerp sterrenkaart</span>
+            <span className="sm:hidden">Ontwerp</span>
             <ArrowRight className="w-3.5 h-3.5 hidden sm:inline" />
           </button>
         </div>

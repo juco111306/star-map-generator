@@ -191,12 +191,12 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     { id: 'framed', label: 'Galerijkader (Keyline)', desc: 'Verfijnde dubbele binnenrand en passe-partout belijning' },
   ];
 
-  const stepsList: { id: StudioTab; label: string; icon: any }[] = [
-    { id: 'location', label: '1. Locatie & Tijd', icon: MapPin },
-    { id: 'design', label: '2. Vorm & Stijl', icon: Sparkles },
-    { id: 'text', label: '3. Tekst', icon: Type },
-    { id: 'font', label: '4. Typografie', icon: Sliders },
-    { id: 'format', label: '5. Formaat & Lijst', icon: Maximize2 },
+  const stepsList: { id: StudioTab; num: number; title: string; label: string; icon: any }[] = [
+    { id: 'location', num: 1, title: 'Locatie & Tijd', label: '1. Locatie & Tijd', icon: MapPin },
+    { id: 'design', num: 2, title: 'Vorm & Stijl', label: '2. Vorm & Stijl', icon: Sparkles },
+    { id: 'text', num: 3, title: 'Tekst', label: '3. Tekst', icon: Type },
+    { id: 'font', num: 4, title: 'Typografie', label: '4. Typografie', icon: Sliders },
+    { id: 'format', num: 5, title: 'Formaat & Lijst', label: '5. Formaat & Lijst', icon: Maximize2 },
   ];
 
   const currentStepIdx = stepsList.findIndex((s) => s.id === activeTab);
@@ -229,48 +229,57 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           </button>
         </div>
 
-        {/* Product Heading Card */}
-        <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <span className="text-[10px] uppercase font-semibold tracking-widest text-[#A37055]">
-                Gepersonaliseerde Sterrenkaart
-              </span>
-              <h2 className="font-serif text-xl font-normal text-[#1C1917] tracking-wide">
-                De Sterrenposter
-              </h2>
-            </div>
-            <div className="text-right">
-              <div className="flex items-center justify-end gap-1.5">
-                <span className="text-xs text-[#A8A29E] line-through">{currentPriceDetails.formattedOriginalPrice}</span>
-                <span className="text-base font-semibold text-[#1C1917]">{currentPriceDetails.formattedPrice}</span>
-              </div>
-              <span className="text-[10px] text-[#A37055] font-medium block">{currentPriceDetails.typeLabel}</span>
-            </div>
+        {/* Studio 5-Step Stepper: Full text visible across all steps */}
+        <div className="space-y-2">
+          <div className="grid grid-cols-5 p-1 rounded-2xl bg-[#EFE9DF] border border-[#E2DDD5] gap-1 shadow-inner">
+            {stepsList.map((step) => {
+              const Icon = step.icon;
+              const isCurrent = activeTab === step.id;
+              return (
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => setActiveTab(step.id)}
+                  className={`py-2 px-1 rounded-xl transition-all flex flex-col items-center justify-center text-center gap-1 ${
+                    isCurrent
+                      ? 'bg-white text-[#1C1917] shadow-sm font-semibold'
+                      : 'text-[#6B655F] hover:text-[#1C1917] hover:bg-white/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                        isCurrent
+                          ? 'bg-[#1C1917] text-[#FAF8F5]'
+                          : 'bg-[#DCD5C9] text-[#57534E]'
+                      }`}
+                    >
+                      {step.num}
+                    </span>
+                    <Icon className={`w-3 h-3 ${isCurrent ? 'text-[#A37055]' : 'text-[#78716C]'}`} />
+                  </div>
+                  <span className="text-[10px] sm:text-[11px] leading-tight font-medium text-center break-words max-w-full">
+                    {step.title}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Studio Step Tabs */}
-        <div className="flex p-1 rounded-xl bg-[#F0EBE1] border border-[#E5DFD4] gap-1 text-xs overflow-x-auto">
-          {stepsList.map((step) => {
-            const Icon = step.icon;
-            const isCurrent = activeTab === step.id;
-            return (
-              <button
-                key={step.id}
-                type="button"
-                onClick={() => setActiveTab(step.id)}
-                className={`flex-1 min-w-[70px] py-2 px-1.5 rounded-lg transition-all font-medium flex items-center justify-center gap-1 ${
-                  isCurrent
-                    ? 'bg-white text-[#1C1917] shadow-sm'
-                    : 'text-[#78716C] hover:text-[#1C1917]'
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 shrink-0 ${isCurrent ? 'text-[#A37055]' : ''}`} />
-                <span className="truncate text-[11px]">{step.label}</span>
-              </button>
-            );
-          })}
+          {/* Active Step Indicator Pill */}
+          <div className="flex items-center justify-between px-3.5 py-2 bg-white rounded-xl border border-[#EBE7DF] text-xs shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-[#1C1917] text-[#FAF8F5] text-[10px] font-bold flex items-center justify-center">
+                {currentStepIdx + 1}
+              </span>
+              <span className="font-serif font-bold text-[#1C1917]">
+                {stepsList[currentStepIdx].label}
+              </span>
+            </div>
+            <span className="text-[10.5px] text-[#A37055] font-medium tracking-wide">
+              Stap {currentStepIdx + 1} van 5
+            </span>
+          </div>
         </div>
 
         {/* ================= STEP 1: LOCATION & TIME ================= */}

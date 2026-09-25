@@ -19,6 +19,9 @@ from app.orders import (
     get_all_orders,
     get_order_by_id,
     get_order_pdf_path,
+    get_orders_by_email,
+    get_order_by_id_and_email,
+    update_order_status,
 )
 from app.pdf_generator import STYLE_CONFIGS, generate_star_map_pdf, register_fonts
 
@@ -210,4 +213,94 @@ def api_download_order_pdf(order_id: str):
             "Content-Length": str(len(pdf_bytes)),
         },
     )
+
+
+class TrackOrderRequest(BaseModel):
+    order_id: str = Field(..., description="Order ID like STL-19565 or 19565")
+    email: str = Field(..., description="Customer email address")
+
+
+class CustomerHistoryRequest(BaseModel):
+    email: str = Field(..., description="Customer email address")
+
+
+class UpdateOrderStatusRequest(BaseModel):
+    status: str = Field(..., description="Status: confirmed, in_production, printed, shipped, delivered")
+    carrier: Optional[str] = Field(None, description="Carrier name, e.g. PostNL or Bpost")
+    tracking_number: Optional[str] = Field(None, description="Parcel tracking number")
+    note: Optional[str] = Field(None, description="Optional custom timeline event note")
+
+
+@app.post("/api/customer/orders/track")
+def customer_track_order(req: TrackOrderRequest):
+    """
+    Look up a single order by order reference and matching customer email.
+    Returns complete tracking progress, status timeline, and poster specs.
+    """
+    order = get_order_by_id_and_email(req.order_id, req.email)
+    if not order:
+        raise HTTPException(
+            status_code=404,
+            detail="Geen bestelling gevonden voor dit bestelnummer en e-mailadres. Controleer uw invoer.",
+        )
+    return order
+
+
+@app.post("/api/customer/orders/history")
+def customer_order_history(req: CustomerHistoryRequest):
+    """
+    Look up all past orders associated with a customer's email address.
+    """
+    orders = get_orders_by_email(req.email)
+    return {
+        "email": req.email.strip().lower(),
+        "count": len(orders),
+        "orders": orders,
+    }
+
+
+@app.get("/api/customer/orders/{order_id}/pdf")
+def customer_download_pdf(order_id: str, email: str = Query(..., description="Customer email for verification")):
+    """
+    Download print-ready PDF with customer email verification.
+    """
+    order = get_order_by_id_and_email(order_id, email)
+    if not order:
+        raise HTTPException(
+            status_code=403,
+            detail="Onbevoegd: Dit bestelnummer hoort niet bij het opgegeven e-mailadres.",
+        )
+
+    pdf_path = get_order_pdf_path(order_id)
+    if not pdf_path or not pdf_path.exists():
+        raise HTTPException(status_code=404, detail="Print PDF voor deze bestelling is niet gevonden.")
+
+    pdf_bytes = pdf_path.read_bytes()
+    filename = f"{order['order_id']}_stellaire_sterrenkaart.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Content-Length": str(len(pdf_bytes)),
+        },
+    )
+
+
+@app.patch("/api/orders/{order_id}/status")
+def api_update_order_status(order_id: str, req: UpdateOrderStatusRequest):
+    """
+    Update order status and append a milestone event to the customer tracking timeline.
+    """
+    updated = update_order_status(
+        order_id=order_id,
+        new_status=req.status,
+        carrier=req.carrier,
+        tracking_number=req.tracking_number,
+        note=req.note,
+    )
+    if not updated:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return updated
+
 
