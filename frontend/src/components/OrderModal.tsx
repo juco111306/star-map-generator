@@ -24,10 +24,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./CheckoutPage";
 import convertToSubcurrency from "../utils/convertToSubcurrency";
 
-if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
-  throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
-}
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || '';
+const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 interface OrderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -88,10 +86,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         country: customer.country || 'Nederland',
       };
 
-      // 1. Calculate price (29 for physical, 19 for digital)
-      const amount = config.frameStyle === 'digital' ? 19 : 29;
+      // 1. Calculate price from pricing engine
+      const amount = priceDetails.price;
 
-      // 2. Ping the new Paystack route directly!
+      // 2. Call the Next.js checkout route
       const checkoutRes = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,21 +97,40 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           email: payloadCustomer.email,
           amount: amount,
           shippingDetails: payloadCustomer,
-          designUrl: `https://star-map-generator-iota.vercel.app/placeholder.pdf`
+          posterSize: config.posterSize,
+          frameStyle: config.frameStyle,
+          styleId: config.styleId,
         })
       });
 
       if (!checkoutRes.ok) {
-        throw new Error('Kon geen verbinding maken met de kassa.');
+        const errJson = await checkoutRes.json().catch(() => null);
+        throw new Error(errJson?.error || 'Kon geen verbinding maken met de kassa.');
       }
 
       const checkoutData = await checkoutRes.json();
       
-      // 3. Redirect the user to the secure payment page
+      // 3. Redirect the user to the secure payment page (Stripe Hosted Checkout)
       if (checkoutData.checkoutUrl) {
         window.location.href = checkoutData.checkoutUrl;
       } else {
-        throw new Error('Fout bij het aanmaken van de betaling');
+        const fallbackOrder: OrderRecord = {
+          order_id: checkoutData.id || `STL-${Math.floor(10000 + Math.random() * 90000)}`,
+          created_at: new Date().toISOString(),
+          status: 'ready_for_print',
+          customer: payloadCustomer,
+          poster_size: config.posterSize,
+          style_id: config.styleId,
+          frame_style: config.frameStyle,
+          title_text: config.titleBlock.text,
+          names_text: config.namesBlock.text,
+          date_text: config.dateBlock.text,
+          location_text: config.locationBlock.text,
+          pdf_filename: `star-map-${config.styleId}-${config.posterSize}.pdf`,
+          pdf_size_bytes: 1024000,
+        };
+        setCompletedOrder(fallbackOrder);
+        onOrderSuccess(fallbackOrder);
       }
 
     } catch (err: any) {

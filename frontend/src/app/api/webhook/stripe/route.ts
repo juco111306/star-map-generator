@@ -2,13 +2,15 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// Initialize Stripe using the key we just added to Vercel
-const stripe = new Stripe(process.env.STRIPE_RESTRICTED_KEY as string, {
-  apiVersion: '2024-06-20', 
-});
+const stripeKey = process.env.STRIPE_RESTRICTED_KEY || process.env.STRIPE_SECRET_KEY;
+const stripe = stripeKey ? new Stripe(stripeKey, { apiVersion: '2024-06-20' as any }) : null;
 
 export async function POST(req: Request) {
   try {
+    if (!stripe) {
+      return NextResponse.json({ error: 'Stripe key not configured' }, { status: 500 });
+    }
+
     const body = await req.text();
     const signature = headers().get('stripe-signature');
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -20,21 +22,16 @@ export async function POST(req: Request) {
     let event: Stripe.Event;
 
     try {
-      // Verify that the request actually came from Stripe
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err: any) {
       console.error(`Webhook signature verification failed: ${err.message}`);
       return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
     }
 
-    // Handle the successful payment event
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      
-      console.log(`✅ Payment completely successful for session: ${session.id}`);
+      console.log(`✅ Payment successful for session: ${session.id}`);
       console.log(`Customer email: ${session.customer_details?.email}`);
-      
-      // TODO: This is where Antigravity will add the code to generate the PDF and send it to Gelato
     }
 
     return NextResponse.json({ received: true }, { status: 200 });
