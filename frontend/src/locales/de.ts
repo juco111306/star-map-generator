@@ -45,7 +45,7 @@ export const de: Translations = {
     trustPoint2: '285 g/m² Museums-Baumwollpapier',
     trustPoint3: 'Kostenloser Versand über vertrauenswürdige Partner (DHL, DPD)',
     previewDefaultTitle: 'DIE NACHT IN DER WIR UNS TRAFEN',
-    previewDefaultNames: 'Emma & Lukas',
+    previewDefaultNames: 'Hannah & Maximilian',
     previewDefaultDate: '22. SEPTEMBER 2026',
     previewDefaultLocation: 'BERLIN, DEUTSCHLAND',
     previewBadge: 'Atelier Signatur',
@@ -64,14 +64,14 @@ export const de: Translations = {
     posters: {
       midnight: {
         title: 'DIE NACHT, IN DER WIR UNS TRAFEN',
-        names: 'Emma & Lukas',
+        names: 'Hannah & Maximilian',
         date: '14. JUNI 2024',
         location: 'BERLIN, DEUTSCHLAND',
         coords: '52.5200° N • 13.4050° O',
       },
       teal: {
         title: 'ALS EIN STERN GEBOREN WURDE',
-        names: 'Felix Maximilian',
+        names: 'Felix Leon',
         date: '08. MAI 2025',
         location: 'MÜNCHEN, DEUTSCHLAND',
         coords: '48.1351° N • 11.5820° O',
@@ -85,7 +85,7 @@ export const de: Translations = {
       },
       burgundy: {
         title: 'UNTER DEM GLEICHEN STERNENHIMMEL',
-        names: 'Hannah & Julian',
+        names: 'Mia & Julian',
         date: '31. DEZEMBER 2022',
         location: 'HAMBURG, DEUTSCHLAND',
         coords: '53.5511° N • 9.9937° O',
@@ -379,7 +379,7 @@ export const de: Translations = {
       'Unter diesem Himmel',
     ],
     namesBlockLabel: 'Namen oder Widmung',
-    namesPlaceholder: 'z. B. Emma & Lukas',
+    namesPlaceholder: 'z. B. Hannah & Maximilian',
     dateBlockLabel: 'Datumsanzeige',
     locationBlockLabel: 'Ortsbezeichnung',
     coordsBlockLabel: 'Astronomische Koordinaten',

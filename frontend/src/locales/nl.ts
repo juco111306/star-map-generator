@@ -45,7 +45,7 @@ export const nl: Translations = {
     trustPoint2: '285 gsm Museumkwaliteit Katoenpapier',
     trustPoint3: 'Gratis bezorging via vertrouwde partners (zoals PostNL, Bpost)',
     previewDefaultTitle: 'DE NACHT WAARIN WE ELKAAR VONDEN',
-    previewDefaultNames: 'Emma & Daan',
+    previewDefaultNames: 'Sophie & Daan',
     previewDefaultDate: '22 SEPTEMBER 2026',
     previewDefaultLocation: 'AMSTERDAM, NEDERLAND',
     previewBadge: 'Atelier Signature',
@@ -64,7 +64,7 @@ export const nl: Translations = {
     posters: {
       midnight: {
         title: 'DE NACHT WAARIN WE ELKAAR VONDEN',
-        names: 'Emma & Lucas',
+        names: 'Sophie & Daan',
         date: '14 JUNI 2024',
         location: 'AMSTERDAM, NEDERLAND',
         coords: '52.3676° N • 4.9041° O',
@@ -78,14 +78,14 @@ export const nl: Translations = {
       },
       emerald: {
         title: 'DE DAG DAT WE \'JA\' ZEIDEN',
-        names: 'Sophie & Thomas',
+        names: 'Eva & Thomas',
         date: '18 SEPTEMBER 2023',
         location: 'ANTWERPEN, BELGIË',
         coords: '51.2194° N • 4.4025° O',
       },
       burgundy: {
         title: 'ONDER DEZELFDE STERREN',
-        names: 'Mila & Daan',
+        names: 'Mila & Lars',
         date: '31 DECEMBER 2022',
         location: 'ROTTERDAM, NEDERLAND',
         coords: '51.9244° N • 4.4777° O',
@@ -379,7 +379,7 @@ export const nl: Translations = {
       'Onder deze hemel',
     ],
     namesBlockLabel: 'Namen of Opgedragen Aan',
-    namesPlaceholder: 'bijv. Emma & Daan',
+    namesPlaceholder: 'bijv. Sophie & Daan',
     dateBlockLabel: 'Datumweergave',
     locationBlockLabel: 'Plaatsnaam',
     coordsBlockLabel: 'Astronomische Coördinaten',

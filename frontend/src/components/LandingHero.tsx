@@ -135,19 +135,19 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                     {/* Masked Astronomical Elements */}
                     <g clipPath="url(#hero-celestial-mask)">
                       {/* Mystical Milky Way */}
-                      <MysticalMilkyWay cx={500} cy={480} radius={399} angle={35} opacity={0.65} />
+                      <MysticalMilkyWay cx={500} cy={480} radius={399} rotation={-28} idPrefix="hero-mw" opacity={0.55} />
 
                       {/* Constellation Lines */}
                       {SAMPLE_CONSTELLATION_LINES.map((l, i) => (
                         <line
                           key={i}
-                          x1={l.x1}
-                          y1={l.y1}
-                          x2={l.x2}
-                          y2={l.y2}
-                          stroke="rgba(255, 255, 255, 0.32)"
-                          strokeWidth="1.2"
-                          strokeDasharray="none"
+                          x1={500 + l.x1 * 399}
+                          y1={480 - l.y1 * 399}
+                          x2={500 + l.x2 * 399}
+                          y2={480 - l.y2 * 399}
+                          stroke="rgba(255, 255, 255, 0.38)"
+                          strokeWidth="1.1"
+                          strokeLinecap="round"
                         />
                       ))}
 
@@ -155,10 +155,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                       {SAMPLE_STARS.map((s, i) => (
                         <circle
                           key={i}
-                          cx={s.x}
-                          cy={s.y}
-                          r={s.bright ? s.r * 1.4 : s.r * 1.1}
-                          fill={s.bright ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)'}
+                          cx={500 + s.x * 399}
+                          cy={480 - s.y * 399}
+                          r={s.bright ? s.r * 1.5 : s.r * 1.1}
+                          fill={s.bright ? '#FFFFFF' : 'rgba(255, 255, 255, 0.85)'}
                           filter={s.bright ? 'url(#hero-star-glow)' : undefined}
                         />
                       ))}

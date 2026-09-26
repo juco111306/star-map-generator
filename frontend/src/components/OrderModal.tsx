@@ -409,7 +409,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                      placeholder={locale === 'de' ? 'z. B. Emma Weber' : locale === 'en' ? 'e.g. Emma Miller' : 'bijv. Emma van der Meer'}
+                      placeholder={locale === 'de' ? 'z. B. Hannah Schmidt' : locale === 'en' ? 'e.g. Olivia Taylor' : 'bijv. Sophie van den Berg'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
@@ -420,7 +420,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                      placeholder={locale === 'de' ? 'emma@beispiel.de' : locale === 'en' ? 'emma@example.com' : 'emma@voorbeeld.nl'}
+                      placeholder={locale === 'de' ? 'hannah@beispiel.de' : locale === 'en' ? 'olivia@example.com' : 'sophie@voorbeeld.nl'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
@@ -440,7 +440,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                      placeholder={locale === 'de' ? 'z. B. Emma Weber' : locale === 'en' ? 'e.g. Emma Miller' : 'bijv. Emma van der Meer'}
+                      placeholder={locale === 'de' ? 'z. B. Hannah Schmidt' : locale === 'en' ? 'e.g. Olivia Taylor' : 'bijv. Sophie van den Berg'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
@@ -451,7 +451,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                      placeholder={locale === 'de' ? 'emma@beispiel.de' : locale === 'en' ? 'emma@example.com' : 'emma@voorbeeld.nl'}
+                      placeholder={locale === 'de' ? 'hannah@beispiel.de' : locale === 'en' ? 'olivia@example.com' : 'sophie@voorbeeld.nl'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>

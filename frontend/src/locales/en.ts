@@ -45,7 +45,7 @@ export const en: Translations = {
     trustPoint2: '285 gsm Museum Fine-Art Cotton Paper',
     trustPoint3: 'Free delivery via trusted partners (DHL, Royal Mail, PostNL)',
     previewDefaultTitle: 'THE NIGHT WE MET',
-    previewDefaultNames: 'Emma & James',
+    previewDefaultNames: 'Olivia & James',
     previewDefaultDate: 'SEPTEMBER 22, 2026',
     previewDefaultLocation: 'LONDON, UNITED KINGDOM',
     previewBadge: 'Atelier Signature',
@@ -64,14 +64,14 @@ export const en: Translations = {
     posters: {
       midnight: {
         title: 'THE NIGHT WE MET',
-        names: 'Emma & Lucas',
+        names: 'Olivia & James',
         date: 'JUNE 14, 2024',
         location: 'LONDON, UNITED KINGDOM',
         coords: '51.5074° N • 0.1278° W',
       },
       teal: {
         title: 'THE DAY A STAR WAS BORN',
-        names: 'Oliver James',
+        names: 'Oliver Arthur',
         date: 'MAY 8, 2025',
         location: 'EDINBURGH, UNITED KINGDOM',
         coords: '55.9533° N • 3.1883° W',
@@ -85,7 +85,7 @@ export const en: Translations = {
       },
       burgundy: {
         title: 'UNDER THE SAME STARS',
-        names: 'Amelia & Arthur',
+        names: 'Amelia & George',
         date: 'DECEMBER 31, 2022',
         location: 'MANCHESTER, UNITED KINGDOM',
         coords: '53.4808° N • 2.2426° W',
@@ -379,7 +379,7 @@ export const en: Translations = {
       'Under This Sky',
     ],
     namesBlockLabel: 'Names or Dedicated To',
-    namesPlaceholder: 'e.g. Emma & James',
+    namesPlaceholder: 'e.g. Olivia & James',
     dateBlockLabel: 'Date Line',
     locationBlockLabel: 'Location Display',
     coordsBlockLabel: 'Astronomical Coordinates',

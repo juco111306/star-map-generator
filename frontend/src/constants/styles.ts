@@ -80,7 +80,7 @@ export const GOOGLE_FONTS = [
   { id: 'Playfair Display', name: 'Playfair Display', fontClass: 'font-playfair', category: 'Romantic Serif', sample: 'The Night We Met' },
   { id: 'Montserrat', name: 'Montserrat', fontClass: 'font-montserrat', category: 'Modern Geometric Sans', sample: 'OUR FIRST DATE' },
   { id: 'Cinzel', name: 'Cinzel', fontClass: 'font-cinzel', category: 'Classic Roman Capitals', sample: 'UNDER THE STARS' },
-  { id: 'Great Vibes', name: 'Great Vibes', fontClass: 'font-greatvibes', category: 'Elegant Script Calligraphy', sample: 'Emma & Noah' },
+  { id: 'Great Vibes', name: 'Great Vibes', fontClass: 'font-greatvibes', category: 'Elegant Script Calligraphy', sample: 'Clara & Lucas' },
   { id: 'Lato', name: 'Lato', fontClass: 'font-lato', category: 'Clean Scandinavian Sans', sample: 'September 22, 2026' },
 ];
 

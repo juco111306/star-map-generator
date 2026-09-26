@@ -633,7 +633,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                   rotation={-28}
                   idPrefix="preview-mw"
                   isWatercolor={currentStyle.isWatercolor}
-                  opacity={currentStyle.isWatercolor ? 0.75 : 0.95}
+                  opacity={currentStyle.isWatercolor ? 0.50 : 0.60}
                 />
               )}
 

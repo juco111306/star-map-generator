@@ -23,7 +23,7 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
   radius,
   rotation,
   angle,
-  opacity = 0.95,
+  opacity = 0.55,
   idPrefix = 'mmw',
   isWatercolor = false,
 }) => {
@@ -52,8 +52,8 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
         dots.push({
           x: cx + rotX,
           y: cy + rotY,
-          r: 0.5 + pseudoRandom(i * 31 + 3) * 0.9,
-          opacity: 0.15 + pseudoRandom(i * 17 + 11) * 0.55,
+          r: 0.5 + pseudoRandom(i * 31 + 3) * 0.8,
+          opacity: 0.08 + pseudoRandom(i * 17 + 11) * 0.35,
         });
       }
     }
@@ -84,27 +84,27 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
         {/* Luminous galactic core linear gradient */}
         <linearGradient id={coreGradId} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
-          <stop offset="25%" stopColor="#E0EEFF" stopOpacity={isWatercolor ? "0.08" : "0.14"} />
-          <stop offset="48%" stopColor="#FFF8EB" stopOpacity={isWatercolor ? "0.15" : "0.26"} />
-          <stop offset="55%" stopColor="#D4E6FF" stopOpacity={isWatercolor ? "0.14" : "0.24"} />
-          <stop offset="78%" stopColor="#B8D5FA" stopOpacity={isWatercolor ? "0.06" : "0.10"} />
+          <stop offset="25%" stopColor="#E0EEFF" stopOpacity={isWatercolor ? "0.05" : "0.10"} />
+          <stop offset="48%" stopColor="#FFF8EB" stopOpacity={isWatercolor ? "0.10" : "0.18"} />
+          <stop offset="55%" stopColor="#D4E6FF" stopOpacity={isWatercolor ? "0.09" : "0.16"} />
+          <stop offset="78%" stopColor="#B8D5FA" stopOpacity={isWatercolor ? "0.04" : "0.07"} />
           <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
 
         {/* Diffuse background stardust veil */}
         <linearGradient id={diffuseGradId} x1="10%" y1="0%" x2="90%" y2="100%">
           <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
-          <stop offset="35%" stopColor="#C8DEFF" stopOpacity={isWatercolor ? "0.05" : "0.09"} />
-          <stop offset="50%" stopColor="#EBF3FF" stopOpacity={isWatercolor ? "0.09" : "0.16"} />
-          <stop offset="68%" stopColor="#B4D2F7" stopOpacity={isWatercolor ? "0.05" : "0.09"} />
+          <stop offset="35%" stopColor="#C8DEFF" stopOpacity={isWatercolor ? "0.03" : "0.06"} />
+          <stop offset="50%" stopColor="#EBF3FF" stopOpacity={isWatercolor ? "0.06" : "0.11"} />
+          <stop offset="68%" stopColor="#B4D2F7" stopOpacity={isWatercolor ? "0.03" : "0.06"} />
           <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
 
         {/* Intense Sagittarius galactic core hotspot */}
         <radialGradient id={hotspotGradId} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#FFFBF2" stopOpacity={isWatercolor ? "0.18" : "0.32"} />
-          <stop offset="35%" stopColor="#EAF2FF" stopOpacity={isWatercolor ? "0.12" : "0.22"} />
-          <stop offset="70%" stopColor="#C4DDFF" stopOpacity={isWatercolor ? "0.05" : "0.09"} />
+          <stop offset="0%" stopColor="#FFFBF2" stopOpacity={isWatercolor ? "0.12" : "0.22"} />
+          <stop offset="35%" stopColor="#EAF2FF" stopOpacity={isWatercolor ? "0.08" : "0.15"} />
+          <stop offset="70%" stopColor="#C4DDFF" stopOpacity={isWatercolor ? "0.03" : "0.06"} />
           <stop offset="100%" stopColor="#0B132B" stopOpacity="0" />
         </radialGradient>
       </defs>
@@ -180,7 +180,7 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
                 C ${cx - radius * 0.15} ${cy + radius * 0.09}, ${cx - radius * 0.35} ${cy + radius * 0.04}, ${cx - radius * 0.55} ${cy - radius * 0.01}
                 Z`}
             fill="#050C1F"
-            opacity="0.28"
+            opacity="0.22"
             filter={`url(#${blurSoftId})`}
           />
         )}

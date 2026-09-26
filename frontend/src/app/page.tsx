@@ -61,7 +61,7 @@ const LOCALE_DEFAULTS: Record<
 > = {
   nl: {
     title: 'DE NACHT WAARIN WE ELKAAR VONDEN',
-    names: 'Emma & Daan',
+    names: 'Sophie & Daan',
     locationName: 'Amsterdam, Nederland',
     lat: 52.3676,
     lng: 4.9041,
@@ -70,7 +70,7 @@ const LOCALE_DEFAULTS: Record<
   },
   de: {
     title: 'DIE NACHT, IN DER WIR UNS TRAFEN',
-    names: 'Emma & Lukas',
+    names: 'Hannah & Maximilian',
     locationName: 'Berlin, Deutschland',
     lat: 52.5200,
     lng: 13.4050,
@@ -79,7 +79,7 @@ const LOCALE_DEFAULTS: Record<
   },
   en: {
     title: 'THE NIGHT WE MET',
-    names: 'Emma & Lucas',
+    names: 'Olivia & James',
     locationName: 'London, United Kingdom',
     lat: 51.5074,
     lng: -0.1278,

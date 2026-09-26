@@ -99,7 +99,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               'rgba(255,255,255,0.45)',
               390,
               0,
-              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-28} idPrefix="sel-mw-midnight" />
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-28} idPrefix="sel-mw-midnight" opacity={0.55} />
             )}
 
             {/* Celestial Rings & Cardinal Ticks */}
@@ -161,7 +161,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               'rgba(255,255,255,0.55)',
               390,
               95,
-              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-20} idPrefix="sel-mw-teal" isWatercolor={true} opacity={0.7} />
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-20} idPrefix="sel-mw-teal" isWatercolor={true} opacity={0.50} />
             )}
 
             <circle cx="500" cy="460" r="390" fill="none" stroke="#0C4B56" strokeWidth="3.5" />
@@ -201,7 +201,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               'rgba(212,175,55,0.48)',
               390,
               190,
-              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-15} idPrefix="sel-mw-emerald" opacity={0.65} />
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-15} idPrefix="sel-mw-emerald" opacity={0.50} />
             )}
 
             <circle cx="500" cy="460" r="390" fill="none" stroke="#D4AF37" strokeWidth="3.5" />
@@ -252,7 +252,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               'rgba(255,235,238,0.45)',
               390,
               280,
-              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-35} idPrefix="sel-mw-burgundy" opacity={0.75} />
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-35} idPrefix="sel-mw-burgundy" opacity={0.55} />
             )}
 
             <circle cx="500" cy="460" r="390" fill="none" stroke="rgba(255,235,238,0.45)" strokeWidth="3" />
