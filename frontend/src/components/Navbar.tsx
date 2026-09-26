@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const currentLang = languages.find((l) => l.code === locale) || languages[0];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/92 backdrop-blur-md border-b border-[#EBE7DF] transition-colors">
+    <header className="sticky top-0 z-50 w-full bg-[#FAF8F5] border-b border-[#EBE7DF] transition-colors">
       {/* Top Announcement Bar */}
       <div className="bg-[#F2ECE1] border-b border-[#E5DECF] py-1.5 px-4 text-center">
         <p className="text-[11px] font-medium tracking-wide text-[#57534E] flex items-center justify-center gap-2">
@@ -144,36 +144,43 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             {isLangOpen && (
-              <div className="absolute right-0 mt-2 w-44 py-1.5 bg-white/98 backdrop-blur-md rounded-2xl shadow-xl border border-[#E8E2D8] z-50 animate-in fade-in zoom-in-95 duration-100">
-                <div className="px-3 py-1 text-[10px] uppercase font-semibold text-[#8C827A] tracking-wider border-b border-[#F2ECE1] mb-1">
+              <div className="absolute right-0 mt-2 w-48 py-1.5 bg-white rounded-2xl shadow-2xl border border-[#DDD5C7] z-[100] ring-1 ring-black/10 overflow-hidden">
+                <div className="px-3.5 py-1.5 text-[10px] uppercase font-bold text-[#8C827A] tracking-wider border-b border-[#F0EBE1] bg-[#FAF8F5]">
                   {locale === 'de' ? 'Sprache wählen' : locale === 'en' ? 'Select language' : 'Kies taal'}
                 </div>
-                {languages.map((lang) => {
-                  const isActive = locale === lang.code;
-                  return (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        changeLocale(lang.code);
-                        setIsLangOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition-colors ${
-                        isActive
-                          ? 'bg-[#F5F1E8] text-[#1C1917] font-semibold'
-                          : 'text-[#57534E] hover:bg-[#FAF8F5] hover:text-[#1C1917]'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm leading-none">{lang.flag}</span>
-                        <span className="text-xs">{lang.full}</span>
-                        <span className="text-[10px] text-[#78716C] font-semibold bg-[#EAE4D8] px-1.5 py-0.5 rounded">
-                          {lang.label}
-                        </span>
-                      </div>
-                      {isActive && <Check className="w-3.5 h-3.5 text-[#A37055]" />}
-                    </button>
-                  );
-                })}
+                <div className="py-1">
+                  {languages.map((lang) => {
+                    const isActive = locale === lang.code;
+                    return (
+                      <button
+                        key={lang.code}
+                        type="button"
+                        onClick={() => {
+                          changeLocale(lang.code);
+                          setIsLangOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs text-left transition-colors ${
+                          isActive
+                            ? 'bg-[#F5EFE6] text-[#1C1917] font-semibold'
+                            : 'text-[#44403C] hover:bg-[#FAF8F5] hover:text-[#1C1917]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-base leading-none">{lang.flag}</span>
+                          <span className="font-medium text-xs text-[#1C1917]">{lang.full}</span>
+                          <span
+                            className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                              isActive ? 'bg-[#1C1917] text-white' : 'bg-[#EAE4D8] text-[#57534E]'
+                            }`}
+                          >
+                            {lang.label}
+                          </span>
+                        </div>
+                        {isActive && <Check className="w-4 h-4 text-[#A37055] shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
