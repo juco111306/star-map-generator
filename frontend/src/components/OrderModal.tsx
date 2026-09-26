@@ -15,6 +15,7 @@ import {
   Loader2,
   AlertCircle,
   X,
+  ShieldCheck,
 } from 'lucide-react';
 import { CustomerDetails, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
@@ -31,6 +32,7 @@ interface OrderModalProps {
   onClose: () => void;
   config: MapConfig;
   onOrderSuccess: (order: OrderRecord) => void;
+  onOpenReturnPolicy?: () => void;
 }
 
 export const OrderModal: React.FC<OrderModalProps> = ({
@@ -38,6 +40,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   onClose,
   config,
   onOrderSuccess,
+  onOpenReturnPolicy,
 }) => {
   const [customer, setCustomer] = useState<CustomerDetails>({
     name: '',
@@ -517,6 +520,25 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </div>
               </div>
             )}
+
+            {/* Transparent Return Policy & Custom Goods Notice */}
+            <div className="p-3 bg-[#F5F2EB]/80 rounded-xl border border-[#E8E4DC] text-[11px] text-[#57534E] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#A37055] shrink-0" />
+                <span>
+                  <strong>Gepersonaliseerd maatwerk:</strong> Geen fysieke retour na druk, wél 100% terugbetaling van de ontwerpprijs (€19,-) bij ontevredenheid &amp; kosteloze herdruk bij schade.
+                </span>
+              </div>
+              {onOpenReturnPolicy && (
+                <button
+                  type="button"
+                  onClick={onOpenReturnPolicy}
+                  className="text-[#A37055] font-semibold hover:underline shrink-0 text-[11px] text-left sm:text-right"
+                >
+                  Lees retourbeleid &rarr;
+                </button>
+              )}
+            </div>
 
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">

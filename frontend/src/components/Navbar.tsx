@@ -92,6 +92,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Ontwerpstudio</span>
             <ArrowRight className="w-3.5 h-3.5 text-[#A37055]" />
           </button>
+          <button
+            onClick={() => handleScrollToSection('faq')}
+            className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-white transition-all font-medium"
+          >
+            FAQ &amp; Retour
+          </button>
           {onOpenTrackingModal && (
             <button
               onClick={onOpenTrackingModal}

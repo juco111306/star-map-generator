@@ -6,9 +6,10 @@ import { AppView } from '../types';
 
 interface FooterProps {
   onNavigate: (view: AppView) => void;
+  onOpenReturnPolicy?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }) => {
   const handleScrollTo = (id: string) => {
     onNavigate('landing');
     setTimeout(() => {
@@ -72,10 +73,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('producer')}
+                  onClick={() => handleScrollTo('faq')}
                   className="hover:text-[#1C1917] transition-colors"
                 >
-                  Drukkerij Bestellingenoverzicht
+                  Veelgestelde Vragen (FAQ)
                 </button>
               </li>
             </ul>
@@ -84,7 +85,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Quality & Craft Standards */}
           <div className="space-y-2.5">
             <h4 className="font-semibold text-[#1C1917] text-xs uppercase tracking-wider">
-              Kwaliteit & Ambacht
+              Kwaliteit & Garantie
             </h4>
             <ul className="space-y-2 text-[11px]">
               <li className="flex items-center gap-1.5 text-[#57534E]">
@@ -97,12 +98,22 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </li>
               <li className="flex items-center gap-1.5 text-[#57534E]">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#A37055] shrink-0" />
-                <span>Slanke 8 mm fotolijsten met museumglas</span>
+                <span>Slanke houten fotolijsten met museumglas</span>
               </li>
               <li className="flex items-center gap-1.5 text-[#57534E]">
                 <Truck className="w-3.5 h-3.5 text-[#A37055] shrink-0" />
-                <span>Verzekerde verzending via PostNL & Bpost</span>
+                <span>Gratis verzekerde verzending (PostNL/Bpost)</span>
               </li>
+              {onOpenReturnPolicy && (
+                <li className="pt-1">
+                  <button
+                    onClick={onOpenReturnPolicy}
+                    className="text-[#A37055] font-semibold hover:underline flex items-center gap-1"
+                  >
+                    <span>Retourbeleid &amp; Garantievoorwaarden &rarr;</span>
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -110,10 +121,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div className="space-y-2.5">
             <h4 className="font-semibold text-[#1C1917] text-xs uppercase tracking-wider flex items-center gap-1.5">
               <Info className="w-3.5 h-3.5 text-[#A37055]" />
-              <span>Over deze Pilot</span>
+              <span>Klantenservice &amp; Atelier</span>
             </h4>
             <p className="text-[11px] text-[#57534E] leading-relaxed font-light">
-              Stellaire test momenteel kleinschalig in Nederland en België. Onze officiële handelsregisterinschrijving is in de afrondende notariële fase. Iedere bestelling wordt persoonlijk en met de hoogste zorg geproduceerd.
+              Heb je een vraag over een bestelling of wil je gebruikmaken van onze ontwerpgarantie? Ons atelier reageert binnen 24 uur op werkdagen.
             </p>
             <div className="pt-2">
               <a
@@ -129,9 +140,25 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
         {/* Bottom Legal, Payment, and Copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
-          <p className="text-[#8C827A]">
-            &copy; {new Date().getFullYear()} Stellaire Atelier. Alle rechten voorbehouden. Exclusieve pilotfase in Nederland & België.
-          </p>
+          <div className="flex flex-wrap items-center gap-3 text-[#8C827A]">
+            <span>&copy; {new Date().getFullYear()} Stellaire Atelier. Alle rechten voorbehouden.</span>
+            <span>•</span>
+            {onOpenReturnPolicy && (
+              <button
+                onClick={onOpenReturnPolicy}
+                className="hover:text-[#1C1917] transition-colors underline"
+              >
+                Retourbeleid
+              </button>
+            )}
+            <span>•</span>
+            <button
+              onClick={() => handleScrollTo('faq')}
+              className="hover:text-[#1C1917] transition-colors underline"
+            >
+              FAQ
+            </button>
+          </div>
           <div className="flex items-center space-x-3 text-[10px] text-[#8C827A]">
             <span className="px-2 py-0.5 rounded bg-white border border-[#E0D9CD] font-medium text-[#57534E]">iDEAL</span>
             <span className="px-2 py-0.5 rounded bg-white border border-[#E0D9CD] font-medium text-[#57534E]">Bancontact</span>

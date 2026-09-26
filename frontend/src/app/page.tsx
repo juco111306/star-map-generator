@@ -14,6 +14,8 @@ import { OrderModal } from '../components/OrderModal';
 import { CustomerTrackingModal } from '../components/CustomerTrackingModal';
 import { ProducerPortal } from '../components/ProducerPortal';
 import { PilotNotice } from '../components/PilotNotice';
+import { FAQ } from '../components/FAQ';
+import { ReturnPolicyModal } from '../components/ReturnPolicyModal';
 import { AppView, CelestialData, FrameStyle, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
 import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
@@ -46,6 +48,7 @@ export default function Home() {
   const [currentView, setCurrentView] = useState<AppView>('landing');
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [isReturnPolicyOpen, setIsReturnPolicyOpen] = useState(false);
   const [orders, setOrders] = useState<OrderRecord[]>([]);
 
   const [config, setConfig] = useState<MapConfig>({
@@ -239,11 +242,21 @@ export default function Home() {
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           }} />
           <SocialProof />
+          <FAQ
+            onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
+            onCustomizeStarMap={() => {
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+          />
           <PilotNotice />
-          <Footer onNavigate={(v) => {
-            setCurrentView(v);
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-          }} />
+          <Footer
+            onNavigate={(v) => {
+              setCurrentView(v);
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+            onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
+          />
         </main>
       )}
 
@@ -257,10 +270,20 @@ export default function Home() {
             setCurrentView('customizer');
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           }} />
-          <Footer onNavigate={(v) => {
-            setCurrentView(v);
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-          }} />
+          <FAQ
+            onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
+            onCustomizeStarMap={() => {
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+          />
+          <Footer
+            onNavigate={(v) => {
+              setCurrentView(v);
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+            onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
+          />
         </main>
       )}
 
@@ -291,7 +314,10 @@ export default function Home() {
       {currentView === 'producer' && (
         <main className="flex-1">
           <ProducerPortal onBackToStudio={() => setCurrentView('customizer')} />
-          <Footer onNavigate={setCurrentView} />
+          <Footer
+            onNavigate={setCurrentView}
+            onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
+          />
         </main>
       )}
 
@@ -301,12 +327,19 @@ export default function Home() {
         onClose={() => setIsOrderModalOpen(false)}
         config={config}
         onOrderSuccess={handleOrderSuccess}
+        onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
       />
 
       {/* Customer Order Tracking & History Dashboard Modal */}
       <CustomerTrackingModal
         isOpen={isTrackingModalOpen}
         onClose={() => setIsTrackingModalOpen(false)}
+      />
+
+      {/* Return Policy & Satisfaction Guarantee Modal */}
+      <ReturnPolicyModal
+        isOpen={isReturnPolicyOpen}
+        onClose={() => setIsReturnPolicyOpen(false)}
       />
     </div>
   );
