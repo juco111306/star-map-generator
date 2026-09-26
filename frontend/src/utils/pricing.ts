@@ -168,7 +168,7 @@ export function calculatePrice(size: PosterSize | string, frameStyle: FrameStyle
     typeLabel: isDigital ? 'Digitaal Bestand (300 DPI)' : hasFrame ? 'Houten Kwaliteitslijst' : 'Classic Matte Poster',
     frameLabel: frameOption.label,
     sizeLabel: sizeOption.label,
-    shippingText: isDigital ? 'Direct per e-mail (Gratis)' : 'Gratis en verzekerd in NL & BE (PostNL / Bpost)',
+    shippingText: isDigital ? 'Direct per e-mail (Gratis)' : 'Gratis en verzekerd in NL & BE via vertrouwde partners (zoals PostNL, Bpost)',
   };
 }
 

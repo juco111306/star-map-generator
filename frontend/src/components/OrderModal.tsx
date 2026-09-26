@@ -73,7 +73,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       return;
     }
     if (!isDigital && (!customer.address_line1.trim() || !customer.city.trim() || !customer.postal_code.trim())) {
-      setError('Vul alstublieft uw volledige bezorgadres in voor PostNL / Bpost.');
+      setError('Vul alstublieft uw volledige bezorgadres in voor onze bezorgpartners.');
       return;
     }
 
@@ -478,8 +478,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   >
-                    <option value="Nederland">Nederland (PostNL Tracked)</option>
-                    <option value="België">België (Bpost Tracked)</option>
+                    <option value="Nederland">Nederland (Tracked via vertrouwde partners)</option>
+                    <option value="België">België (Tracked via vertrouwde partners)</option>
                   </select>
                 </div>
               </div>
@@ -543,7 +543,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">
               <span className="text-[11px] text-[#78716C]">
-                {isDigital ? 'Digitale instant levering' : 'Productie via ervaren inlijstpartner • PostNL / Bpost'}
+                {isDigital ? 'Digitale instant levering' : 'Productie via meester-atelier • Vertrouwde partners (zoals PostNL, Bpost)'}
               </span>
 
               <div className="flex items-center space-x-2">

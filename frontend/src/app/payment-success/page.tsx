@@ -486,7 +486,7 @@ function PaymentSuccessContent() {
               <p className="text-[11px] font-light leading-relaxed">
                 {isDigital
                   ? 'Geen fysieke verzending nodig; levenslang bewaard en direct printklaar op elk gewenst formaat.'
-                  : 'Zodra het pakket verzonden is ontvang je direct een e-mail met PostNL / Bpost Track & Trace code.'}
+                  : 'Zodra het pakket verzonden is ontvang je direct een e-mail met Track & Trace code van onze vertrouwde bezorgpartner.'}
               </p>
             </div>
           </div>

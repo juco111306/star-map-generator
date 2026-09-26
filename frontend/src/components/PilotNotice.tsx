@@ -61,7 +61,7 @@ export const PilotNotice: React.FC = () => {
                   <Truck className="w-4 h-4" />
                 </div>
                 <h3 className="font-serif font-bold text-sm text-[#1C1917]">
-                  Verzekerd via PostNL & Bpost
+                  Verzekerd via vertrouwde partners (zoals PostNL, Bpost)
                 </h3>
                 <p className="text-xs text-[#57534E] font-light leading-relaxed">
                   Verzending binnen 2–3 werkdagen in Nederland en België in een stevige beschermende kunstverpakking met Track & Trace. Komt een pakket beschadigd aan? Wij herdrukken direct kosteloos.

@@ -424,7 +424,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Gratis levering in Nederland & België (PostNL & Bpost)</span>
+            <span>Gratis levering in Nederland & België via vertrouwde partners (zoals PostNL, Bpost)</span>
           </div>
         </div>
       </div>

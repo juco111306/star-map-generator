@@ -100,24 +100,55 @@ export const ReturnPolicyModal: React.FC<ReturnPolicyModalProps> = ({
               </p>
             </div>
 
-            {/* Article 3: Damaged Goods & Print Defects (Gelato Standard) */}
-            <div className="space-y-2 pb-4 border-b border-[#EAE5DC]">
+            {/* Article 3: Damaged Goods & Quality Guarantee */}
+            <div className="space-y-3 pb-4 border-b border-[#EAE5DC]">
               <div className="flex items-center gap-2 text-[#1C1917] font-semibold text-xs uppercase tracking-wider">
                 <Truck className="w-4 h-4 text-[#A37055]" />
-                <span>3. Transportschade &amp; Drukfouten (100% Kosteloze Herdruk)</span>
+                <span>3. Transportschade &amp; Kwaliteitsgarantie (100% Gedekt door Ons Atelier)</span>
               </div>
               <p className="leading-relaxed font-light">
-                Samen met onze professionele print-on-demand partner <strong>Gelato</strong> hanteren wij de strengste kwaliteitsnormen (200-285 gsm museumkwaliteit katoenpapier en massief houten lijsten met plexiglas).
+                Als een ingelijst product of een ander artikel beschadigd aankomt (zoals <strong>gebroken glas of plexiglas, ingedeukte hoeken, of gebarsten hout van de lijst</strong>) of sprake is van een fabricagefout, neemt ons atelier de volledige verantwoordelijkheid onder onze <strong>100% Kwaliteitsgarantie</strong>.
               </p>
-              <div className="bg-white p-3.5 rounded-xl border border-[#E8E4DC] space-y-2">
-                <p className="font-medium text-[#1C1917]">
-                  Is jouw bestelling beschadigd aangekomen of bevat de print een productiefout?
-                </p>
-                <ul className="space-y-1.5 list-disc list-inside text-[11.5px] text-[#57534E]">
-                  <li>Meld de schade binnen <strong>14 dagen na levering</strong> via e-mail.</li>
-                  <li>Voeg 1 of 2 duidelijke foto’s bij van de beschadigde poster, lijst of verzendkoker.</li>
-                  <li>Wij starten direct een <strong>kosteloze herdruk</strong> op die met voorrang wordt geproduceerd en verzonden, óf we storten het aankoopbedrag volledig terug.</li>
-                </ul>
+
+              <div className="space-y-3">
+                {/* 1. Atelier covers it */}
+                <div className="bg-white p-3.5 rounded-xl border border-[#E8E4DC] space-y-1.5">
+                  <h5 className="font-semibold text-[#1C1917] text-xs flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>1. Ons Atelier Vergoedt Alle Kosten (Kosteloze Vervanging of Terugbetaling)</span>
+                  </h5>
+                  <p className="text-[11.5px] text-[#57534E] leading-relaxed">
+                    Indien de schade is ontstaan tijdens het transport of door een productiefout, vergoedt ons atelier alle kosten. Wij zorgen voor:
+                  </p>
+                  <ul className="space-y-1 list-disc list-inside text-[11px] text-[#57534E] pl-1">
+                    <li>Een <strong>kosteloze, nieuwe vervangende bestelling</strong> die met voorrang wordt gedrukt, ingelijst en verzonden.</li>
+                    <li>Of een <strong>volledige terugbetaling</strong> indien vervanging niet haalbaar is of je als klant niet kunt wachten.</li>
+                  </ul>
+                </div>
+
+                {/* 2. What you need to do */}
+                <div className="bg-[#FAF8F5] p-3.5 rounded-xl border border-[#E2DDD5] space-y-2">
+                  <h5 className="font-semibold text-[#1C1917] text-xs flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5 text-[#A37055]" />
+                    <span>2. Wat Moet Je Doen Om Aanspraak Te Maken?</span>
+                  </h5>
+                  <div className="space-y-2 text-[11px] text-[#57534E]">
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold text-[#1C1917] min-w-[70px]">Termijn:</span>
+                      <span>Meld de schade binnen <strong>30 dagen</strong> nadat je het pakket hebt ontvangen.</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="font-semibold text-[#1C1917] min-w-[70px]">Fotobewijs:</span>
+                      <div className="space-y-1">
+                        <span>Ons atelier heeft strikt fotobewijs nodig om de claim in te dienen bij de transporteur. Stuur duidelijke foto’s van:</span>
+                        <ul className="list-disc list-inside space-y-0.5 text-[#1C1917] font-medium pt-0.5">
+                          <li><strong>Het beschadigde artikel zelf</strong> (bijv. het gebroken glas, de ingedeukte lijsthoek of het gebarsten hout).</li>
+                          <li><strong>De verpakking (ZOWEL de binnen- als de buitenverpakking)</strong>. Foto’s van de verzenddoos en het binnenste beschermingsmateriaal zijn <em>verplicht</em> om de transportschadeclaim bij de bezorgdienst te kunnen valideren.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -158,7 +189,7 @@ export const ReturnPolicyModal: React.FC<ReturnPolicyModalProps> = ({
         <div className="px-6 py-4 bg-[#F5F2EB] border-t border-[#E8E4DC] flex items-center justify-between">
           <p className="text-[11px] text-[#78716C] flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>Conform EU richtlijn consumentenrechten &amp; Gelato kwaliteitsgarantie</span>
+            <span>Conform EU richtlijn consumentenrechten &amp; 100% ambachtelijke kwaliteitsgarantie</span>
           </p>
           <button
             type="button"

@@ -137,7 +137,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
     confirmed: { label: 'Ontvangen', color: 'bg-amber-50 text-amber-800 border-amber-200' },
     in_production: { label: 'In Atelier Productie', color: 'bg-sky-50 text-sky-800 border-sky-200' },
     printed: { label: 'Gedrukt & Geïnspecteerd', color: 'bg-purple-50 text-purple-800 border-purple-200' },
-    shipped: { label: 'Onderweg met PostNL', color: 'bg-blue-50 text-blue-800 border-blue-200' },
+    shipped: { label: 'Onderweg met bezorgpartner', color: 'bg-blue-50 text-blue-800 border-blue-200' },
     delivered: { label: 'Bezorgd', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
   };
 
@@ -163,7 +163,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
     { title: 'Ontvangen', desc: 'Compositie vastgelegd' },
     { title: 'In Productie', desc: '300 DPI vector PDF' },
     { title: 'Gedrukt', desc: '285 gsm katoen' },
-    { title: 'Verzonden', desc: 'PostNL Track & Trace' },
+    { title: 'Verzonden', desc: 'Track & Trace partner' },
     { title: 'Bezorgd', desc: 'Op bestemming' },
   ];
 

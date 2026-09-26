@@ -36,7 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="bg-[#F2ECE1] border-b border-[#E5DECF] py-1.5 px-4 text-center">
         <p className="text-[11px] font-medium tracking-wide text-[#57534E] flex items-center justify-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#A37055]" />
-          <span>Gratis verzending in Nederland & België (PostNL / Bpost)</span>
+          <span>Gratis verzending in Nederland & België via vertrouwde partners (zoals PostNL, Bpost)</span>
           <span className="text-[#D6D0C7] hidden sm:inline">•</span>
           <span className="text-[#78716C] hidden sm:inline">100% Ambachtelijke Kwaliteitsgarantie</span>
         </p>

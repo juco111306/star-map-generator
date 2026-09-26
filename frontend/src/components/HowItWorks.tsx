@@ -27,7 +27,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartCustomizing }) =>
       number: '03',
       title: 'Ambachtelijk Gedrukt & Geleverd',
       description:
-        'Individueel gedrukt op 285 gsm archiefwaardig fine-art papier, optioneel ingelijst in een slank 8 mm kader en snel bezorgd via PostNL of Bpost.',
+        'Individueel gedrukt op 285 gsm archiefwaardig fine-art papier, optioneel ingelijst in een slank houten kader en snel bezorgd via vertrouwde partners (zoals PostNL, Bpost).',
       icon: <Printer className="w-5 h-5 text-[#A37055]" />,
     },
   ];

@@ -244,7 +244,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
             </div>
             <div>
               <h4 className="text-xs font-bold text-[#1C1917]">Gratis Verzending NL & BE</h4>
-              <p className="text-[11px] text-[#78716C]">Via PostNL & Bpost Track & Trace</p>
+              <p className="text-[11px] text-[#78716C]">Via vertrouwde partners (zoals PostNL, Bpost)</p>
             </div>
           </div>
 

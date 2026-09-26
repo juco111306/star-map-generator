@@ -50,13 +50,21 @@ export const FAQ: React.FC<FAQProps> = ({
       category: 'kwaliteit',
       question: 'Wat als mijn poster of lijst beschadigd aankomt?',
       answer: (
-        <div className="space-y-2 text-[#57534E] leading-relaxed">
+        <div className="space-y-2.5 text-[#57534E] leading-relaxed">
           <p>
-            Samen met onze professionele print-on-demand partner <strong>Gelato</strong> hanteren wij een <strong>100% Kwaliteitsgarantie</strong>.
+            Mocht een ingelijst product of print beschadigd aankomen (zoals <strong>gebroken glas of plexiglas, ingedeukte hoeken, of gebarsten hout van de lijst</strong>) of sprake zijn van een productiefout, dan neemt ons atelier de volledige verantwoordelijkheid onder onze <strong>100% Kwaliteitsgarantie</strong>.
           </p>
           <p>
-            Mocht jouw poster, passe-partout of houten lijst tijdens het transport met PostNL of Bpost beschadigd zijn geraakt, of is er sprake van een drukfout? Stuur binnen <strong>14 dagen na ontvangst</strong> een foto van de beschadiging naar <span className="font-semibold text-[#1C1917]">klantenservice@stellaire.nl</span>. Wij sturen direct kosteloos een gloednieuw exemplaar met spoed naar je toe, of vergoeden het volledige aankoopbedrag.
+            Ons atelier dekt alle kosten: wij sturen kosteloos een <strong>nieuwe vervangende bestelling</strong> met voorrang naar je toe, of vergoeden het volledige aankoopbedrag.
           </p>
+          <div className="p-3 bg-white rounded-xl border border-[#E8E4DC] text-xs space-y-1">
+            <p className="font-semibold text-[#1C1917]">Wat moet je doen om aanspraak te maken?</p>
+            <ul className="list-disc list-inside space-y-1 text-[11.5px] text-[#57534E]">
+              <li>Meld het binnen <strong>30 dagen na ontvangst</strong> via <span className="font-medium text-[#1C1917]">klantenservice@stellaire.nl</span>.</li>
+              <li>Stuur duidelijke foto’s van <strong>het beschadigde product zelf</strong> (gebroken glas/hout/poster).</li>
+              <li>Stuur foto’s van <strong>de verpakking (ZOWEL de binnen- als de buitenkant/doos)</strong>. Dit is strikt verplicht om de transportschadeclaim bij de bezorgdienst in te dienen.</li>
+            </ul>
+          </div>
         </div>
       ),
     },
@@ -76,7 +84,7 @@ export const FAQ: React.FC<FAQProps> = ({
       question: 'Kan ik mijn bestelling na betaling nog aanpassen of annuleren?',
       answer: (
         <p className="text-[#57534E] leading-relaxed">
-          Ja, dat kan tot <strong>2 uur na het plaatsen van jouw bestelling</strong>. Omdat onze drukkerijpartner geautomatiseerd en snel start met het instellen van de 300 DPI vector PDF en kleurkalibratie, verzoeken we je om eventuele typfouten in namen of data direct aan ons door te geven via e-mail. Na 2 uur is het printproces onomkeerbaar gestart.
+          Ja, dat kan tot <strong>2 uur na het plaatsen van jouw bestelling</strong>. Omdat ons atelier geautomatiseerd en snel start met het instellen van de 300 DPI vector PDF en kleurkalibratie, verzoeken we je om eventuele typfouten in namen of data direct aan ons door te geven via e-mail. Na 2 uur is het printproces onomkeerbaar gestart.
         </p>
       ),
     },
@@ -96,7 +104,7 @@ export const FAQ: React.FC<FAQProps> = ({
       question: 'Wat zijn de verzendkosten en levertijden?',
       answer: (
         <p className="text-[#57534E] leading-relaxed">
-          Verzending is <strong>volledig gratis</strong> binnen Nederland en België via PostNL en Bpost. Fysieke posters en houten lijsten worden binnen 24-48 uur zorgvuldig geproduceerd en binnen 2-4 werkdagen stevig verpakt bij je thuisbezorgd met Track &amp; Trace. Kies je voor de Digitale Editie? Dan is de 300 DPI print-ready PDF direct na afronding te downloaden.
+          Verzending is <strong>volledig gratis</strong> binnen Nederland en België via vertrouwde partners (zoals PostNL, Bpost). Fysieke posters en houten lijsten worden binnen 24-48 uur zorgvuldig geproduceerd en binnen 2-4 werkdagen stevig verpakt bij je thuisbezorgd met Track &amp; Trace. Kies je voor de Digitale Editie? Dan is de 300 DPI print-ready PDF direct na afronding te downloaden.
         </p>
       ),
     },

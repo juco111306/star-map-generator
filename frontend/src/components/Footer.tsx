@@ -102,7 +102,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
               </li>
               <li className="flex items-center gap-1.5 text-[#57534E]">
                 <Truck className="w-3.5 h-3.5 text-[#A37055] shrink-0" />
-                <span>Gratis verzekerde verzending (PostNL/Bpost)</span>
+                <span>Gratis verzekerde verzending via vertrouwde partners (zoals PostNL, Bpost)</span>
               </li>
               {onOpenReturnPolicy && (
                 <li className="pt-1">

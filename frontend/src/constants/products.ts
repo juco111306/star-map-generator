@@ -22,7 +22,7 @@ export const PRODUCTS: ProductItem[] = [
       'Keuze uit digitaal bestand, classic matte print of houten kwaliteitslijsten (zwart, licht naturel, wit)',
       'Optioneel passe-partout museumkader en hart- of cirkelvorm',
       'Directe live preview in hoge resolutie',
-      'Gratis en verzekerde verzending binnen Nederland en België (PostNL / Bpost)',
+      'Gratis en verzekerde verzending binnen Nederland en België via vertrouwde partners (zoals PostNL, Bpost)',
     ],
   },
 ];
