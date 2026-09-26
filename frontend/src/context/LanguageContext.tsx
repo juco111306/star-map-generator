@@ -31,6 +31,12 @@ export const LanguageProvider: React.FC<{
     if (initialLocale && isValidLocale(initialLocale)) {
       return initialLocale;
     }
+    if (pathname) {
+      const match = pathname.match(/^\/(nl|de|en)(\/|$)/);
+      if (match && isValidLocale(match[1])) {
+        return match[1] as Locale;
+      }
+    }
     // Check path for /nl, /de, /en
     if (typeof window !== 'undefined') {
       const match = window.location.pathname.match(/^\/(nl|de|en)(\/|$)/);
@@ -76,20 +82,19 @@ export const LanguageProvider: React.FC<{
       } catch (err) {}
     }
 
-    // 3. Navigate to updated path
-    if (pathname) {
-      let targetPath = pathname;
-      const match = pathname.match(/^\/(nl|de|en)(\/|$)/);
+    // 3. Immediate and reliable navigation to target locale path
+    if (typeof window !== 'undefined') {
+      const curPath = window.location.pathname;
+      const match = curPath.match(/^\/(nl|de|en)(\/|$)/);
+      let targetPath = `/${newLocale}`;
       if (match) {
-        targetPath = pathname.replace(/^\/(nl|de|en)/, `/${newLocale}`);
+        targetPath = curPath.replace(/^\/(nl|de|en)/, `/${newLocale}`);
       } else {
-        targetPath = `/${newLocale}${pathname === '/' ? '' : pathname}`;
+        targetPath = `/${newLocale}${curPath === '/' ? '' : curPath}`;
       }
-      router.push(targetPath);
-    } else {
-      router.push(`/${newLocale}`);
+      window.location.href = targetPath;
     }
-  }, [pathname, router]);
+  }, []);
 
   const t = useMemo(() => getDictionary(locale), [locale]);
 

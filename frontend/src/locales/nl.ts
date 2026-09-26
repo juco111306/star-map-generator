@@ -53,8 +53,44 @@ export const nl: Translations = {
   catalog: {
     badge: 'Ambachtelijke Collectie',
     title: 'Kies Uw Uitvoering & Formaat',
-    subtitle:
-      'Ieder meesterwerk wordt individueel gecalibreerd en gedrukt met archiefbestendige 12-kleuren pigmentinkten.',
+    artStylesBadge: 'AMBACHTELIJKE KUNSTSTIJLEN',
+    artStylesTitle: 'Eén Tijdloos Product, Verfijnde Kunststijlen',
+    artStylesDesc:
+      'Wij focussen ons 100% op het perfectioneren van de gepersonaliseerde sterrenposter. Kies jouw favoriete esthetiek en open direct onze ontwerpstudio.',
+    trustPoint1: 'Officiële NASA JPL & Skyfield sterrendata',
+    trustPoint2: '285 gsm Fine-Art katoenpapier',
+    trustPoint3: 'Levenslange kleurechtheid garantie',
+    trustPoint4: 'Met zorg verpakt in ons atelier',
+    posters: {
+      midnight: {
+        title: 'DE NACHT WAARIN WE ELKAAR VONDEN',
+        names: 'Emma & Lucas',
+        date: '14 JUNI 2024',
+        location: 'AMSTERDAM, NEDERLAND',
+        coords: '52.3676° N • 4.9041° O',
+      },
+      teal: {
+        title: 'TOEN EEN STER WERD GEBOREN',
+        names: 'Liam Noah',
+        date: '08 MEI 2025',
+        location: 'UTRECHT, NEDERLAND',
+        coords: '52.0907° N • 5.1214° O',
+      },
+      emerald: {
+        title: 'DE DAG DAT WE \'JA\' ZEIDEN',
+        names: 'Sophie & Thomas',
+        date: '18 SEPTEMBER 2023',
+        location: 'ANTWERPEN, BELGIË',
+        coords: '51.2194° N • 4.4025° O',
+      },
+      burgundy: {
+        title: 'ONDER DEZELFDE STERREN',
+        names: 'Mila & Daan',
+        date: '31 DECEMBER 2022',
+        location: 'ROTTERDAM, NEDERLAND',
+        coords: '51.9244° N • 4.4777° O',
+      },
+    },
     digital: {
       title: 'Digitaal Vector PDF Bestand',
       subtitle: 'Directe download in ultra-hoge resolutie (300 DPI)',
@@ -103,6 +139,21 @@ export const nl: Translations = {
     deliveryTimePhysical: 'Binnen 24-48 uur in productie • Bezorging binnen 2-4 werkdagen',
     deliveryTimeDigital: 'Direct per e-mail en instant te downloaden in uw account',
     shippingTrust: 'Gratis levering in Nederland & België via vertrouwde partners (zoals PostNL, Bpost)',
+  },
+  pilotNotice: {
+    badge: 'TRANSPARANTIE & VERTROUWEN',
+    title: 'Ambachtelijke Kwaliteitsgarantie in Nederland & België',
+    desc: 'Stellaire brengt gepersonaliseerde sterrenposters met de hoogste ambachtelijke standaarden naar klanten in Nederland en België.',
+    pillar1Title: 'Lokale Kwaliteitsproductie',
+    pillar1Desc: 'Elke bestelling wordt via onze ervaren partner lokaal en on-demand geproduceerd in Nederland en België met minimale CO2-uitstoot en FSC® gecertificeerde lijsten.',
+    pillar2Title: '100% Museumkwaliteit',
+    pillar2Desc: 'Individueel vervaardigd op 285 gsm archiefwaardig fine-art papier met lichtechte pigmentinkt en officiële NASA JPL efemeriden.',
+    pillar3Title: 'Verzekerd via Vertrouwde Partners',
+    pillar3Desc: 'Verzending binnen 2–3 werkdagen in Nederland en België in een stevige beschermende kunstverpakking met Track & Trace.',
+    serviceTitle: 'Persoonlijke Klantenservice',
+    serviceDesc: 'Ons atelier volgt elke bestelling handmatig op voor een vlekkeloze ervaring.',
+    contactLabel: 'Vragen?',
+    email: 'klantenservice@stellaire.nl',
   },
   howItWorks: {
     badge: 'Eenvoudig & Betekenisvol',

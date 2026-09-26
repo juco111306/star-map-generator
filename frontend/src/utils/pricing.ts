@@ -14,86 +14,125 @@ export interface PriceDetails {
   shippingText: string;
 }
 
-export const METRIC_SIZES: { id: PosterSize; label: string; sub: string; aspect: string; popular?: boolean }[] = [
-  { id: '20x30', label: '20 × 30 cm', sub: 'Compact Aandenken (2:3)', aspect: '2:3' },
-  { id: '30x40', label: '30 × 40 cm', sub: 'Klassieke Galerij (3:4)', aspect: '3:4', popular: true },
-  { id: '40x50', label: '40 × 50 cm', sub: 'Medium Statement (4:5)', aspect: '4:5' },
-  { id: '50x70', label: '50 × 70 cm', sub: 'Groot Kunstformaat (5:7)', aspect: '5:7', popular: true },
+export const getLocalizedMetricSizes = (locale: string = 'nl') => [
+  {
+    id: '20x30' as PosterSize,
+    label: '20 × 30 cm',
+    sub: locale === 'de' ? 'Kompakte Erinnerung (2:3)' : locale === 'en' ? 'Compact Keepsake (2:3)' : 'Compact Aandenken (2:3)',
+    aspect: '2:3',
+  },
+  {
+    id: '30x40' as PosterSize,
+    label: '30 × 40 cm',
+    sub: locale === 'de' ? 'Klassische Galeriegröße (3:4)' : locale === 'en' ? 'Classic Gallery Size (3:4)' : 'Klassieke Galerij (3:4)',
+    aspect: '3:4',
+    popular: true,
+  },
+  {
+    id: '40x50' as PosterSize,
+    label: '40 × 50 cm',
+    sub: locale === 'de' ? 'Medium Statement (4:5)' : locale === 'en' ? 'Medium Statement (4:5)' : 'Medium Statement (4:5)',
+    aspect: '4:5',
+  },
+  {
+    id: '50x70' as PosterSize,
+    label: '50 × 70 cm',
+    sub: locale === 'de' ? 'Großes Kunstformat (5:7)' : locale === 'en' ? 'Grand Art Statement (5:7)' : 'Groot Kunstformaat (5:7)',
+    aspect: '5:7',
+    popular: true,
+  },
 ];
 
-export const FRAME_OPTIONS: {
-  id: FrameStyle;
-  label: string;
-  category: 'digital' | 'print' | 'frame';
-  sub: string;
-  desc: string;
-  badge?: string;
-  borderStyle: string;
-  bgStyle: string;
-  innerBg: string;
-  previewBorderColor: string;
-}[] = [
+export const getLocalizedFrameOptions = (locale: string = 'nl') => [
   {
-    id: 'digital',
-    label: 'Digitaal Bestand',
-    category: 'digital',
-    sub: 'Print-klaar PDF (300 DPI)',
-    desc: 'Direct per e-mail ontvangen in ultrahoge resolutie om zelf te printen of lokaal te laten drukken.',
-    badge: 'Laagste Prijs • Direct',
+    id: 'digital' as FrameStyle,
+    label: locale === 'de' ? 'Digitale Datei' : locale === 'en' ? 'Digital File' : 'Digitaal Bestand',
+    category: 'digital' as const,
+    sub: locale === 'de' ? 'Druckfertiges PDF (300 DPI)' : locale === 'en' ? 'Print-Ready PDF (300 DPI)' : 'Print-klaar PDF (300 DPI)',
+    desc:
+      locale === 'de'
+        ? 'Sofort per E-Mail in Ultra-High-Definition zum Selbstdrucken oder für lokale Druckereien.'
+        : locale === 'en'
+        ? 'Instant email delivery in ultra-high resolution to print yourself or at a local print shop.'
+        : 'Direct per e-mail ontvangen in ultrahoge resolutie om zelf te printen of lokaal te laten drukken.',
+    badge: locale === 'de' ? 'Bester Preis • Sofort' : locale === 'en' ? 'Best Value • Instant' : 'Laagste Prijs • Direct',
     borderStyle: 'border-dashed border-sky-400',
     bgStyle: 'bg-sky-50',
     innerBg: 'bg-[#0E1526]',
     previewBorderColor: '#38bdf8',
   },
   {
-    id: 'none',
-    label: 'Classic Matte Print',
-    category: 'print',
-    sub: '200 gsm Museumkwaliteit Mat Papier',
-    desc: 'Zonder lijst. Gedrukt door onze ervaren drukpartner op FSC® archiefpapier, geleverd in stevige koker.',
-    badge: 'Populair',
+    id: 'none' as FrameStyle,
+    label: locale === 'de' ? 'Klassischer Kunstdruck' : locale === 'en' ? 'Classic Matte Print' : 'Classic Matte Print',
+    category: 'print' as const,
+    sub: locale === 'de' ? '200 g/m² Museums-Qualitätspapier' : locale === 'en' ? '200 gsm Museum-Grade Matte Paper' : '200 gsm Museumkwaliteit Mat Papier',
+    desc:
+      locale === 'de'
+        ? 'Ohne Rahmen. Gedruckt auf FSC®-zertifiziertem Archivpapier, geliefert in stabiler Schutzrolle.'
+        : locale === 'en'
+        ? 'Unframed print. Crafted on FSC® archival cotton paper, delivered in a reinforced poster tube.'
+        : 'Zonder lijst. Gedrukt door onze ervaren drukpartner op FSC® archiefpapier, geleverd in stevige koker.',
+    badge: locale === 'de' ? 'Beliebt' : locale === 'en' ? 'Popular' : 'Populair',
     borderStyle: 'border-dashed border-[#C5BFB5]',
     bgStyle: 'bg-white',
     innerBg: 'bg-[#2E3440]',
     previewBorderColor: '#E7E2D9',
   },
   {
-    id: 'black',
-    label: 'Mat Zwart Hout',
-    category: 'frame',
-    sub: 'Classic Matte + Zwarte Kwaliteitslijst',
-    desc: 'FSC® massief hout van onze ervaren inlijstpartner, ontspiegeld kristalhelder acrylglas en ophangklaar.',
-    badge: 'Klassiek Galerij',
+    id: 'black' as FrameStyle,
+    label: locale === 'de' ? 'Mattschwarzes Holz' : locale === 'en' ? 'Matte Black Wood' : 'Mat Zwart Hout',
+    category: 'frame' as const,
+    sub: locale === 'de' ? 'Kunstdruck + Schwarzer Qualitätsrahmen' : locale === 'en' ? 'Classic Matte + Black Premium Frame' : 'Classic Matte + Zwarte Kwaliteitslijst',
+    desc:
+      locale === 'de'
+        ? 'Massives FSC®-Holz, reflexionsarmes Museums-Acrylglas und montagefertig aufgehängt.'
+        : locale === 'en'
+        ? 'Solid FSC® hardwood frame, gallery anti-reflective acrylic glass, pre-strung and ready to hang.'
+        : 'FSC® massief hout van onze ervaren inlijstpartner, ontspiegeld kristalhelder acrylglas en ophangklaar.',
+    badge: locale === 'de' ? 'Galerie-Klassiker' : locale === 'en' ? 'Gallery Classic' : 'Klassiek Galerij',
     borderStyle: 'border-[3px] border-[#181716]',
     bgStyle: 'bg-[#181716]',
     innerBg: 'bg-[#0E1526]',
     previewBorderColor: '#1C1A18',
   },
   {
-    id: 'oak',
-    label: 'Natuurlijk Hout (Licht Hout)',
-    category: 'frame',
-    sub: 'Classic Matte + Licht Houten Lijst',
-    desc: 'Massief natuurlijk licht hout (Scandinavisch grenen) met strakke scherpe randen van onze ervaren inlijstpartner, acrylglas en ophangkit.',
-    badge: 'Warm & Tijdloos',
+    id: 'oak' as FrameStyle,
+    label: locale === 'de' ? 'Natürliche Eiche (Helles Holz)' : locale === 'en' ? 'Natural Wood (Light Wood)' : 'Natuurlijk Hout (Licht Hout)',
+    category: 'frame' as const,
+    sub: locale === 'de' ? 'Kunstdruck + Heller Naturholzrahmen' : locale === 'en' ? 'Classic Matte + Natural Timber Frame' : 'Classic Matte + Licht Houten Lijst',
+    desc:
+      locale === 'de'
+        ? 'Massives skandinavisches Naturholz mit feiner Maserung, reflexionsarmem Acrylglas und Aufhängeset.'
+        : locale === 'en'
+        ? 'Solid Scandinavian light pine with clean profile, gallery acrylic glass, and mounting hardware.'
+        : 'Massief natuurlijk licht hout (Scandinavisch grenen) met strakke scherpe randen van onze ervaren inlijstpartner, acrylglas en ophangkit.',
+    badge: locale === 'de' ? 'Warm & Zeitlos' : locale === 'en' ? 'Warm & Timeless' : 'Warm & Tijdloos',
     borderStyle: 'border-[3px] border-[#DFC9A6]',
     bgStyle: 'bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B]',
     innerBg: 'bg-[#0E1526]',
     previewBorderColor: '#DFC9A6',
   },
   {
-    id: 'white',
-    label: 'Zuiver Wit Hout',
-    category: 'frame',
-    sub: 'Classic Matte + Witte Kwaliteitslijst',
-    desc: 'Zacht satijnwit massief hout van onze ervaren inlijstpartner, acrylglas en ophangkit, perfect voor lichte interieurs.',
-    badge: 'Licht & Modern',
+    id: 'white' as FrameStyle,
+    label: locale === 'de' ? 'Reinweißes Holz' : locale === 'en' ? 'Pure White Wood' : 'Zuiver Wit Hout',
+    category: 'frame' as const,
+    sub: locale === 'de' ? 'Kunstdruck + Weißer Qualitätsrahmen' : locale === 'en' ? 'Classic Matte + White Premium Frame' : 'Classic Matte + Witte Kwaliteitslijst',
+    desc:
+      locale === 'de'
+        ? 'Seidenmattes massives Weißholz, bruchsicheres Acrylglas und Aufhängeset, ideal für helle Räume.'
+        : locale === 'en'
+        ? 'Satin-white solid timber frame, shatterproof acrylic glass, and hanging kit for bright interiors.'
+        : 'Zacht satijnwit massief hout van onze ervaren inlijstpartner, acrylglas en ophangkit, perfect voor lichte interieurs.',
+    badge: locale === 'de' ? 'Hell & Modern' : locale === 'en' ? 'Clean & Modern' : 'Licht & Modern',
     borderStyle: 'border-[3px] border-[#E8E4DC] ring-1 ring-[#D0CAC0]',
     bgStyle: 'bg-white',
     innerBg: 'bg-[#0E1526]',
     previewBorderColor: '#FAF8F5',
   },
 ];
+
+export const METRIC_SIZES = getLocalizedMetricSizes('nl');
+export const FRAME_OPTIONS = getLocalizedFrameOptions('nl');
 
 // Base pricing matrix taking into account Gelato production costs, EU shipping, and healthy webshop margins
 const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; originalPrice: number }>> = {

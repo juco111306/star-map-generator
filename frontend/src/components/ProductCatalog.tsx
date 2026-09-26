@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Sparkles, ArrowRight, Check } from 'lucide-react';
-import { DESIGN_STYLES } from '../constants/styles';
+import { DESIGN_STYLES, getLocalizedStyleDetails } from '../constants/styles';
 import {
   SAMPLE_STARS,
   SAMPLE_CONSTELLATION_LINES,
@@ -21,91 +21,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 }) => {
   const { locale, t } = useLanguage();
 
-  const localizedStyleDetails: Record<
-    string,
-    Record<string, { title: string; subtitle: string; desc: string; tag: string }>
-  > = {
-    nl: {
-      midnight_classic: {
-        title: 'Midnight Classic',
-        subtitle: 'Onze Meest Geliefde Bestseller',
-        desc: 'Diep koningsblauw met dubbele kompasring, fijne graadverdeling en fonkelende witte sterren.',
-        tag: 'BESTSELLER',
-      },
-      teal_watercolor: {
-        title: 'Teal Watercolor',
-        subtitle: 'Zachte Aquarel & Neveltextuur',
-        desc: 'Sfeervolle marineblauwe en cyaankleurige aquarelstructuur op een warm linnenachtergrond.',
-        tag: 'ARTISTIEK',
-      },
-      emerald_night: {
-        title: 'Emerald Night',
-        subtitle: 'Brits Bosgroen & Koninklijk Goud',
-        desc: 'Diepgroene nachthemel gecombineerd met metallic gouden sterren en hemelcoördinaten.',
-        tag: 'LUXE EDITIE',
-      },
-      burgundy_sky: {
-        title: 'Burgundy Sky',
-        subtitle: 'Warme Romantiek & Fluweelrood',
-        desc: 'Rijke bordeauxrode tinten die liefde en warmte uitstralen, afgewerkt met zachte parelwitte typografie.',
-        tag: 'ROMANTISCH',
-      },
-    },
-    de: {
-      midnight_classic: {
-        title: 'Midnight Classic',
-        subtitle: 'Unser Beliebtester Bestseller',
-        desc: 'Tiefes Königsblau mit doppeltem Kompassring, feinen Gradteilungen und funkelnden Sternen.',
-        tag: 'BESTSELLER',
-      },
-      teal_watercolor: {
-        title: 'Teal Watercolor',
-        subtitle: 'Sanfte Aquarell- & Nebeltextur',
-        desc: 'Stimmungsvolle marine- und cyanblaue Aquarellstruktur auf warmem Hintergrund.',
-        tag: 'KÜNSTLERISCH',
-      },
-      emerald_night: {
-        title: 'Emerald Night',
-        subtitle: 'Waldgrün & Edles Gold',
-        desc: 'Dunkelgrüner Nachthimmel kombiniert mit edlen goldenen Sternen und Himmelskoordinaten.',
-        tag: 'LUXUS EDITION',
-      },
-      burgundy_sky: {
-        title: 'Burgundy Sky',
-        subtitle: 'Warme Romantik & Samtrot',
-        desc: 'Satte bordeauxrote Nuancen, die Liebe und Wärme ausstrahlen, veredelt mit Perlweiß.',
-        tag: 'ROMANTISCH',
-      },
-    },
-    en: {
-      midnight_classic: {
-        title: 'Midnight Classic',
-        subtitle: 'Our Most Beloved Bestseller',
-        desc: 'Deep royal navy with double compass dial, delicate degree ticks, and luminous white stars.',
-        tag: 'BESTSELLER',
-      },
-      teal_watercolor: {
-        title: 'Teal Watercolor',
-        subtitle: 'Gentle Nebula Watercolor Texture',
-        desc: 'Atmospheric deep teal and cyan watercolor structure across a warm matted background.',
-        tag: 'ARTISTIC',
-      },
-      emerald_night: {
-        title: 'Emerald Night',
-        subtitle: 'British Racing Green & Royal Gold',
-        desc: 'Deep forest green night sky paired with metallic gold celestial coordinates.',
-        tag: 'LUXURY EDITION',
-      },
-      burgundy_sky: {
-        title: 'Burgundy Sky',
-        subtitle: 'Warm Romance & Velvet Crimson',
-        desc: 'Rich burgundy hues radiating warmth and devotion, finished with soft pearl typography.',
-        tag: 'ROMANTIC',
-      },
-    },
-  };
-
-  const currentStyles = localizedStyleDetails[locale] || localizedStyleDetails.nl;
+  const currentStyles = getLocalizedStyleDetails(locale);
 
   const handleCardClick = (styleId: string) => {
     if (onSelectStyle) {
@@ -209,17 +125,17 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <line x1="92" y1="480" x2="112" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
             <line x1="888" y1="480" x2="908" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
 
-            <text x="500" y="60" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
-            <text x="500" y="915" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
-            <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
-            <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
+            <text x="500" y="60" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.n}</text>
+            <text x="500" y="915" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.s}</text>
+            <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.w}</text>
+            <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.e}</text>
 
-            {/* Example 1: Romantic First Meeting in Amsterdam */}
+            {/* Example 1: Romantic First Meeting */}
             <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              THE NIGHT WE MET
+              {t.catalog.posters.midnight.title}
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Emma &amp; Lucas
+              {t.catalog.posters.midnight.names}
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
@@ -227,10 +143,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              14 JUNI 2024
+              {t.catalog.posters.midnight.date}
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
+              {t.catalog.posters.midnight.location} • {t.catalog.posters.midnight.coords}
             </text>
           </svg>
         );
@@ -265,12 +181,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <circle cx="500" cy="480" r="400" fill="none" stroke="#0C4B56" strokeWidth="3.5" />
             <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="1.5" strokeDasharray="8 6" />
 
-            {/* Example 2: Birth of a Child in Utrecht */}
+            {/* Example 2: Birth of a Child */}
             <text x="500" y="955" textAnchor="middle" fill="#083B44" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              TOEN EEN STER WERD GEBOREN
+              {t.catalog.posters.teal.title}
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="#1A5A66" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Liam Noah
+              {t.catalog.posters.teal.names}
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
@@ -278,10 +194,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="#1A5A66" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              08 MEI 2025
+              {t.catalog.posters.teal.date}
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="#3B7580" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              UTRECHT, NEDERLAND • 52.0907° N • 5.1214° E
+              {t.catalog.posters.teal.location} • {t.catalog.posters.teal.coords}
             </text>
           </svg>
         );
@@ -314,17 +230,17 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <line x1="92" y1="480" x2="112" y2="480" stroke="#D4AF37" strokeWidth="2.5" />
             <line x1="888" y1="480" x2="908" y2="480" stroke="#D4AF37" strokeWidth="2.5" />
 
-            <text x="500" y="60" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
-            <text x="500" y="915" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
-            <text x="75" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
-            <text x="925" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
+            <text x="500" y="60" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.n}</text>
+            <text x="500" y="915" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.s}</text>
+            <text x="75" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.w}</text>
+            <text x="925" y="487" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.e}</text>
 
-            {/* Example 3: Wedding Day in Antwerpen */}
+            {/* Example 3: Wedding Day */}
             <text x="500" y="955" textAnchor="middle" fill="#D4AF37" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              DE DAG DAT WE &apos;JA&apos; ZEIDEN
+              {t.catalog.posters.emerald.title}
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="#F3E5AB" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Sophie &amp; Thomas
+              {t.catalog.posters.emerald.names}
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
@@ -332,10 +248,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="#F3E5AB" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              18 SEPTEMBER 2023
+              {t.catalog.posters.emerald.date}
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="#C9B06B" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              ANTWERPEN, BELGIË • 51.2194° N • 4.4025° E
+              {t.catalog.posters.emerald.location} • {t.catalog.posters.emerald.coords}
             </text>
           </svg>
         );
@@ -362,12 +278,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255,235,238,0.25)" strokeWidth="1.5" strokeDasharray="8 6" />
             <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255,235,238,0.15)" strokeWidth="1" />
 
-            {/* Example 4: Anniversary / Under The Same Stars in Rotterdam */}
+            {/* Example 4: Anniversary / Under The Same Stars */}
             <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              ONDER DEZELFDE STERREN
+              {t.catalog.posters.burgundy.title}
             </text>
             <text x="500" y="1028" textAnchor="middle" fill="#F7D6DA" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Mila &amp; Daan
+              {t.catalog.posters.burgundy.names}
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
@@ -375,10 +291,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="#F7D6DA" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              31 DECEMBER 2022
+              {t.catalog.posters.burgundy.date}
             </text>
             <text x="500" y="1195" textAnchor="middle" fill="#D6A6AD" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              ROTTERDAM, NEDERLAND • 51.9244° N • 4.4777° E
+              {t.catalog.posters.burgundy.location} • {t.catalog.posters.burgundy.coords}
             </text>
           </svg>
         );
@@ -395,13 +311,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#EFE9DF] border border-[#E0D7C9] text-[#78716C] text-xs font-medium">
             <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>AMBACHTELIJKE KUNSTSTIJLEN</span>
+            <span>{t.catalog.artStylesBadge}</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-[#1C1917]">
-            Eén Tijdloos Product, Verfijnde Kunststijlen
+            {t.catalog.artStylesTitle}
           </h2>
           <p className="text-[#57534E] text-sm sm:text-base font-light leading-relaxed">
-            Wij focussen ons 100% op het perfectioneren van de gepersonaliseerde sterrenposter. Kies jouw favoriete esthetiek en open direct onze ontwerpstudio.
+            {t.catalog.artStylesDesc}
           </p>
         </div>
 
@@ -471,19 +387,19 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         <div className="p-5 rounded-2xl bg-white border border-[#E2DDD5] shadow-xs flex flex-wrap items-center justify-around gap-4 text-xs text-[#57534E]">
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Officiële NASA JPL &amp; Skyfield sterrendata</span>
+            <span>{t.catalog.trustPoint1}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>285 gsm Fine-Art katoenpapier</span>
+            <span>{t.catalog.trustPoint2}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Massief houten wissellijsten</span>
+            <span>{t.catalog.trustPoint3}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>{t.catalog.shippingTrust}</span>
+            <span>{t.catalog.trustPoint4}</span>
           </div>
         </div>
       </div>

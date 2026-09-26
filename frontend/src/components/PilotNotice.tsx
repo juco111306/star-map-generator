@@ -1,9 +1,13 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Sparkles, Truck, HeartHandshake, Info, Mail, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Sparkles, Truck, HeartHandshake, Info } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const PilotNotice: React.FC = () => {
+  const { t } = useLanguage();
+  const p = t.pilotNotice;
+
   return (
     <section id="pilot" className="py-14 sm:py-20 bg-[#F5F2EB] border-t border-[#EAE5DC]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,28 +21,28 @@ export const PilotNotice: React.FC = () => {
             <div className="text-center sm:text-left space-y-3">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#FAF8F5] border border-[#E4DDD0] text-[#A37055] text-xs font-medium">
                 <Info className="w-3.5 h-3.5" />
-                <span>TRANSPARANTIE & VERTROUWEN</span>
+                <span>{p.badge}</span>
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-normal tracking-tight text-[#1C1917]">
-                Over onze Exclusieve Pilot in Nederland & België
+                {p.title}
               </h2>
               <p className="text-[#57534E] text-sm sm:text-base font-light leading-relaxed max-w-3xl">
-                Stellaire bevindt zich momenteel in de exclusieve pilotfase. Wij brengen onze gepersonaliseerde sterrenposters met de hoogste ambachtelijke standaarden naar klanten in Nederland en België, vóór de officiële landelijke lancering.
+                {p.desc}
               </p>
             </div>
 
-            {/* 3 Pillars of the Pilot */}
+            {/* 3 Pillars */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-              {/* Pillar 1: Local Sustainable Gelato Production */}
+              {/* Pillar 1: Sustainable Production */}
               <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#ECE7DE] space-y-2.5">
                 <div className="w-9 h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#A37055] shadow-xs">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <h3 className="font-serif font-bold text-sm text-[#1C1917]">
-                  Lokale Kwaliteitsproductie
+                  {p.pillar1Title}
                 </h3>
                 <p className="text-xs text-[#57534E] font-light leading-relaxed">
-                  Elke bestelling wordt via onze ervaren partner met jarenlange ervaring en prachtige kwaliteitslijsten lokaal en on-demand geproduceerd in Nederland en België. Dit garandeert snelle bezorging, minimale CO2-uitstoot en FSC® gecertificeerde lijsten.
+                  {p.pillar1Desc}
                 </p>
               </div>
 
@@ -48,10 +52,10 @@ export const PilotNotice: React.FC = () => {
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <h3 className="font-serif font-bold text-sm text-[#1C1917]">
-                  100% Museumkwaliteit
+                  {p.pillar2Title}
                 </h3>
                 <p className="text-xs text-[#57534E] font-light leading-relaxed">
-                  Elke bestelling wordt individueel vervaardigd op 285 gsm archiefwaardig fine-art papier met lichtechte pigmentinkt. De sterrenstand wordt exact berekend via officiële NASA JPL efemeriden.
+                  {p.pillar2Desc}
                 </p>
               </div>
 
@@ -61,10 +65,10 @@ export const PilotNotice: React.FC = () => {
                   <Truck className="w-4 h-4" />
                 </div>
                 <h3 className="font-serif font-bold text-sm text-[#1C1917]">
-                  Verzekerd via vertrouwde partners (zoals PostNL, Bpost)
+                  {p.pillar3Title}
                 </h3>
                 <p className="text-xs text-[#57534E] font-light leading-relaxed">
-                  Verzending binnen 2–3 werkdagen in Nederland en België in een stevige beschermende kunstverpakking met Track & Trace. Komt een pakket beschadigd aan? Wij herdrukken direct kosteloos.
+                  {p.pillar3Desc}
                 </p>
               </div>
             </div>
@@ -74,12 +78,13 @@ export const PilotNotice: React.FC = () => {
               <div className="flex items-center space-x-3 text-[#57534E]">
                 <HeartHandshake className="w-5 h-5 text-[#A37055] shrink-0" />
                 <span>
-                  <strong className="text-[#1C1917] font-medium">Persoonlijke klantenservice:</strong> Ons team volgt elke pilot-bestelling handmatig op voor een vlekkeloze ervaring.
+                  <strong className="text-[#1C1917] font-medium">{p.serviceTitle}: </strong>
+                  {p.serviceDesc}
                 </span>
               </div>
               <div className="flex items-center space-x-2 shrink-0">
-                <span className="text-[#78716C]">Vragen over de pilot?</span>
-                <span className="font-medium text-[#1C1917] underline decoration-[#A37055]">klantenservice@stellaire.nl</span>
+                <span className="text-[#78716C]">{p.contactLabel}</span>
+                <span className="font-medium text-[#1C1917] underline decoration-[#A37055]">{p.email}</span>
               </div>
             </div>
           </div>

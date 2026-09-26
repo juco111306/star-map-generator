@@ -95,3 +95,87 @@ export const POPULAR_LOCATIONS = [
   { name: 'Eindhoven, Nederland', lat: 51.4416, lon: 5.4697 },
   { name: 'Parijs, Frankrijk', lat: 48.8566, lon: 2.3522 },
 ];
+
+export const getLocalizedStyleDetails = (locale: string = 'nl') => {
+  const map: Record<string, Record<string, { title: string; subtitle: string; desc: string; tag: string }>> = {
+    nl: {
+      midnight_classic: {
+        title: 'Midnight Classic',
+        subtitle: 'Onze Meest Geliefde Bestseller',
+        desc: 'Diep koningsblauw met dubbele kompasring, fijne graadverdeling en fonkelende witte sterren.',
+        tag: 'BESTSELLER',
+      },
+      teal_watercolor: {
+        title: 'Teal Watercolor',
+        subtitle: 'Zachte Aquarel & Neveltextuur',
+        desc: 'Sfeervolle marineblauwe en cyaankleurige aquarelstructuur op een warm linnenachtergrond.',
+        tag: 'ARTISTIEK',
+      },
+      emerald_night: {
+        title: 'Emerald Night',
+        subtitle: 'Brits Bosgroen & Koninklijk Goud',
+        desc: 'Diepgroene nachthemel gecombineerd met metallic gouden sterren en hemelcoördinaten.',
+        tag: 'LUXE EDITIE',
+      },
+      burgundy_sky: {
+        title: 'Burgundy Sky',
+        subtitle: 'Warme Romantiek & Fluweelrood',
+        desc: 'Rijke bordeauxrode tinten die liefde en warmte uitstralen, afgewerkt met zachte parelwitte typografie.',
+        tag: 'ROMANTISCH',
+      },
+    },
+    de: {
+      midnight_classic: {
+        title: 'Midnight Classic',
+        subtitle: 'Unser Beliebtester Bestseller',
+        desc: 'Tiefes Königsblau mit doppeltem Kompassring, feinen Gradteilungen und funkelnden Sternen.',
+        tag: 'BESTSELLER',
+      },
+      teal_watercolor: {
+        title: 'Teal Watercolor',
+        subtitle: 'Sanfte Aquarell- & Nebeltextur',
+        desc: 'Stimmungsvolle marine- und cyanblaue Aquarellstruktur auf warmem Hintergrund.',
+        tag: 'KÜNSTLERISCH',
+      },
+      emerald_night: {
+        title: 'Emerald Night',
+        subtitle: 'Waldgrün & Edles Gold',
+        desc: 'Dunkelgrüner Nachthimmel kombiniert mit edlen goldenen Sternen und Himmelskoordinaten.',
+        tag: 'LUXUS EDITION',
+      },
+      burgundy_sky: {
+        title: 'Burgundy Sky',
+        subtitle: 'Warme Romantik & Samtrot',
+        desc: 'Satte bordeauxrote Nuancen, die Liebe und Wärme ausstrahlen, veredelt mit Perlweiß.',
+        tag: 'ROMANTISCH',
+      },
+    },
+    en: {
+      midnight_classic: {
+        title: 'Midnight Classic',
+        subtitle: 'Our Most Beloved Bestseller',
+        desc: 'Deep royal navy with double compass dial, delicate degree ticks, and luminous white stars.',
+        tag: 'BESTSELLER',
+      },
+      teal_watercolor: {
+        title: 'Teal Watercolor',
+        subtitle: 'Gentle Nebula Watercolor Texture',
+        desc: 'Atmospheric deep teal and cyan watercolor structure across a warm matted background.',
+        tag: 'ARTISTIC',
+      },
+      emerald_night: {
+        title: 'Emerald Night',
+        subtitle: 'British Racing Green & Royal Gold',
+        desc: 'Deep forest green night sky paired with metallic gold celestial coordinates.',
+        tag: 'LUXURY EDITION',
+      },
+      burgundy_sky: {
+        title: 'Burgundy Sky',
+        subtitle: 'Warm Romance & Velvet Crimson',
+        desc: 'Rich burgundy hues radiating warmth and devotion, finished with soft pearl typography.',
+        tag: 'ROMANTIC',
+      },
+    },
+  };
+  return map[locale] || map.nl;
+};

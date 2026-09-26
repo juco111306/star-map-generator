@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import convertToSubcurrency from "@/utils/convertToSubcurrency";
 
+import { useLanguage } from "@/context/LanguageContext";
+
 const CheckoutPage = ({ amount }: { amount: number }) => {
+  const { locale } = useLanguage();
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -15,11 +18,11 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
     fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
+      body: JSON.stringify({ amount: convertToSubcurrency(amount), locale }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, [amount]);
+  }, [amount, locale]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,7 +41,7 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `${window.location.origin}/payment-success?amount=${amount}`,
+        return_url: `${window.location.origin}/${locale}/payment-success?amount=${amount}`,
       },
     });
 
@@ -62,9 +65,9 @@ const CheckoutPage = ({ amount }: { amount: number }) => {
       {errorMessage && <div className="text-red-500 mt-2">{errorMessage}</div>}
       <button
         disabled={!stripe || loading}
-        className="w-full bg-black text-white p-2 rounded-md mt-4 disabled:opacity-50"
+        className="w-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] p-3 font-semibold text-xs rounded-xl mt-4 disabled:opacity-50 transition shadow-sm"
       >
-        {!loading ? `Pay $${amount}` : "Processing..."}
+        {!loading ? (locale === 'de' ? `Jetzt €${amount} bezahlen` : locale === 'en' ? `Pay €${amount}` : `Betaal €${amount}`) : (locale === 'de' ? 'Wird verarbeitet...' : locale === 'en' ? 'Processing...' : 'Verwerken...')}
       </button>
     </form>
   );

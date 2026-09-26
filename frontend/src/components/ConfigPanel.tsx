@@ -33,7 +33,7 @@ import { TYPOGRAPHY_PRESETS } from '../constants/presets';
 import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, PosterSize, TextBlockConfig } from '../types';
 import { StyleSelector } from './StyleSelector';
 import { apiFetch } from '../utils/api';
-import { calculatePrice, FRAME_OPTIONS, METRIC_SIZES } from '../utils/pricing';
+import { calculatePrice, getLocalizedFrameOptions, getLocalizedMetricSizes } from '../utils/pricing';
 import { useLanguage } from '../context/LanguageContext';
 
 interface ConfigPanelProps {
@@ -189,23 +189,48 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     });
   };
 
+  const frameOptions = getLocalizedFrameOptions(locale);
+  const metricSizes = getLocalizedMetricSizes(locale);
+
   const dividers: { id: DividerStyle; label: string; symbol: string }[] = [
-    { id: 'diamond', label: 'Diamant', symbol: '— ◆ —' },
-    { id: 'star', label: 'Ster', symbol: '— ✦ —' },
-    { id: 'heart', label: 'Hart', symbol: '— ♥ —' },
-    { id: 'dot', label: 'Punt', symbol: '— • —' },
-    { id: 'line', label: 'Minimalistische Lijn', symbol: '———' },
-    { id: 'none', label: 'Geen', symbol: 'Geen' },
+    { id: 'diamond', label: locale === 'de' ? 'Diamant' : locale === 'en' ? 'Diamond' : 'Diamant', symbol: '— ◆ —' },
+    { id: 'star', label: locale === 'de' ? 'Stern' : locale === 'en' ? 'Star' : 'Ster', symbol: '— ✦ —' },
+    { id: 'heart', label: locale === 'de' ? 'Herz' : locale === 'en' ? 'Heart' : 'Hart', symbol: '— ♥ —' },
+    { id: 'dot', label: locale === 'de' ? 'Punkt' : locale === 'en' ? 'Dot' : 'Punt', symbol: '— • —' },
+    { id: 'line', label: locale === 'de' ? 'Minimalistische Linie' : locale === 'en' ? 'Minimalist Line' : 'Minimalistische Lijn', symbol: '———' },
+    { id: 'none', label: locale === 'de' ? 'Kein' : locale === 'en' ? 'None' : 'Geen', symbol: '—' },
   ];
 
   const currentPriceDetails = calculatePrice(config.posterSize, config.frameStyle);
 
   const layoutVariations: { id: LayoutVariation; label: string; desc: string; badge?: string }[] = [
-    { id: 'standard_stack', label: 'De Standaard Galerij', desc: t.studio.standardStackDesc, badge: 'Populair' },
-    { id: 'top_title', label: 'Titel Bovenaan', desc: t.studio.topTitleDesc },
-    { id: 'curved_border', label: 'Gebogen Randschrift', desc: t.studio.curvedBorderDesc },
-    { id: 'moon_phases', label: 'De Maanfasen', desc: t.studio.moonPhasesDesc, badge: 'Populair' },
-    { id: 'framed', label: 'Galerijkader (Keyline)', desc: t.studio.framedDesc },
+    {
+      id: 'standard_stack',
+      label: locale === 'de' ? 'Die Standard-Galerie' : locale === 'en' ? 'The Standard Gallery' : 'De Standaard Galerij',
+      desc: t.studio.standardStackDesc,
+      badge: locale === 'de' ? 'Beliebt' : locale === 'en' ? 'Popular' : 'Populair',
+    },
+    {
+      id: 'top_title',
+      label: locale === 'de' ? 'Titel Oben' : locale === 'en' ? 'Top Title' : 'Titel Bovenaan',
+      desc: t.studio.topTitleDesc,
+    },
+    {
+      id: 'curved_border',
+      label: locale === 'de' ? 'Gebogene Randschrift' : locale === 'en' ? 'Curved Border' : 'Gebogen Randschrift',
+      desc: t.studio.curvedBorderDesc,
+    },
+    {
+      id: 'moon_phases',
+      label: locale === 'de' ? 'Die Mondphasen' : locale === 'en' ? 'The Moon Phases' : 'De Maanfasen',
+      desc: t.studio.moonPhasesDesc,
+      badge: locale === 'de' ? 'Beliebt' : locale === 'en' ? 'Popular' : 'Populair',
+    },
+    {
+      id: 'framed',
+      label: locale === 'de' ? 'Galerierahmen (Keyline)' : locale === 'en' ? 'Gallery Frame (Keyline)' : 'Galerijkader (Keyline)',
+      desc: t.studio.framedDesc,
+    },
   ];
 
   const stepsList: { id: StudioTab; num: number; title: string; label: string; icon: any }[] = [
@@ -231,10 +256,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-[11px] text-[#78716C]">
             <button onClick={onBackToProducts} className="hover:text-[#1C1917] transition-colors">
-              Overzicht
+              {t.studio.breadcrumbHome}
             </button>
             <span>/</span>
-            <span className="text-[#1C1917] font-medium">Gepersonaliseerde Sterrenposter</span>
+            <span className="text-[#1C1917] font-medium">{t.studio.breadcrumbProduct}</span>
           </div>
 
           <button
@@ -242,7 +267,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             className="text-xs text-[#A37055] hover:text-[#1C1917] font-medium transition-colors flex items-center gap-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Terug naar Home</span>
+            <span>{t.studio.backToHome}</span>
           </button>
         </div>
 
@@ -296,7 +321,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Kies Jouw Locatie</span>
+                  <span>{t.studio.stepLocationTitle}</span>
                 </span>
                 <span className="text-[10px] text-[#A8A29E] font-mono">
                   {config.latitude.toFixed(2)}°, {config.longitude.toFixed(2)}°
@@ -311,7 +336,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleKeyDownSearch}
-                    placeholder="Zoek stad, adres of bezienswaardigheid..."
+                    placeholder={t.studio.locationSearchPlaceholder}
                     className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-10 pr-10 py-2.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] transition"
                   />
                   {isSearching && (
@@ -402,7 +427,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </div>
 
               <p className="text-[11px] text-[#78716C] font-light pt-1">
-                Het Skyfield astronomiemodel berekent de exacte stand van de sterren voor dit tijdstip en deze coördinaten.
+                {locale === 'de'
+                  ? 'Das Skyfield-Astronomiemodell berechnet die exakte Position der Sterne für diesen Zeitpunkt und diese Koordinaten.'
+                  : locale === 'en'
+                  ? 'The Skyfield astronomy model calculates the exact celestial positions for this moment and coordinates.'
+                  : 'Het Skyfield astronomiemodel berekent de exacte stand van de sterren voor dit tijdstip en deze coördinaten.'}
               </p>
             </div>
           </div>
@@ -414,8 +443,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             {/* 1. Form (Circle or Heart) */}
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center justify-between">
-                <span>1. Kaartsilhouet & Vorm</span>
-                <span className="text-[10px] text-[#A37055]">Cirkel of Hart</span>
+                <span>1. {t.studio.maskShapeTitle}</span>
+                <span className="text-[10px] text-[#A37055]">{locale === 'de' ? 'Kreis oder Herz' : locale === 'en' ? 'Circle or Heart' : 'Cirkel of Hart'}</span>
               </label>
 
               <div className="grid grid-cols-2 gap-2.5">
@@ -430,9 +459,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 >
                   <Circle className="w-4 h-4 shrink-0" />
                   <div className="text-left">
-                    <span className="text-xs font-semibold block">Klassieke Cirkel</span>
+                    <span className="text-xs font-semibold block">{t.studio.maskCircle}</span>
                     <span className={`text-[10px] block ${(config.maskShape || 'circle') === 'circle' ? 'text-white/80' : 'text-[#78716C]'}`}>
-                      Tijdloze hemelbol
+                      {locale === 'de' ? 'Zeitlose Himmelssphäre' : locale === 'en' ? 'Timeless celestial sphere' : 'Tijdloze hemelbol'}
                     </span>
                   </div>
                 </button>
@@ -448,9 +477,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 >
                   <Heart className="w-4 h-4 text-rose-400 shrink-0" />
                   <div className="text-left">
-                    <span className="text-xs font-semibold block">Hartvormig Silhouet</span>
+                    <span className="text-xs font-semibold block">{t.studio.maskHeart}</span>
                     <span className={`text-[10px] block ${config.maskShape === 'heart' ? 'text-white/80' : 'text-[#78716C]'}`}>
-                      Romantische herinnering
+                      {locale === 'de' ? 'Romantische Erinnerung' : locale === 'en' ? 'Romantic keepsake' : 'Romantische herinnering'}
                     </span>
                   </div>
                 </button>
@@ -461,17 +490,17 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                 <Compass className="w-3.5 h-3.5 text-[#A37055]" />
-                <span>2. Astronomische Elementen</span>
+                <span>2. {t.studio.celestialTogglesTitle}</span>
               </label>
 
               <div className="space-y-2">
                 <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E2DDD5] cursor-pointer hover:border-[#1C1917] transition">
                   <div>
                     <span className="text-xs font-medium text-[#1C1917] block">
-                      Melkweg Nevel
+                      {t.studio.toggleMilkyWay}
                     </span>
                     <span className="text-[10px] text-[#78716C]">
-                      Subtiel kosmisch sterrenstof
+                      {locale === 'de' ? 'Subtiler kosmischer Sternenstaub' : locale === 'en' ? 'Subtle cosmic stardust' : 'Subtiel kosmisch sterrenstof'}
                     </span>
                   </div>
                   <input
@@ -485,10 +514,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E2DDD5] cursor-pointer hover:border-[#1C1917] transition">
                   <div>
                     <span className="text-xs font-medium text-[#1C1917] block">
-                      Sterrenbeelden & Lijnen
+                      {t.studio.toggleConstellations}
                     </span>
                     <span className="text-[10px] text-[#78716C]">
-                      88 officiële IAU sterrenbeelden
+                      {locale === 'de' ? '88 offizielle IAU Sternbilder' : locale === 'en' ? '88 official IAU constellations' : '88 officiële IAU sterrenbeelden'}
                     </span>
                   </div>
                   <input
@@ -502,10 +531,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <label className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E2DDD5] cursor-pointer hover:border-[#1C1917] transition">
                   <div>
                     <span className="text-xs font-medium text-[#1C1917] block">
-                      Hemelcoördinaten & Kompas
+                      {t.studio.toggleGrid}
                     </span>
                     <span className="text-[10px] text-[#78716C]">
-                      Equatoriaal raster en windrichtingen (N, Z, O, W)
+                      {locale === 'de' ? `Äquatoriales Gitter & Himmelsrichtungen (${t.studio.cardinalPoints.n}, ${t.studio.cardinalPoints.s}, ${t.studio.cardinalPoints.w}, ${t.studio.cardinalPoints.e})` : locale === 'en' ? `Equatorial grid & cardinal directions (${t.studio.cardinalPoints.n}, ${t.studio.cardinalPoints.s}, ${t.studio.cardinalPoints.w}, ${t.studio.cardinalPoints.e})` : 'Equatoriaal raster en windrichtingen (N, Z, O, W)'}
                     </span>
                   </div>
                   <input
@@ -523,9 +552,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>3. Poster Layout Variaties</span>
+                  <span>3. {locale === 'de' ? 'Poster-Layout Variationen' : locale === 'en' ? 'Poster Layout Variations' : 'Poster Layout Variaties'}</span>
                 </span>
-                <span className="text-[10px] text-[#A37055] font-medium">5 Stijlen</span>
+                <span className="text-[10px] text-[#A37055] font-medium">5 {locale === 'de' ? 'Stile' : locale === 'en' ? 'Styles' : 'Stijlen'}</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -566,7 +595,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             {/* 4. Art Style & Color Palette */}
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C]">
-                4. Kunststijl & Kleurenpalet
+                4. {locale === 'de' ? 'Kunststil & Farbpalette' : locale === 'en' ? 'Art Style & Color Palette' : 'Kunststijl & Kleurenpalet'}
               </label>
 
               <StyleSelector
@@ -584,22 +613,22 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  1. Hoofdtitel Inscriptie
+                  1. {t.studio.titleBlockLabel}
                 </span>
-                <span className="text-[10px] text-[#A37055]">Primair</span>
+                <span className="text-[10px] text-[#A37055]">{locale === 'de' ? 'Primär' : locale === 'en' ? 'Primary' : 'Primair'}</span>
               </div>
               <input
                 type="text"
                 value={config.titleBlock.text}
                 onChange={(e) => updateBlock('titleBlock', { text: e.target.value })}
-                placeholder="bijv. DE NACHT WAARIN WE ELKAAR VONDEN"
+                placeholder={locale === 'de' ? 'z.B. DIE NACHT, IN DER WIR UNS TRAFEN' : locale === 'en' ? 'e.g. THE NIGHT WE MET' : 'bijv. DE NACHT WAARIN WE ELKAAR VONDEN'}
                 className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
               />
 
               {/* Suggestions */}
               <div className="space-y-1.5 pt-1">
                 <span className="text-[10px] text-[#78716C] font-medium flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-[#A37055]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
                   <span>{t.studio.titleSuggestionsTitle}</span>
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -634,7 +663,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  2. Namen / Kalligrafie
+                  2. {t.studio.namesBlockLabel}
                 </span>
                 <label className="text-[10.5px] font-medium text-[#A37055] flex items-center gap-1.5 cursor-pointer">
                   <input
@@ -643,7 +672,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     onChange={(e) => updateBlock('namesBlock', { enabled: e.target.checked })}
                     className="rounded accent-[#1C1917] w-3.5 h-3.5"
                   />
-                  <span>Namen toevoegen</span>
+                  <span>{locale === 'de' ? 'Namen hinzufügen' : locale === 'en' ? 'Add names' : 'Namen toevoegen'}</span>
                 </label>
               </div>
 
@@ -652,12 +681,12 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   type="text"
                   value={config.namesBlock.text}
                   onChange={(e) => updateBlock('namesBlock', { text: e.target.value })}
-                  placeholder="bijv. Emma & Daan"
+                  placeholder={t.studio.namesPlaceholder}
                   className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
                 />
               ) : (
                 <p className="text-[11px] text-[#78716C] italic font-light">
-                  Namen zijn uitgeschakeld. Vink het vakje aan voor een elegante kalligrafie-inscriptie.
+                  {locale === 'de' ? 'Namen sind deaktiviert. Aktivieren Sie das Kontrollkästchen für eine elegante Kalligraphie-Inschrift.' : locale === 'en' ? 'Names are disabled. Check the box for an elegant calligraphy inscription.' : 'Namen zijn uitgeschakeld. Vink het vakje aan voor een elegante kalligrafie-inscriptie.'}
                 </p>
               )}
             </div>
@@ -666,14 +695,14 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  3. Betekenisvolle Datum
+                  3. {t.studio.dateBlockLabel}
                 </span>
               </div>
               <input
                 type="text"
                 value={config.dateBlock.text}
                 onChange={(e) => updateBlock('dateBlock', { text: e.target.value })}
-                placeholder="bijv. 22 SEPTEMBER 2026"
+                placeholder={locale === 'de' ? 'z.B. 22. SEPTEMBER 2026' : locale === 'en' ? 'e.g. SEPTEMBER 22, 2026' : 'bijv. 22 SEPTEMBER 2026'}
                 className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
               />
             </div>
@@ -681,11 +710,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             {/* 4. Location & GPS Coordinates */}
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide block">
-                4. Locatie & GPS Coördinaten
+                4. {t.studio.locationBlockLabel} &amp; {t.studio.coordsBlockLabel}
               </span>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">Stad / Locatie</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Stadt / Ort' : locale === 'en' ? 'City / Location' : 'Stad / Locatie'}</label>
                   <input
                     type="text"
                     value={config.locationBlock.text}
@@ -694,7 +723,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">Coördinaten</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Koordinaten' : locale === 'en' ? 'Coordinates' : 'Coördinaten'}</label>
                   <input
                     type="text"
                     value={config.coordsBlock.text}
@@ -709,9 +738,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                  5. Decoratief Scheidingselement
+                  5. {t.studio.dividerTitle}
                 </span>
-                <span className="text-[10px] text-[#78716C]">Ornament</span>
+                <span className="text-[10px] text-[#78716C]">{locale === 'de' ? 'Ornament' : locale === 'en' ? 'Ornament' : 'Ornament'}</span>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {dividers.map((d) => (
@@ -731,7 +760,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 ))}
               </div>
               <p className="text-[10.5px] text-[#78716C] font-light pt-0.5">
-                De grootte van het scheidingselement kan worden aangepast in Stap 4 (Typografie).
+                {locale === 'de' ? 'Die Größe des Trennelements kann in Schritt 4 (Typografie) angepasst werden.' : locale === 'en' ? 'The divider size can be adjusted in Step 4 (Typography).' : 'De grootte van het scheidingselement kan worden aangepast in Stap 4 (Typografie).'}
               </p>
             </div>
           </div>
@@ -745,9 +774,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Wand2 className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Ambachtelijke Typografie Voorinstellingen</span>
+                  <span>{t.studio.presetsTitle}</span>
                 </span>
-                <span className="text-[10px] text-[#A37055]">1-Klik</span>
+                <span className="text-[10px] text-[#A37055]">{locale === 'de' ? '1-Klick' : locale === 'en' ? '1-Click' : '1-Klik'}</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -777,28 +806,28 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-                      <span>Atelier Typografie Harmonie</span>
+                      <span>{locale === 'de' ? 'Atelier Typografie-Harmonie' : locale === 'en' ? 'Atelier Typography Harmony' : 'Atelier Typografie Harmonie'}</span>
                     </span>
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F2EB] text-[#78716C] font-medium">
-                      Gebalanceerde Proporties
+                      {locale === 'de' ? 'Ausgewogene Proportionen' : locale === 'en' ? 'Balanced Proportions' : 'Gebalanceerde Proporties'}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Titel Lettertype</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">{locale === 'de' ? 'Titel Schriftart' : locale === 'en' ? 'Title Font' : 'Titel Lettertype'}</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.titleBlock.font} ({config.titleBlock.size} pt)</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Namen Schrijfletter</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">{locale === 'de' ? 'Namen Handschrift' : locale === 'en' ? 'Names Calligraphy' : 'Namen Schrijfletter'}</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.namesBlock.font} ({config.namesBlock.size} pt)</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Datum Lettertype</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">{locale === 'de' ? 'Datum Schriftart' : locale === 'en' ? 'Date Font' : 'Datum Lettertype'}</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.dateBlock.font} ({config.dateBlock.size} pt)</span>
                     </div>
                     <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-[#EBE7DF]">
-                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">Scheidingselement</span>
+                      <span className="text-[10px] text-[#78716C] uppercase tracking-wider block">{locale === 'de' ? 'Trennelement' : locale === 'en' ? 'Divider' : 'Scheidingselement'}</span>
                       <span className="font-medium text-[#1C1917] truncate block">{config.dividerSize || 34} pt</span>
                     </div>
                   </div>
@@ -811,10 +840,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   </div>
                   <div className="space-y-1">
                     <h4 className="font-serif text-sm font-semibold text-[#1C1917]">
-                      Wil je lettertypes & groottes handmatig aanpassen?
+                      {locale === 'de' ? 'Möchten Sie Schriftarten & Größen manuell anpassen?' : locale === 'en' ? 'Would you like to manually customize fonts & sizes?' : 'Wil je lettertypes & groottes handmatig aanpassen?'}
                     </h4>
                     <p className="text-[11.5px] text-[#78716C] font-light max-w-xs mx-auto leading-relaxed">
-                      Onze atelier-instellingen zijn perfect afgestemd voor museumkwaliteit. Je kunt individuele regelaars openen voor lettertypes, tekstgroottes tot 100 pt, spatiëring en de schaal van het scheidingselement.
+                      {locale === 'de' ? 'Unsere Atelier-Voreinstellungen sind perfekt abgestimmt für Galeriequalität. Sie können individuelle Regler für Schriftarten, Textgrößen bis 100 pt, Abstände und die Skalierung des Trennelements öffnen.' : locale === 'en' ? 'Our atelier presets are calibrated for gallery quality. You can open individual sliders for fonts, text sizes up to 100 pt, spacing and divider scale.' : 'Onze atelier-instellingen zijn perfect afgestemd voor museumkwaliteit. Je kunt individuele regelaars openen voor lettertypes, tekstgroottes tot 100 pt, spatiëring en de schaal van het scheidingselement.'}
                     </p>
                   </div>
                   <div className="pt-1">
@@ -824,7 +853,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#1C1917] text-[#FAF8F5] text-xs font-medium hover:bg-[#2C2825] transition-all shadow-sm inline-flex items-center justify-center gap-2"
                     >
                       <Sliders className="w-3.5 h-3.5 text-[#D4B59D]" />
-                      <span>Ja, pas lettertypes & groottes aan</span>
+                      <span>{locale === 'de' ? 'Ja, Schriften & Größen anpassen' : locale === 'en' ? 'Yes, customize fonts & sizes' : 'Ja, pas lettertypes & groottes aan'}</span>
                     </button>
                   </div>
                 </div>
@@ -835,14 +864,14 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3 rounded-xl bg-[#F5F1E9] border border-[#E2DDD5] flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2 text-[#44403C]">
                     <Sliders className="w-4 h-4 text-[#A37055]" />
-                    <span className="font-medium">Handmatige typografie-regelaars actief</span>
+                    <span className="font-medium">{locale === 'de' ? 'Manuelle Typografie-Regler aktiv' : locale === 'en' ? 'Manual typography controls active' : 'Handmatige typografie-regelaars actief'}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsCustomizingTypography(false)}
                     className="text-[11px] text-[#78716C] hover:text-[#1C1917] underline decoration-[#A8A29E] transition"
                   >
-                    Regelaars verbergen
+                    {locale === 'de' ? 'Regler verbergen' : locale === 'en' ? 'Hide controls' : 'Regelaars verbergen'}
                   </button>
                 </div>
 
@@ -850,7 +879,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                      Hoofdtitel Lettertype & Grootte
+                      {locale === 'de' ? 'Haupttitel Schriftart & Größe' : locale === 'en' ? 'Main Title Font & Size' : 'Hoofdtitel Lettertype & Grootte'}
                     </span>
                     <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                       <input
@@ -859,13 +888,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         onChange={(e) => updateBlock('titleBlock', { uppercase: e.target.checked })}
                         className="rounded accent-[#1C1917] w-3 h-3"
                       />
-                      <span>HOOFDLETTERS</span>
+                      <span>{locale === 'de' ? 'GROSSBUCHSTABEN' : locale === 'en' ? 'UPPERCASE' : 'HOOFDLETTERS'}</span>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
+                      <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Schriftart' : locale === 'en' ? 'Font' : 'Lettertype'}</label>
                       <select
                         value={config.titleBlock.font}
                         onChange={(e) => updateBlock('titleBlock', { font: e.target.value })}
@@ -878,7 +907,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Grootte</span>
+                        <span>{locale === 'de' ? 'Größe' : locale === 'en' ? 'Size' : 'Grootte'}</span>
                         <span className="text-[#A37055] font-mono">{config.titleBlock.size} pt</span>
                       </div>
                       <input
@@ -892,7 +921,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Spatiëring</span>
+                        <span>{locale === 'de' ? 'Abstand' : locale === 'en' ? 'Spacing' : 'Spatiëring'}</span>
                         <span className="text-[#A37055] font-mono">{config.titleBlock.tracking} px</span>
                       </div>
                       <input
@@ -913,7 +942,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                        Namen Lettertype & Grootte
+                        {locale === 'de' ? 'Namen Schriftart & Größe' : locale === 'en' ? 'Names Font & Size' : 'Namen Lettertype & Grootte'}
                       </span>
                       <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                         <input
@@ -922,13 +951,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           onChange={(e) => updateBlock('namesBlock', { uppercase: e.target.checked })}
                           className="rounded accent-[#1C1917] w-3 h-3"
                         />
-                        <span>HOOFDLETTERS</span>
+                        <span>{locale === 'de' ? 'GROSSBUCHSTABEN' : locale === 'en' ? 'UPPERCASE' : 'HOOFDLETTERS'}</span>
                       </label>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
+                        <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Schriftart' : locale === 'en' ? 'Font' : 'Lettertype'}</label>
                         <select
                           value={config.namesBlock.font}
                           onChange={(e) => updateBlock('namesBlock', { font: e.target.value })}
@@ -941,7 +970,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       </div>
                       <div>
                         <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                          <span>Grootte</span>
+                          <span>{locale === 'de' ? 'Größe' : locale === 'en' ? 'Size' : 'Grootte'}</span>
                           <span className="text-[#A37055] font-mono">{config.namesBlock.size} pt</span>
                         </div>
                         <input
@@ -955,7 +984,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       </div>
                       <div>
                         <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                          <span>Spatiëring</span>
+                          <span>{locale === 'de' ? 'Abstand' : locale === 'en' ? 'Spacing' : 'Spatiëring'}</span>
                           <span className="text-[#A37055] font-mono">{config.namesBlock.tracking} px</span>
                         </div>
                         <input
@@ -976,7 +1005,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                      Datum Lettertype & Grootte
+                      {locale === 'de' ? 'Datum Schriftart & Größe' : locale === 'en' ? 'Date Font & Size' : 'Datum Lettertype & Grootte'}
                     </span>
                     <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                       <input
@@ -985,13 +1014,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         onChange={(e) => updateBlock('dateBlock', { uppercase: e.target.checked })}
                         className="rounded accent-[#1C1917] w-3 h-3"
                       />
-                      <span>HOOFDLETTERS</span>
+                      <span>{locale === 'de' ? 'GROSSBUCHSTABEN' : locale === 'en' ? 'UPPERCASE' : 'HOOFDLETTERS'}</span>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
+                      <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Schriftart' : locale === 'en' ? 'Font' : 'Lettertype'}</label>
                       <select
                         value={config.dateBlock.font}
                         onChange={(e) => updateBlock('dateBlock', { font: e.target.value })}
@@ -1004,7 +1033,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Grootte</span>
+                        <span>{locale === 'de' ? 'Größe' : locale === 'en' ? 'Size' : 'Grootte'}</span>
                         <span className="text-[#A37055] font-mono">{config.dateBlock.size} pt</span>
                       </div>
                       <input
@@ -1018,7 +1047,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Spatiëring</span>
+                        <span>{locale === 'de' ? 'Abstand' : locale === 'en' ? 'Spacing' : 'Spatiëring'}</span>
                         <span className="text-[#A37055] font-mono">{config.dateBlock.tracking} px</span>
                       </div>
                       <input
@@ -1039,7 +1068,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                        Grootte Scheidingselement
+                        {locale === 'de' ? 'Größe Trennelement' : locale === 'en' ? 'Divider Size' : 'Grootte Scheidingselement'}
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-[#A37055] font-mono text-[10px]">{config.dividerSize || 34} pt</span>
@@ -1049,7 +1078,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           className="text-[9.5px] px-2 py-0.5 rounded bg-[#FAF8F5] border border-[#E2DDD5] text-[#57534E] hover:text-[#1C1917] hover:border-[#1C1917] transition"
                           title="Stel scheidingselement gelijk aan de datumgrootte"
                         >
-                          Gelijk aan datum
+                          {locale === 'de' ? 'Wie Datum' : locale === 'en' ? 'Match date' : 'Gelijk aan datum'}
                         </button>
                       </div>
                     </div>
@@ -1064,9 +1093,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         className="w-full accent-[#1C1917] cursor-pointer"
                       />
                       <div className="flex justify-between text-[9px] text-[#A8A29E]">
-                        <span>8 pt (Fijn)</span>
-                        <span className="text-[#A37055] font-medium">34 pt (Standaard)</span>
-                        <span>60 pt (Groot)</span>
+                        <span>8 pt ({locale === 'de' ? 'Fein' : locale === 'en' ? 'Fine' : 'Fijn'})</span>
+                        <span className="text-[#A37055] font-medium">34 pt ({locale === 'de' ? 'Standard' : locale === 'en' ? 'Standard' : 'Standaard'})</span>
+                        <span>60 pt ({locale === 'de' ? 'Groß' : locale === 'en' ? 'Large' : 'Groot'})</span>
                       </div>
                     </div>
                   </div>
@@ -1076,7 +1105,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="p-3.5 rounded-2xl bg-white border border-[#EBE7DF] space-y-2.5 shadow-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-[#1C1917] uppercase tracking-wide">
-                      Locatie & Coördinaten Typografie
+                      {locale === 'de' ? 'Ort & Koordinaten Typografie' : locale === 'en' ? 'Location & Coordinates Typography' : 'Locatie & Coördinaten Typografie'}
                     </span>
                     <label className="text-[10px] text-[#78716C] flex items-center gap-1 cursor-pointer">
                       <input
@@ -1088,13 +1117,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         }}
                         className="rounded accent-[#1C1917] w-3 h-3"
                       />
-                      <span>HOOFDLETTERS</span>
+                      <span>{locale === 'de' ? 'GROSSBUCHSTABEN' : locale === 'en' ? 'UPPERCASE' : 'HOOFDLETTERS'}</span>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="text-[10px] text-[#78716C] block mb-1">Lettertype</label>
+                      <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Schriftart' : locale === 'en' ? 'Font' : 'Lettertype'}</label>
                       <select
                         value={config.coordsBlock.font}
                         onChange={(e) => {
@@ -1110,7 +1139,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Coördinaten Grootte</span>
+                        <span>{locale === 'de' ? 'Koordinaten-Größe' : locale === 'en' ? 'Coordinates Size' : 'Coördinaten Grootte'}</span>
                         <span className="text-[#A37055] font-mono">{config.coordsBlock.size} pt</span>
                       </div>
                       <input
@@ -1124,7 +1153,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                     <div>
                       <div className="flex justify-between text-[10px] text-[#78716C] mb-1">
-                        <span>Locatie Grootte</span>
+                        <span>{locale === 'de' ? 'Ort-Größe' : locale === 'en' ? 'Location Size' : 'Locatie Grootte'}</span>
                         <span className="text-[#A37055] font-mono">{config.locationBlock.size} pt</span>
                       </div>
                       <input
@@ -1151,19 +1180,31 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Uitvoering & Inlijsting (Ervaren Partner)</span>
+                  <span>
+                    {locale === 'de'
+                      ? 'Ausführung & Rahmung (Erfahrener Partner)'
+                      : locale === 'en'
+                      ? 'Crafting & Picture Framing (Master Partner)'
+                      : 'Uitvoering & Inlijsting (Ervaren Partner)'}
+                  </span>
                 </label>
                 <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium">
-                  {config.frameStyle === 'digital' ? 'Digitaal Direct' : 'Classic Matte & FSC® Hout'}
+                  {config.frameStyle === 'digital'
+                    ? (locale === 'de' ? 'Sofort Digital' : locale === 'en' ? 'Instant Digital' : 'Digitaal Direct')
+                    : 'Classic Matte & FSC® Hout'}
                 </span>
               </div>
 
               <p className="text-[11px] text-[#78716C] font-light">
-                Geprint en met zorg ingelijst door onze partner met jarenlange ervaring en prachtige kwaliteitslijsten op 200 gsm Classic Matte papier, of kies voor een direct print-klaar digitaal PDF bestand.
+                {locale === 'de'
+                  ? 'Gedruckt und mit größter Sorgfalt gerahmt von unserem Partner mit jahrelanger Erfahrung in hochwertigen Qualitätsrahmen auf 200 g/m² Classic Matte Papier, oder wählen Sie eine sofort druckfertige digitale PDF-Datei.'
+                  : locale === 'en'
+                  ? 'Printed and carefully framed by our master partner with years of framing expertise on 200 gsm Classic Matte paper, or choose an instant print-ready digital vector PDF.'
+                  : 'Geprint en met zorg ingelijst door onze partner met jarenlange ervaring en prachtige kwaliteitslijsten op 200 gsm Classic Matte papier, of kies voor een direct print-klaar digitaal PDF bestand.'}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {FRAME_OPTIONS.map((f) => {
+                {frameOptions.map((f) => {
                   const isSelected = config.frameStyle === f.id;
                   const itemPrice = calculatePrice(config.posterSize, f.id);
                   return (
@@ -1206,11 +1247,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
                       <div className="mt-2.5 pt-2 border-t border-[#ECE7DE] flex items-center justify-between">
                         <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-white border border-[#E2DDD5] text-[#57534E]">
-                          {f.badge || 'Beschikbaar'}
+                          {f.badge || (locale === 'de' ? 'Verfügbar' : locale === 'en' ? 'Available' : 'Beschikbaar')}
                         </span>
                         {isSelected && (
                           <span className="text-[10px] font-semibold text-[#1C1917] flex items-center gap-1">
-                            <Check className="w-3 h-3 text-[#1C1917]" /> Geselecteerd
+                            <Check className="w-3 h-3 text-[#1C1917]" /> {locale === 'de' ? 'Ausgewählt' : locale === 'en' ? 'Selected' : 'Geselecteerd'}
                           </span>
                         )}
                       </div>
@@ -1225,21 +1266,33 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Maximize2 className="w-3.5 h-3.5 text-[#A37055]" />
-                  <span>Posterformaat (Metrisch)</span>
+                  <span>
+                    {locale === 'de' ? 'Postergröße (Metrisch)' : locale === 'en' ? 'Poster Size (Metric)' : 'Posterformaat (Metrisch)'}
+                  </span>
                 </label>
                 <span className="text-[10px] text-[#A37055] font-medium">
-                  {config.frameStyle === 'digital' ? 'Schaalbare 300 DPI Vector' : 'Exacte Metrische Maten'}
+                  {config.frameStyle === 'digital'
+                    ? (locale === 'de' ? 'Skalierbarer 300 DPI Vektor' : locale === 'en' ? 'Scalable 300 DPI Vector' : 'Schaalbare 300 DPI Vector')
+                    : (locale === 'de' ? 'Exakte Metrische Maße' : locale === 'en' ? 'Exact Metric Sizes' : 'Exacte Metrische Maten')}
                 </span>
               </div>
 
               <p className="text-[11px] text-[#78716C] font-light">
                 {config.frameStyle === 'digital'
-                  ? 'Het print-klare vector PDF bestand is schaalbaar naar elk metrisch formaat zonder kwaliteitsverlies.'
-                  : 'Standaard Europese galerijmaten, perfect passend voor lijsten en muren.'}
+                  ? (locale === 'de'
+                      ? 'Die druckfertige Vektor-PDF-Datei ist ohne Qualitätsverlust auf jedes metrische Format skalierbar.'
+                      : locale === 'en'
+                      ? 'The print-ready vector PDF file is scalable to any metric size without loss of quality.'
+                      : 'Het print-klare vector PDF bestand is schaalbaar naar elk metrisch formaat zonder kwaliteitsverlies.')
+                  : (locale === 'de'
+                      ? 'Standardmäßige europäische Galeriegrößen, passgenau für Rahmen und Wände.'
+                      : locale === 'en'
+                      ? 'Standard European gallery sizes, fitting frames and wall spaces perfectly.'
+                      : 'Standaard Europese galerijmaten, perfect passend voor lijsten en muren.')}
               </p>
 
               <div className="grid grid-cols-2 gap-2.5">
-                {METRIC_SIZES.map((fo) => {
+                {metricSizes.map((fo) => {
                   const isSelected = config.posterSize === fo.id;
                   const sizePrice = calculatePrice(fo.id, config.frameStyle);
                   return (
@@ -1259,7 +1312,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           <span className={`text-[8.5px] px-1 py-0.5 rounded font-medium ${
                             isSelected ? 'bg-white/20 text-white' : 'bg-[#A37055]/15 text-[#A37055]'
                           }`}>
-                            Populair
+                            {locale === 'de' ? 'Beliebt' : locale === 'en' ? 'Popular' : 'Populair'}
                           </span>
                         )}
                       </div>
@@ -1280,10 +1333,14 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <label className="flex items-center justify-between cursor-pointer">
                 <div>
                   <span className="text-xs font-medium text-[#1C1917] block">
-                    Museum Passe-Partout Rand
+                    {locale === 'de' ? 'Museums-Passepartout-Rand' : locale === 'en' ? 'Museum Passe-Partout Border' : 'Museum Passe-Partout Rand'}
                   </span>
                   <span className="text-[10px] text-[#78716C]">
-                    Helderwitte galerierand met verfijnde subtiele binnenlijn
+                    {locale === 'de'
+                      ? 'Reinweißer Galerierand mit verfeinerter, subtiler Innenlinie'
+                      : locale === 'en'
+                      ? 'Crisp white gallery border with a refined, subtle inner line'
+                      : 'Helderwitte galerierand met verfijnde subtiele binnenlijn'}
                   </span>
                 </div>
                 <input
@@ -1306,7 +1363,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               className="py-2 px-3 rounded-xl border border-[#D6D0C7] text-xs font-medium text-[#57534E] hover:text-[#1C1917] hover:bg-white transition flex items-center gap-1"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Vorige stap</span>
+              <span>{t.studio.prevStep}</span>
             </button>
           ) : <div />}
 
@@ -1316,7 +1373,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               onClick={handleNextStep}
               className="py-2 px-3.5 rounded-xl bg-[#1C1917] text-white text-xs font-medium hover:bg-[#2E2A27] transition flex items-center gap-1 shadow-sm"
             >
-              <span>Volgende stap</span>
+              <span>{t.studio.nextStep}</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           )}
@@ -1344,7 +1401,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             onClick={onOpenOrderModal}
             className="w-full py-3.5 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition transform hover:-translate-y-0.5"
           >
-            <span>Bestellen ({currentPriceDetails.formattedPrice})</span>
+            <span>{t.studio.orderButton} ({currentPriceDetails.formattedPrice})</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

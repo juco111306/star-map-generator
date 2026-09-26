@@ -33,7 +33,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   isLoading,
   onFrameChange,
 }) => {
-  const { cardinalPoints } = useLanguage();
+  const { locale, cardinalPoints } = useLanguage();
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -1158,7 +1158,13 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
             <div className="absolute inset-0 bg-stone-900/20 backdrop-blur-[2px] flex items-center justify-center transition-opacity">
               <div className="bg-[#FAF8F5]/95 border border-[#E2DDD5] px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-[#1C1917]">
                 <Loader2 className="w-4 h-4 animate-spin text-[#1C1917]" />
-                <span className="text-xs font-serif font-medium tracking-wide">Plotting NASA Celestial Positions...</span>
+                <span className="text-xs font-serif font-medium tracking-wide">
+                  {locale === 'de'
+                    ? 'NASA-Himmelskoordinaten werden berechnet...'
+                    : locale === 'en'
+                    ? 'Calculating NASA Celestial Coordinates...'
+                    : 'Astronomische hemelcoördinaten berekenen...'}
+                </span>
               </div>
             </div>
           )}

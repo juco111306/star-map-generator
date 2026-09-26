@@ -36,7 +36,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
   initialOrderId = '',
   initialEmail = '',
 }) => {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'track' | 'history'>('track');
 
   // Track single order form state
@@ -78,14 +78,14 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
         throw new Error(
-          errorData?.detail || 'Geen bestelling gevonden voor dit bestelnummer en e-mailadres.'
+          errorData?.detail || t.tracking.notFoundError
         );
       }
 
       const data: OrderRecord = await res.json();
       setTrackedOrder(data);
     } catch (err: any) {
-      setTrackError(err.message || 'Fout bij het ophalen van de bestelling.');
+      setTrackError(err.message || (locale === 'de' ? 'Fehler beim Abrufen der Bestellung.' : locale === 'en' ? 'Error fetching order.' : 'Fout bij het ophalen van de bestelling.'));
     } finally {
       setIsTrackingLoading(false);
     }
@@ -94,7 +94,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
   const handleHistorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!historyEmail.trim()) {
-      setHistoryError('Vul alstublieft uw e-mailadres in.');
+      setHistoryError(locale === 'de' ? 'Bitte geben Sie Ihre E-Mail-Adresse ein.' : locale === 'en' ? 'Please enter your email address.' : 'Vul alstublieft uw e-mailadres in.');
       return;
     }
 
@@ -113,16 +113,16 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
-        throw new Error(errorData?.detail || 'Fout bij het ophalen van uw bestelgeschiedenis.');
+        throw new Error(errorData?.detail || (locale === 'de' ? 'Fehler beim Abrufen der Bestellhistorie.' : locale === 'en' ? 'Error fetching order history.' : 'Fout bij het ophalen van uw bestelgeschiedenis.'));
       }
 
       const data = await res.json();
       setOrderHistory(data.orders || []);
       if ((data.orders || []).length === 0) {
-        setHistoryError('Geen eerdere bestellingen gevonden voor dit e-mailadres.');
+        setHistoryError(locale === 'de' ? 'Keine früheren Bestellungen für diese E-Mail-Adresse gefunden.' : locale === 'en' ? 'No previous orders found for this email address.' : 'Geen eerdere bestellingen gevonden voor dit e-mailadres.');
       }
     } catch (err: any) {
-      setHistoryError(err.message || 'Fout bij het ophalen van bestellingen.');
+      setHistoryError(err.message || (locale === 'de' ? 'Fehler beim Abrufen von Bestellungen.' : locale === 'en' ? 'Error fetching orders.' : 'Fout bij het ophalen van bestellingen.'));
     } finally {
       setIsHistoryLoading(false);
     }
@@ -136,11 +136,26 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
   };
 
   const statusLabels: Record<string, { label: string; color: string }> = {
-    confirmed: { label: 'Ontvangen', color: 'bg-amber-50 text-amber-800 border-amber-200' },
-    in_production: { label: 'In Atelier Productie', color: 'bg-sky-50 text-sky-800 border-sky-200' },
-    printed: { label: 'Gedrukt & Geïnspecteerd', color: 'bg-purple-50 text-purple-800 border-purple-200' },
-    shipped: { label: 'Onderweg met bezorgpartner', color: 'bg-blue-50 text-blue-800 border-blue-200' },
-    delivered: { label: 'Bezorgd', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+    confirmed: {
+      label: locale === 'de' ? 'Eingegangen' : locale === 'en' ? 'Received' : 'Ontvangen',
+      color: 'bg-amber-50 text-amber-800 border-amber-200',
+    },
+    in_production: {
+      label: locale === 'de' ? 'In Atelier-Produktion' : locale === 'en' ? 'In Atelier Production' : 'In Atelier Productie',
+      color: 'bg-sky-50 text-sky-800 border-sky-200',
+    },
+    printed: {
+      label: locale === 'de' ? 'Gedruckt & Geprüft' : locale === 'en' ? 'Printed & Inspected' : 'Gedrukt & Geïnspecteerd',
+      color: 'bg-purple-50 text-purple-800 border-purple-200',
+    },
+    shipped: {
+      label: locale === 'de' ? 'Unterwegs mit Versandpartner' : locale === 'en' ? 'In transit with courier' : 'Onderweg met bezorgpartner',
+      color: 'bg-blue-50 text-blue-800 border-blue-200',
+    },
+    delivered: {
+      label: locale === 'de' ? 'Geliefert' : locale === 'en' ? 'Delivered' : 'Bezorgd',
+      color: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    },
   };
 
   const getStatusStepIndex = (status: string) => {
@@ -182,7 +197,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
               <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide flex items-center gap-2">
                 <span>{t.tracking.modalTitle}</span>
                 <span className="text-[10px] uppercase font-sans font-semibold px-2 py-0.5 rounded-full bg-[#E8E2D5] text-[#57534E]">
-                  Realtime Atelier Status
+                  {locale === 'de' ? 'Echtzeit-Atelierstatus' : locale === 'en' ? 'Live Atelier Status' : 'Realtime Atelier Status'}
                 </span>
               </h3>
               <p className="text-[11px] text-[#78716C]">
@@ -221,7 +236,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
             }`}
           >
             <Clock className="w-3.5 h-3.5" />
-            <span>Mijn Eerdere Bestellingen</span>
+            <span>{locale === 'de' ? 'Meine früheren Bestellungen' : locale === 'en' ? 'My Previous Orders' : 'Mijn Eerdere Bestellingen'}</span>
           </button>
         </div>
 
@@ -272,7 +287,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
 
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-[11px] text-[#A8A29E]">
-                    Veilig op basis van e-mail en bestelnummer
+                    {locale === 'de' ? 'Sicher anhand von E-Mail und Bestellnummer' : locale === 'en' ? 'Secured by email and order reference' : 'Veilig op basis van e-mail en bestelnummer'}
                   </span>
                   <button
                     type="submit"
@@ -300,7 +315,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
                     <span>
-                      Voorbeeld testbestelling: <strong>STL-19565</strong> (
+                      {locale === 'de' ? 'Beispiel-Testbestellung:' : locale === 'en' ? 'Sample test order:' : 'Voorbeeld testbestelling:'} <strong>STL-19565</strong> (
                       <span className="font-mono text-[#1C1917]">clara.sterling@atelier-luxury.com</span>) of{' '}
                       <strong>STL-90547</strong> (<span className="font-mono text-[#1C1917]">jane@example.com</span>)
                     </span>
@@ -313,7 +328,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                     }}
                     className="text-[#A37055] font-semibold hover:underline text-[11px]"
                   >
-                    Test nu &rarr;
+                    {locale === 'de' ? 'Jetzt testen →' : locale === 'en' ? 'Test now →' : 'Test nu →'}
                   </button>
                 </div>
               )}
@@ -339,9 +354,9 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                           </span>
                         </div>
                         <p className="text-xs text-[#78716C] mt-1">
-                          Geplaatst op:{' '}
+                          {locale === 'de' ? 'Aufgegeben am:' : locale === 'en' ? 'Placed on:' : 'Geplaatst op:'}{' '}
                           {trackedOrder.created_at
-                            ? new Date(trackedOrder.created_at).toLocaleDateString('nl-NL', {
+                            ? new Date(trackedOrder.created_at).toLocaleDateString(locale === 'de' ? 'de-DE' : locale === 'en' ? 'en-GB' : 'nl-NL', {
                                 day: 'numeric',
                                 month: 'long',
                                 year: 'numeric',
@@ -359,7 +374,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                         className="px-4 py-2 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md flex items-center justify-center gap-2 transition"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        <span>Download 300 DPI Poster PDF</span>
+                        <span>{locale === 'de' ? '300 DPI Poster-PDF herunterladen' : locale === 'en' ? 'Download 300 DPI Poster PDF' : 'Download 300 DPI Poster PDF'}</span>
                       </a>
                     </div>
 
@@ -413,12 +428,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                         </div>
                         <div>
                           <p className="font-semibold text-[#1C1917]">
-                            Bezorging via {trackedOrder.carrier || 'PostNL'}
+                            {t.tracking.carrierPrefix} {trackedOrder.carrier || t.tracking.carrierDefault}
                           </p>
                           <p className="text-[#78716C] text-[11px]">
                             {trackedOrder.tracking_number
-                              ? `Track & Trace code: ${trackedOrder.tracking_number}`
-                              : 'Trackingcode wordt geactiveerd zodra het atelier het pakket overdraagt.'}
+                              ? `${t.tracking.trackingPrefix}: ${trackedOrder.tracking_number}`
+                              : (locale === 'de' ? 'Der Tracking-Code wird aktiviert, sobald das Atelier das Paket übergibt.' : locale === 'en' ? 'Tracking code will activate as soon as the atelier dispatches the parcel.' : 'Trackingcode wordt geactiveerd zodra het atelier het pakket overdraagt.')}
                           </p>
                         </div>
                       </div>
@@ -430,7 +445,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                           rel="noopener noreferrer"
                           className="px-3.5 py-1.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#1C1917] border border-[#E2DDD5] font-medium text-xs flex items-center gap-1.5 shadow-sm transition"
                         >
-                          <span>Volg bij Bezorger</span>
+                          <span>{locale === 'de' ? 'Beim Zusteller verfolgen' : locale === 'en' ? 'Track with Courier' : 'Volg bij Bezorger'}</span>
                           <ExternalLink className="w-3 h-3 text-[#78716C]" />
                         </a>
                       )}
@@ -440,7 +455,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                     {trackedOrder.timeline && trackedOrder.timeline.length > 0 && (
                       <div className="space-y-3 pt-2">
                         <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                          Atelier Voortgang & Logboek
+                          {locale === 'de' ? 'Atelier-Fortschritt & Protokoll' : locale === 'en' ? 'Atelier Progress & Log' : 'Atelier Voortgang & Logboek'}
                         </span>
                         <div className="space-y-2 border-l-2 border-[#E8E4DC] pl-4 ml-1">
                           {trackedOrder.timeline.map((evt, i) => (
@@ -449,7 +464,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                               <div className="flex items-center justify-between">
                                 <h5 className="font-serif font-bold text-xs text-[#1C1917]">{evt.title}</h5>
                                 <span className="text-[10px] text-[#A8A29E] font-mono">
-                                  {evt.timestamp ? new Date(evt.timestamp).toLocaleString('nl-NL') : ''}
+                                  {evt.timestamp ? new Date(evt.timestamp).toLocaleString(locale === 'de' ? 'de-DE' : locale === 'en' ? 'en-GB' : 'nl-NL') : ''}
                                 </span>
                               </div>
                               <p className="text-[11px] text-[#78716C] mt-0.5">{evt.description}</p>
@@ -463,21 +478,21 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-[#F0ECE1] text-xs">
                       <div>
                         <span className="text-[10px] font-bold uppercase tracking-wider text-[#A8A29E] block mb-1">
-                          Kunstwerk Specificaties
+                          {locale === 'de' ? 'Kunstwerk-Spezifikationen' : locale === 'en' ? 'Artwork Specifications' : 'Kunstwerk Specificaties'}
                         </span>
                         <p className="font-serif font-bold text-[#1C1917]">
-                          {trackedOrder.title_text || 'Sterrenkaart'}
+                          {trackedOrder.title_text || (locale === 'de' ? 'Sternenkarte' : locale === 'en' ? 'Star Map' : 'Sterrenkaart')}
                         </p>
                         <p className="text-[11px] text-[#78716C] italic">{trackedOrder.names_text}</p>
                         <p className="text-[11px] text-[#57534E] mt-1">
-                          Formaat: <strong>{trackedOrder.poster_size} cm</strong> • Uitvoering:{' '}
-                          <strong className="capitalize">{trackedOrder.frame_style || 'Zonder lijst'}</strong>
+                          {locale === 'de' ? 'Format:' : locale === 'en' ? 'Size:' : 'Formaat:'} <strong>{trackedOrder.poster_size} cm</strong> • {locale === 'de' ? 'Ausführung:' : locale === 'en' ? 'Edition:' : 'Uitvoering:'}{' '}
+                          <strong className="capitalize">{trackedOrder.frame_style || (locale === 'de' ? 'Ohne Rahmen' : locale === 'en' ? 'Unframed' : 'Zonder lijst')}</strong>
                         </p>
                       </div>
 
                       <div>
                         <span className="text-[10px] font-bold uppercase tracking-wider text-[#A8A29E] block mb-1">
-                          Afleveradres
+                          {locale === 'de' ? 'Lieferadresse' : locale === 'en' ? 'Delivery Address' : 'Afleveradres'}
                         </span>
                         <p className="font-semibold text-[#1C1917]">{trackedOrder.customer.name}</p>
                         <p className="text-[11px] text-[#57534E]">
@@ -499,13 +514,13 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
               >
                 <div>
                   <label className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block mb-1">
-                    E-mailadres bij Uw Bestellingen *
+                    {locale === 'de' ? 'E-Mail-Adresse Ihrer Bestellung *' : locale === 'en' ? 'Order Email Address *' : 'E-mailadres bij Uw Bestellingen *'}
                   </label>
                   <div className="flex gap-2">
                     <input
                       type="email"
                       required
-                      placeholder="bijv. emma@voorbeeld.nl"
+                      placeholder={locale === 'de' ? 'z. B. emma@beispiel.de' : locale === 'en' ? 'e.g. emma@example.com' : 'bijv. emma@voorbeeld.nl'}
                       value={historyEmail}
                       onChange={(e) => setHistoryEmail(e.target.value)}
                       className="flex-1 bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
@@ -518,12 +533,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                       {isHistoryLoading ? (
                         <>
                           <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Laden...</span>
+                          <span>{t.common.loading}</span>
                         </>
                       ) : (
                         <>
                           <Search className="w-3.5 h-3.5" />
-                          <span>Zoek Bestellingen</span>
+                          <span>{locale === 'de' ? 'Bestellungen suchen' : locale === 'en' ? 'Search Orders' : 'Zoek Bestellingen'}</span>
                         </>
                       )}
                     </button>
@@ -542,7 +557,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
               {orderHistory && orderHistory.length > 0 && (
                 <div className="space-y-3">
                   <h4 className="text-xs font-semibold uppercase tracking-wider text-[#57534E]">
-                    Gevonden Bestellingen ({orderHistory.length})
+                    {locale === 'de' ? 'Gefundene Bestellungen' : locale === 'en' ? 'Found Orders' : 'Gevonden Bestellingen'} ({orderHistory.length})
                   </h4>
 
                   <div className="space-y-3">
@@ -557,7 +572,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                               {item.order_id}
                             </span>
                             <span
-                              className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
+                              className={`text-[10px] font-medium px-2.5 py-0.5 rounded-full border ${
                                 statusLabels[item.status]?.color || 'bg-zinc-50 text-zinc-800 border-zinc-200'
                               }`}
                             >
@@ -565,18 +580,18 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                             </span>
                             <span className="text-[11px] text-[#78716C] font-mono">
                               {item.created_at
-                                ? new Date(item.created_at).toLocaleDateString('nl-NL')
+                                ? new Date(item.created_at).toLocaleDateString(locale === 'de' ? 'de-DE' : locale === 'en' ? 'en-GB' : 'nl-NL')
                                 : 'Recent'}
                             </span>
                           </div>
 
                           <h5 className="font-serif font-bold text-sm text-[#1C1917]">
-                            {item.title_text || 'Sterrenkaart'}
+                            {item.title_text || (locale === 'de' ? 'Sternenkarte' : locale === 'en' ? 'Star Map' : 'Sterrenkaart')}
                           </h5>
-                          <p className="text-xs text-[#78716C] italic">Opgedragen: {item.names_text}</p>
+                          <p className="text-xs text-[#78716C] italic">{locale === 'de' ? 'Gewidmet:' : locale === 'en' ? 'Dedicated:' : 'Opgedragen:'} {item.names_text}</p>
                           <p className="text-[11px] text-[#57534E]">
-                            Formaat: <strong>{item.poster_size} cm</strong> • Lijst:{' '}
-                            <strong className="capitalize">{item.frame_style || 'Zonder lijst'}</strong>
+                            {locale === 'de' ? 'Format:' : locale === 'en' ? 'Size:' : 'Formaat:'} <strong>{item.poster_size} cm</strong> • {locale === 'de' ? 'Rahmen:' : locale === 'en' ? 'Frame:' : 'Lijst:'}{' '}
+                            <strong className="capitalize">{item.frame_style || (locale === 'de' ? 'Ohne Rahmen' : locale === 'en' ? 'Unframed' : 'Zonder lijst')}</strong>
                           </p>
                         </div>
 
@@ -586,7 +601,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                             onClick={() => selectOrderFromHistory(item)}
                             className="flex-1 sm:flex-none px-4 py-2 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-sm flex items-center justify-center gap-1.5 transition"
                           >
-                            <span>Bekijk & Volg</span>
+                            <span>{locale === 'de' ? 'Ansehen & Verfolgen' : locale === 'en' ? 'View & Track' : 'Bekijk & Volg'}</span>
                             <ChevronRight className="w-3.5 h-3.5" />
                           </button>
 

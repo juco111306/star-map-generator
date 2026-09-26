@@ -71,11 +71,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     e.preventDefault();
     
     if (!customer.name.trim() || !customer.email.trim()) {
-      setError('Vul alstublieft uw naam en e-mailadres in.');
+      setError(locale === 'de' ? 'Bitte geben Sie Ihren Namen und Ihre E-Mail-Adresse ein.' : locale === 'en' ? 'Please enter your name and email address.' : 'Vul alstublieft uw naam en e-mailadres in.');
       return;
     }
     if (!isDigital && (!customer.address_line1.trim() || !customer.city.trim() || !customer.postal_code.trim())) {
-      setError('Vul alstublieft uw volledige bezorgadres in voor onze bezorgpartners.');
+      setError(locale === 'de' ? 'Bitte geben Sie Ihre vollständige Lieferadresse für unsere Versandpartner ein.' : locale === 'en' ? 'Please enter your complete shipping address for our delivery partners.' : 'Vul alstublieft uw volledige bezorgadres in voor onze bezorgpartners.');
       return;
     }
 
@@ -85,10 +85,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     try {
       const payloadCustomer = {
         ...customer,
-        address_line1: customer.address_line1.trim() || 'Digitale Levering per E-mail',
-        city: customer.city.trim() || 'Digitaal',
+        address_line1: customer.address_line1.trim() || (locale === 'de' ? 'Digitale Lieferung per E-Mail' : locale === 'en' ? 'Digital Delivery via Email' : 'Digitale Levering per E-mail'),
+        city: customer.city.trim() || (locale === 'de' ? 'Digital' : locale === 'en' ? 'Digital' : 'Digitaal'),
         postal_code: customer.postal_code.trim() || '0000',
-        country: customer.country || 'Nederland',
+        country: customer.country || (locale === 'de' ? 'Deutschland' : locale === 'en' ? 'United Kingdom' : 'Nederland'),
         gift_note: isDigital ? '' : customer.gift_note,
         producer_notes: isDigital ? '' : customer.producer_notes,
       };
@@ -220,11 +220,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   };
 
   const frameLabels: Record<string, string> = {
-    digital: 'Digitaal Bestand (300 DPI Vector PDF)',
-    none: 'Classic Matte Poster (Alleen print)',
-    black: 'Mat Zwart Houten Lijst (Classic Matte)',
-    oak: 'Natuurlijk Houten Lijst (Licht Hout)',
-    white: 'Zuiver Wit Houten Lijst (Classic Matte)',
+    digital: locale === 'de' ? 'Digitales Kunstwerk (300 DPI Vektor-PDF)' : locale === 'en' ? 'Digital Artwork (300 DPI Vector PDF)' : 'Digitaal Bestand (300 DPI Vector PDF)',
+    none: locale === 'de' ? 'Classic Matte Poster (Nur Kunstdruck)' : locale === 'en' ? 'Classic Matte Poster (Print Only)' : 'Classic Matte Poster (Alleen print)',
+    black: locale === 'de' ? 'Mattschwarzer Holzrahmen (Classic Matte)' : locale === 'en' ? 'Matte Black Wooden Frame (Classic Matte)' : 'Mat Zwart Houten Lijst (Classic Matte)',
+    oak: locale === 'de' ? 'Naturholzrahmen (Helles Holz)' : locale === 'en' ? 'Natural Oak Wooden Frame (Light Wood)' : 'Natuurlijk Houten Lijst (Licht Hout)',
+    white: locale === 'de' ? 'Reinweißer Holzrahmen (Classic Matte)' : locale === 'en' ? 'Pure White Wooden Frame (Classic Matte)' : 'Zuiver Wit Houten Lijst (Classic Matte)',
   };
 
   return (
@@ -239,10 +239,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             
             <div>
               <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
-                Verzend naar Drukkerij Atelier
+                {t.orderModal.modalTitle}
               </h3>
               <p className="text-[11px] text-[#78716C]">
-                300 DPI museum-PDF compileren & toevoegen aan de productiewachtrij
+                {t.orderModal.modalSubtitle}
               </p>
             </div>
           </div>
@@ -265,40 +265,60 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
             <div className="space-y-1.5">
               <span className="text-[11px] font-mono tracking-widest text-[#78716C] font-bold uppercase">
-                BESTELREFERENTIE: {completedOrder.order_id}
+                {locale === 'de' ? 'BESTELLREFERENZ' : locale === 'en' ? 'ORDER REFERENCE' : 'BESTELREFERENTIE'}: {completedOrder.order_id}
               </span>
               <h2 className="font-serif text-2xl font-bold text-[#1C1917]">
-                Succesvol Verzonden naar het Atelier
+                {t.paymentSuccess.orderConfirmedTitle}
               </h2>
               <p className="text-xs text-[#57534E] max-w-md mx-auto leading-relaxed">
-                Uw 300 DPI archiefwaardige print-PDF is met uiterste precisie berekend op basis van de exacte hemelcoördinaten en toegevoegd aan de productiewachtrij.
+                {locale === 'de'
+                  ? 'Ihre 300 DPI archivfeste Druck-PDF wurde mit höchster Präzision anhand der genauen Himmelskoordinaten berechnet und zur Produktionswarteschlange hinzugefügt.'
+                  : locale === 'en'
+                  ? 'Your 300 DPI archival-grade print PDF has been calculated with precision based on exact celestial coordinates and added to the production queue.'
+                  : 'Uw 300 DPI archiefwaardige print-PDF is met uiterste precisie berekend op basis van de exacte hemelcoördinaten en toegevoegd aan de productiewachtrij.'}
               </p>
             </div>
 
             {/* Order Specification Summary Card */}
             <div className="p-5 bg-white rounded-2xl border border-[#E8E4DC] text-left text-xs space-y-2.5 max-w-lg mx-auto shadow-sm">
               <div className="flex justify-between pb-2 border-b border-[#F0ECE1]">
-                <span className="text-[#78716C]">Kunstwerk:</span>
-                <span className="font-bold text-[#1C1917]">De Gepersonaliseerde Sterrenposter™</span>
+                <span className="text-[#78716C]">
+                  {locale === 'de' ? 'Kunstwerk:' : locale === 'en' ? 'Artwork:' : 'Kunstwerk:'}
+                </span>
+                <span className="font-bold text-[#1C1917]">{t.catalog.title}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Opgedragen aan:</span>
+                <span className="text-[#78716C]">
+                  {locale === 'de' ? 'Gewidmet an:' : locale === 'en' ? 'Dedicated to:' : 'Opgedragen aan:'}
+                </span>
                 <span className="text-[#1C1917] font-serif font-bold">{completedOrder.names_text}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Bijzondere Datum:</span>
+                <span className="text-[#78716C]">
+                  {locale === 'de' ? 'Besonderes Datum:' : locale === 'en' ? 'Special Date:' : 'Bijzondere Datum:'}
+                </span>
                 <span className="text-[#1C1917]">{completedOrder.date_text}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Formaat & Uitvoering:</span>
-                <span className="text-[#1C1917]">{completedOrder.frame_style === 'digital' ? 'Digitaal Bestand' : `${completedOrder.poster_size} cm`} • {frameLabels[completedOrder.frame_style] || 'Kunstdruk'}</span>
+                <span className="text-[#78716C]">
+                  {locale === 'de' ? 'Format & Ausführung:' : locale === 'en' ? 'Size & Framing:' : 'Formaat & Uitvoering:'}
+                </span>
+                <span className="text-[#1C1917]">
+                  {completedOrder.frame_style === 'digital'
+                    ? (locale === 'de' ? 'Digitales Kunstwerk' : locale === 'en' ? 'Digital File' : 'Digitaal Bestand')
+                    : `${completedOrder.poster_size} cm`} • {frameLabels[completedOrder.frame_style] || 'Kunstdruk'}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#78716C]">Totaalbedrag:</span>
+                <span className="text-[#78716C]">{t.studio.totalLabel}</span>
                 <span className="text-[#1C1917] font-bold">{priceDetails.formattedPrice}</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-[#F0ECE1]">
-                <span className="text-[#78716C]">{completedOrder.frame_style === 'digital' ? 'Verzonden naar:' : 'Bezorging aan:'}</span>
+                <span className="text-[#78716C]">
+                  {completedOrder.frame_style === 'digital'
+                    ? (locale === 'de' ? 'Gesendet an:' : locale === 'en' ? 'Delivered to:' : 'Verzonden naar:')
+                    : (locale === 'de' ? 'Lieferung an:' : locale === 'en' ? 'Delivery to:' : 'Bezorging aan:')}
+                </span>
                 <span className="text-[#1C1917]">{completedOrder.customer.name} ({completedOrder.customer.email})</span>
               </div>
             </div>
@@ -311,14 +331,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#1C1917] font-medium text-xs border border-[#E2DDD5] flex items-center justify-center gap-2 shadow-sm transition"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download Proefdruk PDF</span>
+                <span>{t.paymentSuccess.downloadPdfButton}</span>
               </a>
 
               <button
                 onClick={onClose}
                 className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition"
               >
-                Terug naar Atelier
+                {t.paymentSuccess.continueExploringButton}
               </button>
             </div>
           </div>
@@ -344,19 +364,21 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-[#1C1917] text-xs">
-                    De Gepersonaliseerde Sterrenposter™
+                    {t.catalog.title}
                   </h4>
                   <p className="text-[11px] text-[#78716C] font-serif italic">
-                    {config.namesBlock.text || 'Ambachtelijk Kunstwerk'}
+                    {config.namesBlock.text || (locale === 'de' ? 'Atelier-Meisterwerk' : locale === 'en' ? 'Artisan Keepsake' : 'Ambachtelijk Kunstwerk')}
                   </p>
                   <p className="text-[10px] text-[#A8A29E]">
-                    {config.frameStyle === 'digital' ? 'Digitaal PDF (300 DPI)' : `${config.posterSize.replace('x', ' × ')} cm`} • {frameLabels[config.frameStyle]}
+                    {config.frameStyle === 'digital' ? 'PDF (300 DPI)' : `${config.posterSize.replace('x', ' × ')} cm`} • {frameLabels[config.frameStyle]}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium block mb-0.5">
-                  {config.frameStyle === 'digital' ? 'Direct digitaal (PDF)' : 'Lokaal Ingelijst'}
+                  {config.frameStyle === 'digital'
+                    ? (locale === 'de' ? 'Sofort digital (PDF)' : locale === 'en' ? 'Instant digital (PDF)' : 'Direct digitaal (PDF)')
+                    : (locale === 'de' ? 'Lokal gerahmt' : locale === 'en' ? 'Locally framed' : 'Lokaal Ingelijst')}
                 </span>
                 <div className="flex items-center justify-end gap-1.5">
                   <span className="text-[10px] text-[#A8A29E] line-through">{priceDetails.formattedOriginalPrice}</span>
@@ -371,34 +393,34 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl text-xs text-sky-900 flex items-center gap-2">
                   <Download className="w-4 h-4 text-sky-600 shrink-0" />
                   <span>
-                    <strong>Digitale Editie:</strong> Uw 300 DPI drukklare vector PDF wordt direct gegenereerd en verzonden naar het onderstaande e-mailadres. Geen verzendkosten.
+                    <strong>{locale === 'de' ? 'Digitale Edition:' : locale === 'en' ? 'Digital Edition:' : 'Digitale Editie:'}</strong> {t.orderModal.digitalNotice}
                   </span>
                 </div>
 
                 <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                  1. Contactgegevens voor Digitale Toezending
+                  {t.orderModal.customerInfoTitle}
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Volledige Naam *</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.nameLabel}</label>
                     <input
                       type="text"
                       required
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                      placeholder="bijv. Emma van der Meer"
+                      placeholder={locale === 'de' ? 'z. B. Emma Weber' : locale === 'en' ? 'e.g. Emma Miller' : 'bijv. Emma van der Meer'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">E-mailadres voor PDF *</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.emailLabel}</label>
                     <input
                       type="email"
                       required
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                      placeholder="emma@voorbeeld.nl"
+                      placeholder={locale === 'de' ? 'emma@beispiel.de' : locale === 'en' ? 'emma@example.com' : 'emma@voorbeeld.nl'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
@@ -407,76 +429,76 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             ) : (
               <div className="space-y-3">
                 <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                  1. Gegevens van de Ontvanger & Bezorgadres
+                  {t.orderModal.customerInfoTitle}
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Volledige Naam *</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.nameLabel}</label>
                     <input
                       type="text"
                       required
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                      placeholder="bijv. Emma van der Meer"
+                      placeholder={locale === 'de' ? 'z. B. Emma Weber' : locale === 'en' ? 'e.g. Emma Miller' : 'bijv. Emma van der Meer'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">E-mailadres voor updates *</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.emailLabel}</label>
                     <input
                       type="email"
                       required
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                      placeholder="emma@voorbeeld.nl"
+                      placeholder={locale === 'de' ? 'emma@beispiel.de' : locale === 'en' ? 'emma@example.com' : 'emma@voorbeeld.nl'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Straatnaam & Huisnummer *</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.addressLabel}</label>
                   <input
                     type="text"
                     required
                     value={customer.address_line1}
                     onChange={(e) => setCustomer({ ...customer, address_line1: e.target.value })}
-                    placeholder="bijv. Keizersgracht 142"
+                    placeholder={locale === 'de' ? 'z. B. Friedrichstraße 45' : locale === 'en' ? 'e.g. 10 Downing Street' : 'bijv. Keizersgracht 142'}
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Plaats *</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.cityLabel}</label>
                     <input
                       type="text"
                       required
                       value={customer.city}
                       onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
-                      placeholder="Amsterdam"
+                      placeholder={locale === 'de' ? 'Berlin' : locale === 'en' ? 'London' : 'Amsterdam'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Provincie</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.stateLabel}</label>
                     <input
                       type="text"
                       value={customer.state}
                       onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
-                      placeholder="Noord-Holland"
+                      placeholder={locale === 'de' ? 'Bayern' : locale === 'en' ? 'Greater London' : 'Noord-Holland'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">Postcode *</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.postalCodeLabel}</label>
                     <input
                       type="text"
                       required
                       value={customer.postal_code}
                       onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
-                      placeholder="1015 CJ"
+                      placeholder={locale === 'de' ? '10117' : locale === 'en' ? 'SW1A 2AA' : '1015 CJ'}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>

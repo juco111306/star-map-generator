@@ -53,8 +53,44 @@ export const en: Translations = {
   catalog: {
     badge: 'Artisan Collection',
     title: 'Choose Your Edition & Presentation',
-    subtitle:
-      'Every keepsake is individually calibrated and printed with archival 12-color Giclée pigment inks.',
+    artStylesBadge: 'ARTISAN ART STYLES',
+    artStylesTitle: 'One Timeless Keepsake, Refined Art Styles',
+    artStylesDesc:
+      'We focus 100% on perfecting the personalized celestial star map. Choose your preferred aesthetic and open our bespoke design studio.',
+    trustPoint1: 'Official NASA JPL & Skyfield Ephemeris Data',
+    trustPoint2: '285 gsm Archival Cotton Fine-Art Paper',
+    trustPoint3: 'Lifetime Colorfast & Fade Guarantee',
+    trustPoint4: 'Carefully Hand-Packaged in Our Atelier',
+    posters: {
+      midnight: {
+        title: 'THE NIGHT WE MET',
+        names: 'Emma & Lucas',
+        date: 'JUNE 14, 2024',
+        location: 'LONDON, UNITED KINGDOM',
+        coords: '51.5074° N • 0.1278° W',
+      },
+      teal: {
+        title: 'THE DAY A STAR WAS BORN',
+        names: 'Oliver James',
+        date: 'MAY 8, 2025',
+        location: 'EDINBURGH, UNITED KINGDOM',
+        coords: '55.9533° N • 3.1883° W',
+      },
+      emerald: {
+        title: 'THE DAY WE SAID \'I DO\'',
+        names: 'Charlotte & Henry',
+        date: 'SEPTEMBER 18, 2023',
+        location: 'OXFORD, UNITED KINGDOM',
+        coords: '51.7520° N • 1.2577° W',
+      },
+      burgundy: {
+        title: 'UNDER THE SAME STARS',
+        names: 'Amelia & Arthur',
+        date: 'DECEMBER 31, 2022',
+        location: 'MANCHESTER, UNITED KINGDOM',
+        coords: '53.4808° N • 2.2426° W',
+      },
+    },
     digital: {
       title: 'Digital High-Resolution PDF',
       subtitle: 'Instant download in ultra-sharp 300 DPI vector format',
@@ -103,6 +139,21 @@ export const en: Translations = {
     deliveryTimePhysical: 'In production within 24–48 hrs • Delivered in 2–4 business days',
     deliveryTimeDigital: 'Instant access upon checkout and emailed immediately',
     shippingTrust: 'Free delivery across Europe via trusted partners (such as DHL, Royal Mail, PostNL)',
+  },
+  pilotNotice: {
+    badge: 'TRANSPARENCY & TRUST',
+    title: 'Artisan Quality Guarantee across the UK & Europe',
+    desc: 'Stellaire crafts bespoke celestial heirlooms to museum-grade standards for customers across the UK, Europe, and worldwide.',
+    pillar1Title: 'Sustainable Local Craftsmanship',
+    pillar1Desc: 'Every order is produced on-demand regionally to minimize carbon footprint using FSC®-certified solid wood frames.',
+    pillar2Title: '100% Museum Fine-Art Grade',
+    pillar2Desc: 'Printed on 285 gsm acid-free cotton archival paper with fade-resistant pigment inks and calibrated NASA JPL ephemeris data.',
+    pillar3Title: 'Insured Tracked Delivery',
+    pillar3Desc: 'Dispatched within 2–3 business days in reinforced gallery packaging with comprehensive Track & Trace.',
+    serviceTitle: 'Dedicated Customer Care',
+    serviceDesc: 'Our atelier team actively monitors every order to ensure flawless presentation.',
+    contactLabel: 'Questions?',
+    email: 'hello@stellaire-atelier.com',
   },
   howItWorks: {
     badge: 'Thoughtful & Effortless',

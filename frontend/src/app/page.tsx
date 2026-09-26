@@ -93,19 +93,12 @@ interface HomeProps {
 }
 
 export default function Home({ initialLocale }: HomeProps = {}) {
-  const { locale, changeLocale } = useLanguage();
+  const { locale } = useLanguage();
   const [currentView, setCurrentView] = useState<AppView>('landing');
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [isReturnPolicyOpen, setIsReturnPolicyOpen] = useState(false);
   const [orders, setOrders] = useState<OrderRecord[]>([]);
-
-  // Sync initialLocale with LanguageContext if provided
-  useEffect(() => {
-    if (initialLocale && initialLocale !== locale) {
-      changeLocale(initialLocale);
-    }
-  }, [initialLocale, locale, changeLocale]);
 
   const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
 

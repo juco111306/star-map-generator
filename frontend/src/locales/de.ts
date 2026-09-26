@@ -53,8 +53,44 @@ export const de: Translations = {
   catalog: {
     badge: 'Handwerkliche Kollektion',
     title: 'Wählen Sie Ausführung & Format',
-    subtitle:
-      'Jedes Kunstwerk wird individuell kalibriert und mit alterungsbeständigen 12-Farben-Pigmenttinten gedruckt.',
+    artStylesBadge: 'KUNSTVOLLE DESIGNSTILE',
+    artStylesTitle: 'Ein Zeitloses Meisterwerk, Feinste Kunststile',
+    artStylesDesc:
+      'Wir widmen uns zu 100% der Perfektionierung personalisierter Sternenkarten. Wählen Sie Ihre Lieblingsästhetik und öffnen Sie direkt unser Design-Studio.',
+    trustPoint1: 'Offizielle NASA JPL & Skyfield Sternendaten',
+    trustPoint2: '285 g/m² Museums-Kunstdruckpapier',
+    trustPoint3: 'Lebenslange Farbechtheitsgarantie',
+    trustPoint4: 'Sorgfältig verpackt in unserer Manufaktur',
+    posters: {
+      midnight: {
+        title: 'DIE NACHT, IN DER WIR UNS TRAFEN',
+        names: 'Emma & Lukas',
+        date: '14. JUNI 2024',
+        location: 'BERLIN, DEUTSCHLAND',
+        coords: '52.5200° N • 13.4050° O',
+      },
+      teal: {
+        title: 'ALS EIN STERN GEBOREN WURDE',
+        names: 'Felix Maximilian',
+        date: '08. MAI 2025',
+        location: 'MÜNCHEN, DEUTSCHLAND',
+        coords: '48.1351° N • 11.5820° O',
+      },
+      emerald: {
+        title: 'DER TAG, AN DEM WIR \'JA\' SAGTEN',
+        names: 'Laura & Jonas',
+        date: '18. SEPTEMBER 2023',
+        location: 'WIEN, ÖSTERREICH',
+        coords: '48.2082° N • 16.3738° O',
+      },
+      burgundy: {
+        title: 'UNTER DEM GLEICHEN STERNENHIMMEL',
+        names: 'Hannah & Julian',
+        date: '31. DEZEMBER 2022',
+        location: 'HAMBURG, DEUTSCHLAND',
+        coords: '53.5511° N • 9.9937° O',
+      },
+    },
     digital: {
       title: 'Digitale Vektor-PDF-Datei',
       subtitle: 'Sofortiger Download in Ultra-High-Definition (300 DPI)',
@@ -103,6 +139,21 @@ export const de: Translations = {
     deliveryTimePhysical: 'Innerhalb von 24–48 Std. in Produktion • Lieferung in 2–4 Werktagen',
     deliveryTimeDigital: 'Sofort per E-Mail und direkt im Kundenbereich abrufbar',
     shippingTrust: 'Kostenlose Lieferung in Deutschland & Österreich über vertrauenswürdige Partner (wie DHL, DPD)',
+  },
+  pilotNotice: {
+    badge: 'TRANSPARENZ & VERTRAUEN',
+    title: 'Handwerkliche Qualitätsgarantie in Deutschland & Österreich',
+    desc: 'Stellaire fertigt personalisierte Sternenkarten nach höchsten kunsthandwerklichen Maßstäben für Kunden in Deutschland, Österreich und der Schweiz.',
+    pillar1Title: 'Lokale Qualitätsmanufaktur',
+    pillar1Desc: 'Jede Bestellung wird on-demand und regional mit minimalem CO2-Ausstoß und FSC®-zertifizierten Massivholzrahmen gefertigt.',
+    pillar2Title: '100% Museumsqualität',
+    pillar2Desc: 'Individuell gedruckt auf 285 g/m² säurefreiem Kunstdruck-Katoenpapier mit lichtechten Pigmenttinten und exakten NASA JPL Ephemeriden.',
+    pillar3Title: 'Versicherter Versand via DHL & DPD',
+    pillar3Desc: 'Lieferung innerhalb von 2–3 Werktagen in bruchsicherer Schutzverpackung inklusive lückenlosem Tracking.',
+    serviceTitle: 'Persönlicher Kundenservice',
+    serviceDesc: 'Unser Team begleitet jede Bestellung persönlich für ein rundum perfektes Erlebnis.',
+    contactLabel: 'Fragen?',
+    email: 'service@stellaire-atelier.de',
   },
   howItWorks: {
     badge: 'Einfach & Bedeutungsvoll',

@@ -86,13 +86,64 @@ export interface Translations {
   catalog: {
     badge: string;
     title: string;
-    subtitle: string;
+    artStylesBadge: string;
+    artStylesTitle: string;
+    artStylesDesc: string;
+    trustPoint1: string;
+    trustPoint2: string;
+    trustPoint3: string;
+    trustPoint4: string;
+    posters: {
+      midnight: {
+        title: string;
+        names: string;
+        date: string;
+        location: string;
+        coords: string;
+      };
+      teal: {
+        title: string;
+        names: string;
+        date: string;
+        location: string;
+        coords: string;
+      };
+      emerald: {
+        title: string;
+        names: string;
+        date: string;
+        location: string;
+        coords: string;
+      };
+      burgundy: {
+        title: string;
+        names: string;
+        date: string;
+        location: string;
+        coords: string;
+      };
+    };
     digital: ProductCopy;
     poster: ProductCopy;
     framed: ProductCopy;
     deliveryTimePhysical: string;
     deliveryTimeDigital: string;
     shippingTrust: string;
+  };
+  pilotNotice: {
+    badge: string;
+    title: string;
+    desc: string;
+    pillar1Title: string;
+    pillar1Desc: string;
+    pillar2Title: string;
+    pillar2Desc: string;
+    pillar3Title: string;
+    pillar3Desc: string;
+    serviceTitle: string;
+    serviceDesc: string;
+    contactLabel: string;
+    email: string;
   };
   howItWorks: {
     badge: string;

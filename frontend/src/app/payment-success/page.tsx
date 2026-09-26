@@ -606,7 +606,7 @@ function PaymentSuccessContent() {
 
       {/* Footer */}
       <footer className="border-t border-[#EAE5DC] py-6 text-center text-xs text-[#78716C] bg-[#F5F2EB]/50">
-        <p>© {new Date().getFullYear()} Stellaire Atelier • Ambachtelijke Gepersonaliseerde Sterrenposters</p>
+        <p>{t.footer.copyright}</p>
       </footer>
     </div>
   );
@@ -618,7 +618,6 @@ export default function PaymentSuccessPage() {
       fallback={
         <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center text-xs text-[#78716C]">
           <div className="w-6 h-6 border-2 border-[#1C1917]/20 border-t-[#1C1917] rounded-full animate-spin mr-2" />
-          <span>Bestelling verifiëren...</span>
         </div>
       }
     >

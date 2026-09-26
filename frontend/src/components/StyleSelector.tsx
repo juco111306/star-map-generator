@@ -1,13 +1,14 @@
 'use client';
 
 import React from 'react';
-import { DESIGN_STYLES } from '../constants/styles';
+import { DESIGN_STYLES, getLocalizedStyleDetails } from '../constants/styles';
 import { Check } from 'lucide-react';
 import {
   SAMPLE_STARS,
   SAMPLE_CONSTELLATION_LINES,
 } from '../constants/sampleCelestialData';
 import { MysticalMilkyWay } from './MysticalMilkyWay';
+import { useLanguage } from '../context/LanguageContext';
 
 interface StyleSelectorProps {
   selectedStyleId: string;
@@ -18,6 +19,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
   selectedStyleId,
   onSelectStyle,
 }) => {
+  const { locale, t } = useLanguage();
+  const currentStyles = getLocalizedStyleDetails(locale);
   // Helper to render authentic celestial sphere with distinct rotation per style
   const renderPosterSky = (
     maskId: string,
@@ -109,17 +112,17 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
             <line x1="98" y1="460" x2="118" y2="460" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
             <line x1="882" y1="460" x2="902" y2="460" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
 
-            <text x="500" y="48" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
-            <text x="500" y="888" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
-            <text x="82" y="467" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
-            <text x="918" y="467" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
+            <text x="500" y="48" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.n}</text>
+            <text x="500" y="888" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.s}</text>
+            <text x="82" y="467" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.w}</text>
+            <text x="918" y="467" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.e}</text>
 
             {/* Poster Inscriptions */}
             <text x="500" y="945" textAnchor="middle" fill="#FFFFFF" fontSize="40" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              THE NIGHT WE MET
+              {t.catalog.posters.midnight.title}
             </text>
             <text x="500" y="1022" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="64" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Emma &amp; Lucas
+              {t.catalog.posters.midnight.names}
             </text>
             <g>
               <line x1="375" y1="1080" x2="465" y2="1080" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
@@ -127,10 +130,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               <line x1="535" y1="1080" x2="625" y2="1080" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1138" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              14 JUNI 2024 • 22:30 UUR
+              {t.catalog.posters.midnight.date}
             </text>
             <text x="500" y="1188" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              AMSTERDAM • 52.3676° N • 4.9041° E
+              {t.catalog.posters.midnight.location} • {t.catalog.posters.midnight.coords}
             </text>
           </svg>
         );
@@ -165,10 +168,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
             <circle cx="500" cy="460" r="362" fill="none" stroke="rgba(255,255,255,0.28)" strokeWidth="1.5" strokeDasharray="8 6" />
 
             <text x="500" y="945" textAnchor="middle" fill="#083B44" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              TOEN EEN STER WERD GEBOREN
+              {t.catalog.posters.teal.title}
             </text>
             <text x="500" y="1022" textAnchor="middle" fill="#1A5A66" fontSize="64" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Liam Noah
+              {t.catalog.posters.teal.names}
             </text>
             <g>
               <line x1="375" y1="1080" x2="465" y2="1080" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
@@ -176,10 +179,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               <line x1="535" y1="1080" x2="625" y2="1080" stroke="rgba(12,75,86,0.4)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1138" textAnchor="middle" fill="#1A5A66" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              08 MEI 2025 • 03:42 UUR
+              {t.catalog.posters.teal.date}
             </text>
             <text x="500" y="1188" textAnchor="middle" fill="#3B7580" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              UTRECHT • 52.0907° N • 5.1214° E
+              {t.catalog.posters.teal.location} • {t.catalog.posters.teal.coords}
             </text>
           </svg>
         );
@@ -210,16 +213,16 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
             <line x1="98" y1="460" x2="118" y2="460" stroke="#D4AF37" strokeWidth="2.5" />
             <line x1="882" y1="460" x2="902" y2="460" stroke="#D4AF37" strokeWidth="2.5" />
 
-            <text x="500" y="48" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
-            <text x="500" y="888" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
-            <text x="82" y="467" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
-            <text x="918" y="467" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
+            <text x="500" y="48" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.n}</text>
+            <text x="500" y="888" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.s}</text>
+            <text x="82" y="467" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.w}</text>
+            <text x="918" y="467" textAnchor="middle" fill="#D4AF37" fontSize="18" fontFamily="sans-serif" fontWeight="bold">{t.studio.cardinalPoints.e}</text>
 
             <text x="500" y="945" textAnchor="middle" fill="#D4AF37" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              DE DAG DAT WE &apos;JA&apos; ZEIDEN
+              {t.catalog.posters.emerald.title}
             </text>
             <text x="500" y="1022" textAnchor="middle" fill="#F3E5AB" fontSize="64" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Sophie &amp; Thomas
+              {t.catalog.posters.emerald.names}
             </text>
             <g>
               <line x1="375" y1="1080" x2="465" y2="1080" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
@@ -227,10 +230,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               <line x1="535" y1="1080" x2="625" y2="1080" stroke="rgba(212,175,55,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1138" textAnchor="middle" fill="#F3E5AB" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              18 SEPTEMBER 2023 • 16:15 UUR
+              {t.catalog.posters.emerald.date}
             </text>
             <text x="500" y="1188" textAnchor="middle" fill="#C9B06B" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              ANTWERPEN • 51.2194° N • 4.4025° E
+              {t.catalog.posters.emerald.location} • {t.catalog.posters.emerald.coords}
             </text>
           </svg>
         );
@@ -257,10 +260,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
             <circle cx="500" cy="460" r="268" fill="none" stroke="rgba(255,235,238,0.15)" strokeWidth="1" />
 
             <text x="500" y="945" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-              ONDER DEZELFDE STERREN
+              {t.catalog.posters.burgundy.title}
             </text>
             <text x="500" y="1022" textAnchor="middle" fill="#F7D6DA" fontSize="64" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-              Mila &amp; Daan
+              {t.catalog.posters.burgundy.names}
             </text>
             <g>
               <line x1="375" y1="1080" x2="465" y2="1080" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
@@ -268,10 +271,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               <line x1="535" y1="1080" x2="625" y2="1080" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1138" textAnchor="middle" fill="#F7D6DA" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-              31 DECEMBER 2022 • 23:59 UUR
+              {t.catalog.posters.burgundy.date}
             </text>
             <text x="500" y="1188" textAnchor="middle" fill="#D6A6AD" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-              ROTTERDAM • 51.9244° N • 4.4777° E
+              {t.catalog.posters.burgundy.location} • {t.catalog.posters.burgundy.coords}
             </text>
           </svg>
         );
@@ -286,6 +289,11 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {DESIGN_STYLES.map((style) => {
           const isSelected = style.id === selectedStyleId;
+          const meta = currentStyles[style.id] || {
+            title: style.name,
+            subtitle: style.subtitle,
+            desc: style.description,
+          };
 
           return (
             <button
@@ -317,7 +325,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               <div className="space-y-0.5 w-full">
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-semibold text-[#1C1917]">
-                    {style.name}
+                    {meta.title}
                   </h4>
                   {style.isWatercolor && (
                     <span className="text-[9px] px-1.5 py-0.5 rounded font-medium bg-[#083B44]/10 text-[#083B44]">
@@ -327,11 +335,11 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                 </div>
 
                 <p className="text-[10px] text-[#A37055] font-medium truncate">
-                  {style.subtitle}
+                  {meta.subtitle}
                 </p>
 
                 <p className="text-[9.5px] text-[#78716C] line-clamp-2 leading-snug pt-0.5 font-light">
-                  {style.description}
+                  {meta.desc}
                 </p>
 
                 {/* Color Palette Preview Swatch Dots */}
