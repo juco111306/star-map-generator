@@ -18,26 +18,26 @@ export const getLocalizedMetricSizes = (locale: string = 'nl') => [
   {
     id: '20x30' as PosterSize,
     label: '20 × 30 cm',
-    sub: locale === 'de' ? 'Kompakte Erinnerung (2:3)' : locale === 'en' ? 'Compact Keepsake (2:3)' : 'Compact Aandenken (2:3)',
+    sub: locale === 'de' ? 'Kompakt (2:3)' : locale === 'en' ? 'Compact (2:3)' : 'Compact (2:3)',
     aspect: '2:3',
   },
   {
     id: '30x40' as PosterSize,
     label: '30 × 40 cm',
-    sub: locale === 'de' ? 'Klassische Galeriegröße (3:4)' : locale === 'en' ? 'Classic Gallery Size (3:4)' : 'Klassieke Galerij (3:4)',
+    sub: locale === 'de' ? 'Klassische Galerie (3:4)' : locale === 'en' ? 'Classic Gallery (3:4)' : 'Klassieke Galerij (3:4)',
     aspect: '3:4',
     popular: true,
   },
   {
     id: '40x50' as PosterSize,
     label: '40 × 50 cm',
-    sub: locale === 'de' ? 'Medium Statement (4:5)' : locale === 'en' ? 'Medium Statement (4:5)' : 'Medium Statement (4:5)',
+    sub: locale === 'de' ? 'Medium Format (4:5)' : locale === 'en' ? 'Medium Statement (4:5)' : 'Medium Statement (4:5)',
     aspect: '4:5',
   },
   {
     id: '50x70' as PosterSize,
     label: '50 × 70 cm',
-    sub: locale === 'de' ? 'Großes Kunstformat (5:7)' : locale === 'en' ? 'Grand Art Statement (5:7)' : 'Groot Kunstformaat (5:7)',
+    sub: locale === 'de' ? 'Großes Format (5:7)' : locale === 'en' ? 'Grand Format (5:7)' : 'Groot Formaat (5:7)',
     aspect: '5:7',
     popular: true,
   },
@@ -48,7 +48,7 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
     id: 'digital' as FrameStyle,
     label: locale === 'de' ? 'Digitale Datei' : locale === 'en' ? 'Digital File' : 'Digitaal Bestand',
     category: 'digital' as const,
-    sub: locale === 'de' ? 'Druckfertiges PDF (300 DPI)' : locale === 'en' ? 'Print-Ready PDF (300 DPI)' : 'Print-klaar PDF (300 DPI)',
+    sub: locale === 'de' ? '300 DPI Vektor-PDF' : locale === 'en' ? '300 DPI Vector PDF' : '300 DPI Vector PDF',
     desc:
       locale === 'de'
         ? 'Sofort per E-Mail in Ultra-High-Definition zum Selbstdrucken oder für lokale Druckereien.'
@@ -63,9 +63,9 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
   },
   {
     id: 'none' as FrameStyle,
-    label: locale === 'de' ? 'Klassischer Kunstdruck' : locale === 'en' ? 'Classic Matte Print' : 'Classic Matte Print',
+    label: locale === 'de' ? 'Klassischer Kunstdruck' : locale === 'en' ? 'Classic Matte Print' : 'Classic Matte Poster',
     category: 'print' as const,
-    sub: locale === 'de' ? '200 g/m² Museums-Qualitätspapier' : locale === 'en' ? '200 gsm Museum-Grade Matte Paper' : '200 gsm Museumkwaliteit Mat Papier',
+    sub: locale === 'de' ? '200 g/m² Archiv-Kunstdruck' : locale === 'en' ? '200 gsm Archival Print' : '200 gsm Archiefprint',
     desc:
       locale === 'de'
         ? 'Ohne Rahmen. Gedruckt auf FSC®-zertifiziertem Archivpapier, geliefert in stabiler Schutzrolle.'
@@ -82,7 +82,7 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
     id: 'black' as FrameStyle,
     label: locale === 'de' ? 'Mattschwarzes Holz' : locale === 'en' ? 'Matte Black Wood' : 'Mat Zwart Hout',
     category: 'frame' as const,
-    sub: locale === 'de' ? 'Kunstdruck + Schwarzer Qualitätsrahmen' : locale === 'en' ? 'Classic Matte + Black Premium Frame' : 'Classic Matte + Zwarte Kwaliteitslijst',
+    sub: locale === 'de' ? 'Klassisch Schwarz Gerahmt' : locale === 'en' ? 'Classic Black Framed' : 'Klassiek Zwart Ingelijst',
     desc:
       locale === 'de'
         ? 'Massives FSC®-Holz, reflexionsarmes Museums-Acrylglas und montagefertig aufgehängt.'
@@ -93,13 +93,13 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
     borderStyle: 'border-[3px] border-[#181716]',
     bgStyle: 'bg-[#181716]',
     innerBg: 'bg-[#0E1526]',
-    previewBorderColor: '#1C1A18',
+    previewBorderColor: '#18181B',
   },
   {
     id: 'oak' as FrameStyle,
     label: locale === 'de' ? 'Natürliche Eiche (Helles Holz)' : locale === 'en' ? 'Natural Wood (Light Wood)' : 'Natuurlijk Hout (Licht Hout)',
     category: 'frame' as const,
-    sub: locale === 'de' ? 'Kunstdruck + Heller Naturholzrahmen' : locale === 'en' ? 'Classic Matte + Natural Timber Frame' : 'Classic Matte + Licht Houten Lijst',
+    sub: locale === 'de' ? 'Heller Naturholzrahmen' : locale === 'en' ? 'Natural Timber Framed' : 'Licht Houten Lijst',
     desc:
       locale === 'de'
         ? 'Massives skandinavisches Naturholz mit feiner Maserung, reflexionsarmem Acrylglas und Aufhängeset.'
@@ -110,13 +110,13 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
     borderStyle: 'border-[3px] border-[#DFC9A6]',
     bgStyle: 'bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B]',
     innerBg: 'bg-[#0E1526]',
-    previewBorderColor: '#DFC9A6',
+    previewBorderColor: '#C8A882',
   },
   {
     id: 'white' as FrameStyle,
     label: locale === 'de' ? 'Reinweißes Holz' : locale === 'en' ? 'Pure White Wood' : 'Zuiver Wit Hout',
     category: 'frame' as const,
-    sub: locale === 'de' ? 'Kunstdruck + Weißer Qualitätsrahmen' : locale === 'en' ? 'Classic Matte + White Premium Frame' : 'Classic Matte + Witte Kwaliteitslijst',
+    sub: locale === 'de' ? 'Weißer Qualitätsrahmen' : locale === 'en' ? 'White Timber Framed' : 'Witte Kwaliteitslijst',
     desc:
       locale === 'de'
         ? 'Seidenmattes massives Weißholz, bruchsicheres Acrylglas und Aufhängeset, ideal für helle Räume.'
@@ -127,7 +127,7 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
     borderStyle: 'border-[3px] border-[#E8E4DC] ring-1 ring-[#D0CAC0]',
     bgStyle: 'bg-white',
     innerBg: 'bg-[#0E1526]',
-    previewBorderColor: '#FAF8F5',
+    previewBorderColor: '#FFFFFF',
   },
 ];
 

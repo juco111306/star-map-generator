@@ -153,7 +153,7 @@ export const de: Translations = {
     serviceTitle: 'Persönlicher Kundenservice',
     serviceDesc: 'Unser Team begleitet jede Bestellung persönlich für ein rundum perfektes Erlebnis.',
     contactLabel: 'Fragen?',
-    email: 'service@stellaire-atelier.de',
+    email: 'service@stellaire-atelier.nl',
   },
   howItWorks: {
     badge: 'Einfach & Bedeutungsvoll',
@@ -254,7 +254,7 @@ export const de: Translations = {
       },
       {
         q: 'Was passiert, wenn meine Bestellung beschädigt ankommt?',
-        a: 'Sollte ein gerahmtes Bild oder ein anderes Produkt beim Transport beschädigt werden (z. B. Glasbruch, gestauchte Ecken oder beschädigtes Holz), greift unsere 100% Qualitätsgarantie. Melden Sie den Schaden innerhalb von 30 Tagen mit Fotos des Artikels und der Verpackung an kundenservice@stellaire.com – wir drucken und versenden umgehend kostenlosen Ersatz.',
+        a: 'Sollte ein gerahmtes Bild oder ein anderes Produkt beim Transport beschädigt werden (z. B. Glasbruch, gestauchte Ecken oder beschädigtes Holz), greift unsere 100% Qualitätsgarantie. Melden Sie den Schaden innerhalb von 30 Tagen mit Fotos des Artikels und der Verpackung an service@stellaire-atelier.nl – wir drucken und versenden umgehend kostenlosen Ersatz.',
       },
       {
         q: 'Werden Rücksendungen für personalisierte Poster akzeptiert?',
@@ -288,7 +288,7 @@ export const de: Translations = {
     col3Title: 'Kundenservice & Atelier',
     col3Desc:
       'Haben Sie Fragen zur Bestellung oder möchten Sie unsere Designgarantie in Anspruch nehmen? Unser Atelier antwortet innerhalb von 24 Stunden.',
-    email: 'kundenservice@stellaire.com',
+    email: 'service@stellaire-atelier.nl',
     copyright: 'Stellaire Atelier. Alle Rechte vorbehalten.',
     returnPolicyShort: 'Rückgaberichtlinien',
     faqShort: 'FAQ',
@@ -317,7 +317,7 @@ export const de: Translations = {
     claimPhotosText2: '2. Aussagekräftige Fotos der Verpackung (sowohl Innenpolsterung als auch Außenkarton).',
     claimHowToTitle: 'E-Mail an unseren Kundenservice',
     claimHowToText:
-      'Senden Sie die Fotos unter Angabe Ihrer Bestellnummer an kundenservice@stellaire.com. Wir bearbeiten Ihre Anfrage binnen 24 Stunden.',
+      'Senden Sie die Fotos unter Angabe Ihrer Bestellnummer an service@stellaire-atelier.nl. Wir bearbeiten Ihre Anfrage binnen 24 Stunden.',
     closeButton: 'Verstanden, Fenster schließen',
   },
   tracking: {

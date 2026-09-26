@@ -1218,42 +1218,67 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           : 'bg-[#FAF8F5] border-[#E2DDD5] hover:border-[#1C1917]'
                       } ${f.id === 'digital' ? 'sm:col-span-2' : ''}`}
                     >
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <div className="flex items-center space-x-2.5">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${f.bgStyle} border border-[#D5D0C7] shrink-0 shadow-2xs`}>
-                            {f.id === 'digital' ? (
-                              <Printer className="w-4 h-4 text-sky-600" />
-                            ) : f.id === 'none' ? (
-                              <Maximize2 className="w-4 h-4 text-[#78716C]" />
-                            ) : (
-                              <div className="w-4 h-5 rounded-[2px] border-2 border-current flex items-center justify-center text-[7px]" style={{ color: f.previewBorderColor }}>
-                                ✦
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            <span className="font-serif font-bold text-xs block text-[#1C1917]">{f.label}</span>
-                            <span className="text-[10px] text-[#A37055] font-medium">{f.sub}</span>
-                          </div>
+                      {/* Top Header: Frame Material Swatch & Typography */}
+                      <div className="flex items-center gap-2.5 mb-2 min-w-0">
+                        {/* Consistent Luxury Atelier Frame & Media Swatch */}
+                        <div className="w-9 h-9 rounded-xl bg-[#F0EBE1] border border-[#DDD5C7] flex items-center justify-center shrink-0 shadow-2xs">
+                          {f.id === 'digital' ? (
+                            <Printer className="w-4 h-4 text-sky-600" />
+                          ) : f.id === 'none' ? (
+                            <div className="w-4.5 h-6 rounded-[2px] bg-[#0E1526] border border-dashed border-[#A8A29E] flex items-center justify-center shadow-xs">
+                              <span className="text-[7px] text-[#A8A29E] leading-none">✦</span>
+                            </div>
+                          ) : f.id === 'black' ? (
+                            <div className="w-5 h-6.5 rounded-[2px] bg-[#0E1526] border-[2.5px] border-[#18181B] flex items-center justify-center shadow-xs">
+                              <span className="text-[7px] text-white/90 leading-none">✦</span>
+                            </div>
+                          ) : f.id === 'oak' ? (
+                            <div className="w-5 h-6.5 rounded-[2px] bg-[#0E1526] border-[2.5px] border-[#C8A882] flex items-center justify-center shadow-xs">
+                              <span className="text-[7px] text-[#E8DAC3] leading-none">✦</span>
+                            </div>
+                          ) : (
+                            <div className="w-5 h-6.5 rounded-[2px] bg-[#0E1526] border-[2.5px] border-white ring-1 ring-[#D0CAC0] flex items-center justify-center shadow-xs">
+                              <span className="text-[7px] text-white/90 leading-none">✦</span>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="text-right shrink-0">
-                          <span className="text-xs font-bold text-[#1C1917] block">{itemPrice.formattedPrice}</span>
-                          <span className="text-[9px] text-[#A8A29E] line-through block">{itemPrice.formattedOriginalPrice}</span>
+                        <div className="min-w-0 flex-1">
+                          <span className="font-serif font-bold text-xs block text-[#1C1917] truncate leading-tight">
+                            {f.label}
+                          </span>
+                          <span className="text-[10px] text-[#A37055] font-medium block truncate mt-0.5">
+                            {f.sub}
+                          </span>
                         </div>
                       </div>
 
-                      <p className="text-[10px] text-[#78716C] font-light leading-snug">{f.desc}</p>
+                      <p className="text-[10px] text-[#78716C] font-light leading-snug my-1.5 line-clamp-2">
+                        {f.desc}
+                      </p>
 
-                      <div className="mt-2.5 pt-2 border-t border-[#ECE7DE] flex items-center justify-between">
-                        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-white border border-[#E2DDD5] text-[#57534E]">
-                          {f.badge || (locale === 'de' ? 'Verfügbar' : locale === 'en' ? 'Available' : 'Beschikbaar')}
-                        </span>
-                        {isSelected && (
-                          <span className="text-[10px] font-semibold text-[#1C1917] flex items-center gap-1">
-                            <Check className="w-3 h-3 text-[#1C1917]" /> {locale === 'de' ? 'Ausgewählt' : locale === 'en' ? 'Selected' : 'Geselecteerd'}
+                      {/* Bottom Footer: Badge & Safe Contained Pricing (Never overflows) */}
+                      <div className="mt-2 pt-2 border-t border-[#ECE7DE] flex items-center justify-between gap-1.5">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-white border border-[#E2DDD5] text-[#57534E] shrink-0 truncate max-w-[110px]">
+                            {f.badge || (locale === 'de' ? 'Verfügbar' : locale === 'en' ? 'Available' : 'Beschikbaar')}
                           </span>
-                        )}
+                          {isSelected && (
+                            <span className="text-[10px] font-semibold text-[#1C1917] flex items-center gap-1 shrink-0">
+                              <Check className="w-3 h-3 text-[#1C1917]" />
+                              <span className="hidden sm:inline text-[9.5px]">
+                                {locale === 'de' ? 'Ausgewählt' : locale === 'en' ? 'Selected' : 'Geselecteerd'}
+                              </span>
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="text-right shrink-0 whitespace-nowrap pl-1">
+                          <span className="text-xs font-bold text-[#1C1917]">{itemPrice.formattedPrice}</span>
+                          {itemPrice.formattedOriginalPrice && (
+                            <span className="text-[9px] text-[#A8A29E] line-through ml-1">{itemPrice.formattedOriginalPrice}</span>
+                          )}
+                        </div>
                       </div>
                     </button>
                   );
@@ -1300,27 +1325,30 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       key={fo.id}
                       type="button"
                       onClick={() => onChange({ posterSize: fo.id })}
-                      className={`p-3 rounded-xl border text-left transition-all relative ${
+                      className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between ${
                         isSelected
                           ? 'bg-[#1C1917] text-[#FAF8F5] border-[#1C1917] shadow-sm'
                           : 'bg-[#FAF8F5] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917]'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
+                      {/* Top Row: Dimensions and Price firmly contained */}
+                      <div className="flex items-center justify-between gap-1 mb-1">
                         <span className="font-serif font-bold text-xs block">{fo.label}</span>
+                        <span className={`text-xs font-bold shrink-0 whitespace-nowrap ${isSelected ? 'text-[#FAF8F5]' : 'text-[#1C1917]'}`}>
+                          {sizePrice.formattedPrice}
+                        </span>
+                      </div>
+
+                      {/* Bottom Row: Subtitle & Popular Badge */}
+                      <div className="flex items-center justify-between gap-1 mt-1 pt-1.5 border-t border-current/10">
+                        <span className="text-[10px] opacity-80 truncate block">{fo.sub}</span>
                         {fo.popular && (
-                          <span className={`text-[8.5px] px-1 py-0.5 rounded font-medium ${
+                          <span className={`text-[8.5px] px-1 py-0.5 rounded font-medium shrink-0 ${
                             isSelected ? 'bg-white/20 text-white' : 'bg-[#A37055]/15 text-[#A37055]'
                           }`}>
                             {locale === 'de' ? 'Beliebt' : locale === 'en' ? 'Popular' : 'Populair'}
                           </span>
                         )}
-                      </div>
-                      <div className="flex items-center justify-between mt-1.5">
-                        <span className="text-[10px] opacity-80 block">{fo.sub}</span>
-                        <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-[#1C1917]'}`}>
-                          {sizePrice.formattedPrice}
-                        </span>
                       </div>
                     </button>
                   );

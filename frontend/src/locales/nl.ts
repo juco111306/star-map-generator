@@ -153,7 +153,7 @@ export const nl: Translations = {
     serviceTitle: 'Persoonlijke Klantenservice',
     serviceDesc: 'Ons atelier volgt elke bestelling handmatig op voor een vlekkeloze ervaring.',
     contactLabel: 'Vragen?',
-    email: 'klantenservice@stellaire.nl',
+    email: 'service@stellaire-atelier.nl',
   },
   howItWorks: {
     badge: 'Eenvoudig & Betekenisvol',
@@ -254,7 +254,7 @@ export const nl: Translations = {
       },
       {
         q: 'Wat gebeurt er als mijn bestelling beschadigd aankomt?',
-        a: 'Mocht een ingelijst product of ander item onverhoopt beschadigd aankomen (zoals gebroken glas, ingedeukte hoeken of gebarsten hout), dan valt dit 100% onder onze Ambachtelijke Kwaliteitsgarantie. Meld het binnen 30 dagen na ontvangst met foto’s van de schade én de verpakking via klantenservice@stellaire.nl, en wij verzorgen kosteloos een directe herdruk of volledige terugbetaling.',
+        a: 'Mocht een ingelijst product of ander item onverhoopt beschadigd aankomen (zoals gebroken glas, ingedeukte hoeken of gebarsten hout), dan valt dit 100% onder onze Ambachtelijke Kwaliteitsgarantie. Meld het binnen 30 dagen na ontvangst met foto’s van de schade én de verpakking via service@stellaire-atelier.nl, en wij verzorgen kosteloos een directe herdruk of volledige terugbetaling.',
       },
       {
         q: 'Accepteren jullie retourzendingen voor gepersonaliseerde posters?',
@@ -288,7 +288,7 @@ export const nl: Translations = {
     col3Title: 'Klantenservice & Atelier',
     col3Desc:
       'Heb je een vraag over een bestelling of wil je gebruikmaken van onze ontwerpgarantie? Ons atelier reageert binnen 24 uur op werkdagen.',
-    email: 'klantenservice@stellaire.nl',
+    email: 'service@stellaire-atelier.nl',
     copyright: 'Stellaire Atelier. Alle rechten voorbehouden.',
     returnPolicyShort: 'Retourbeleid',
     faqShort: 'FAQ',
@@ -317,7 +317,7 @@ export const nl: Translations = {
     claimPhotosText2: '2. Duidelijke foto’s van ZOWEL de binnenverpakking als de buitenkant van de doos.',
     claimHowToTitle: 'E-mail naar de klantenservice',
     claimHowToText:
-      'Stuur de foto’s samen met je bestelnummer naar klantenservice@stellaire.nl. Ons team beoordeelt de claim binnen 24 uur en stuurt direct een vervangend pakket op.',
+      'Stuur de foto’s samen met je bestelnummer naar service@stellaire-atelier.nl. Ons team beoordeelt de claim binnen 24 uur en stuurt direct een vervangend pakket op.',
     closeButton: 'Begrepen, sluit venster',
   },
   tracking: {
