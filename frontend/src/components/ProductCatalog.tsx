@@ -8,6 +8,7 @@ import {
   SAMPLE_CONSTELLATION_LINES,
 } from '../constants/sampleCelestialData';
 import { MysticalMilkyWay } from './MysticalMilkyWay';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ProductCatalogProps {
   onCustomizeStarMap: () => void;
@@ -18,35 +19,93 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   onCustomizeStarMap,
   onSelectStyle,
 }) => {
-  const dutchStyleDetails: Record<
+  const { locale, t } = useLanguage();
+
+  const localizedStyleDetails: Record<
     string,
-    { title: string; subtitle: string; desc: string; tag: string }
+    Record<string, { title: string; subtitle: string; desc: string; tag: string }>
   > = {
-    midnight_classic: {
-      title: 'Midnight Classic',
-      subtitle: 'Onze Meest Geliefde Bestseller',
-      desc: 'Diep koningsblauw met dubbele kompasring, fijne graadverdeling en fonkelende witte sterren.',
-      tag: 'BESTSELLER',
+    nl: {
+      midnight_classic: {
+        title: 'Midnight Classic',
+        subtitle: 'Onze Meest Geliefde Bestseller',
+        desc: 'Diep koningsblauw met dubbele kompasring, fijne graadverdeling en fonkelende witte sterren.',
+        tag: 'BESTSELLER',
+      },
+      teal_watercolor: {
+        title: 'Teal Watercolor',
+        subtitle: 'Zachte Aquarel & Neveltextuur',
+        desc: 'Sfeervolle marineblauwe en cyaankleurige aquarelstructuur op een warm linnenachtergrond.',
+        tag: 'ARTISTIEK',
+      },
+      emerald_night: {
+        title: 'Emerald Night',
+        subtitle: 'Brits Bosgroen & Koninklijk Goud',
+        desc: 'Diepgroene nachthemel gecombineerd met metallic gouden sterren en hemelcoördinaten.',
+        tag: 'LUXE EDITIE',
+      },
+      burgundy_sky: {
+        title: 'Burgundy Sky',
+        subtitle: 'Warme Romantiek & Fluweelrood',
+        desc: 'Rijke bordeauxrode tinten die liefde en warmte uitstralen, afgewerkt met zachte parelwitte typografie.',
+        tag: 'ROMANTISCH',
+      },
     },
-    teal_watercolor: {
-      title: 'Teal Watercolor',
-      subtitle: 'Zachte Aquarel & Neveltextuur',
-      desc: 'Sfeervolle marineblauwe en cyaankleurige aquarelstructuur op een warm linnenachtergrond.',
-      tag: 'ARTISTIEK',
+    de: {
+      midnight_classic: {
+        title: 'Midnight Classic',
+        subtitle: 'Unser Beliebtester Bestseller',
+        desc: 'Tiefes Königsblau mit doppeltem Kompassring, feinen Gradteilungen und funkelnden Sternen.',
+        tag: 'BESTSELLER',
+      },
+      teal_watercolor: {
+        title: 'Teal Watercolor',
+        subtitle: 'Sanfte Aquarell- & Nebeltextur',
+        desc: 'Stimmungsvolle marine- und cyanblaue Aquarellstruktur auf warmem Hintergrund.',
+        tag: 'KÜNSTLERISCH',
+      },
+      emerald_night: {
+        title: 'Emerald Night',
+        subtitle: 'Waldgrün & Edles Gold',
+        desc: 'Dunkelgrüner Nachthimmel kombiniert mit edlen goldenen Sternen und Himmelskoordinaten.',
+        tag: 'LUXUS EDITION',
+      },
+      burgundy_sky: {
+        title: 'Burgundy Sky',
+        subtitle: 'Warme Romantik & Samtrot',
+        desc: 'Satte bordeauxrote Nuancen, die Liebe und Wärme ausstrahlen, veredelt mit Perlweiß.',
+        tag: 'ROMANTISCH',
+      },
     },
-    emerald_night: {
-      title: 'Emerald Night',
-      subtitle: 'Brits Bosgroen & Koninklijk Goud',
-      desc: 'Diepgroene nachthemel gecombineerd met metallic gouden sterren en hemelcoördinaten.',
-      tag: 'LUXE EDITIE',
-    },
-    burgundy_sky: {
-      title: 'Burgundy Sky',
-      subtitle: 'Warme Romantiek & Fluweelrood',
-      desc: 'Rijke bordeauxrode tinten die liefde en warmte uitstralen, afgewerkt met zachte parelwitte typografie.',
-      tag: 'ROMANTISCH',
+    en: {
+      midnight_classic: {
+        title: 'Midnight Classic',
+        subtitle: 'Our Most Beloved Bestseller',
+        desc: 'Deep royal navy with double compass dial, delicate degree ticks, and luminous white stars.',
+        tag: 'BESTSELLER',
+      },
+      teal_watercolor: {
+        title: 'Teal Watercolor',
+        subtitle: 'Gentle Nebula Watercolor Texture',
+        desc: 'Atmospheric deep teal and cyan watercolor structure across a warm matted background.',
+        tag: 'ARTISTIC',
+      },
+      emerald_night: {
+        title: 'Emerald Night',
+        subtitle: 'British Racing Green & Royal Gold',
+        desc: 'Deep forest green night sky paired with metallic gold celestial coordinates.',
+        tag: 'LUXURY EDITION',
+      },
+      burgundy_sky: {
+        title: 'Burgundy Sky',
+        subtitle: 'Warm Romance & Velvet Crimson',
+        desc: 'Rich burgundy hues radiating warmth and devotion, finished with soft pearl typography.',
+        tag: 'ROMANTIC',
+      },
     },
   };
+
+  const currentStyles = localizedStyleDetails[locale] || localizedStyleDetails.nl;
 
   const handleCardClick = (styleId: string) => {
     if (onSelectStyle) {
@@ -349,7 +408,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         {/* 4 Flagship Art Styles - 4 balanced columns on desktop (lg:grid-cols-4) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {DESIGN_STYLES.map((style) => {
-            const meta = dutchStyleDetails[style.id] || {
+            const meta = currentStyles[style.id] || {
               title: style.name,
               subtitle: style.subtitle,
               desc: style.description,
@@ -363,7 +422,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 className="group bg-white rounded-3xl p-3.5 sm:p-4 border border-[#E2DDD5] shadow-[0_8px_25px_rgba(28,25,23,0.04)] hover:shadow-[0_18px_40px_rgba(28,25,23,0.12)] hover:border-[#C8BFB0] transition-all duration-300 cursor-pointer flex flex-col justify-between"
               >
                 <div className="space-y-3.5">
-                  {/* Gelato Light Wood Frame Mockup - Thin & Sharp 90° Edges, No White Borders */}
+                  {/* Natural Wood Frame Mockup */}
                   <div className="relative aspect-[300/420] rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[6px] sm:p-[7px] shadow-[0_10px_25px_-5px_rgba(40,25,10,0.18)] ring-1 ring-[#C8B28E]/60 transition-transform duration-500 group-hover:scale-[1.02]">
                     {/* Badge */}
                     <span className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-none text-[8.5px] font-bold tracking-wider uppercase bg-white/95 text-[#1C1917] shadow-xs border border-black/10">
@@ -384,7 +443,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                       </h3>
                       <div className="text-right shrink-0 ml-1">
                         <span className="text-[10px] text-[#A8A29E] line-through mr-1">€29</span>
-                        <span className="text-xs font-bold text-[#1C1917]">vanaf €19</span>
+                        <span className="text-xs font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} €19</span>
                       </div>
                     </div>
                     <p className="text-[10.5px] font-semibold text-[#A37055] truncate">
@@ -398,7 +457,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 
                 {/* Card Bottom CTA */}
                 <div className="pt-3.5 mt-3 border-t border-[#F2ECE1] flex items-center justify-between text-xs font-semibold text-[#1C1917] group-hover:text-[#A37055] transition-colors">
-                  <span>Personaliseer</span>
+                  <span>{t.catalog.digital.cta}</span>
                   <div className="w-6 h-6 rounded-full bg-[#FAF8F5] group-hover:bg-[#1C1917] group-hover:text-white flex items-center justify-center transition-all shadow-2xs">
                     <ArrowRight className="w-3 h-3" />
                   </div>
@@ -412,19 +471,19 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
         <div className="p-5 rounded-2xl bg-white border border-[#E2DDD5] shadow-xs flex flex-wrap items-center justify-around gap-4 text-xs text-[#57534E]">
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Officiële NASA JPL & Skyfield sterrendata</span>
+            <span>Officiële NASA JPL &amp; Skyfield sterrendata</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Classic Matte 200 gsm archiefpapier</span>
+            <span>285 gsm Fine-Art katoenpapier</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Massief houten wissellijsten van onze ervaren inlijstpartner</span>
+            <span>Massief houten wissellijsten</span>
           </div>
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-[#A37055]" />
-            <span>Gratis levering in Nederland & België via vertrouwde partners (zoals PostNL, Bpost)</span>
+            <span>{t.catalog.shippingTrust}</span>
           </div>
         </div>
       </div>

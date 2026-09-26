@@ -93,7 +93,8 @@ function drawCenteredText(
  */
 export async function generateStarMapPdfBlob(
   config: Partial<MapConfig>,
-  orderId?: string
+  orderId?: string,
+  locale: string = 'nl'
 ): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.create();
 
@@ -344,12 +345,20 @@ export async function generateStarMapPdfBlob(
     });
   }
 
-  // Cardinal orientation points (N, S, E, W)
+  // Cardinal orientation points
+  // NL: N (Noord), Z (Zuid), O (Oost), W (West)
+  // DE: N (Nord), S (Süd), O (Ost), W (West)
+  // EN: N (North), S (South), E (East), W (West)
+  const cardN = 'N';
+  const cardS = locale === 'nl' ? 'Z' : 'S';
+  const cardE = locale === 'en' ? 'E' : 'O';
+  const cardW = 'W';
+
   const cardinalSize = 8.5 * scale;
   const cardinalDist = radius + 9.0 * scale;
   const cardColor = rgb(borderColor.r, borderColor.g, borderColor.b);
 
-  page.drawText('N', {
+  page.drawText(cardN, {
     x: cx - 3.5 * scale,
     y: cy + cardinalDist,
     size: cardinalSize,
@@ -357,7 +366,7 @@ export async function generateStarMapPdfBlob(
     color: cardColor,
     opacity: borderColor.a,
   });
-  page.drawText('S', {
+  page.drawText(cardS, {
     x: cx - 3.0 * scale,
     y: cy - cardinalDist - 8.0 * scale,
     size: cardinalSize,
@@ -365,7 +374,7 @@ export async function generateStarMapPdfBlob(
     color: cardColor,
     opacity: borderColor.a,
   });
-  page.drawText('E', {
+  page.drawText(cardE, {
     x: cx + cardinalDist + 2.0 * scale,
     y: cy - 3.5 * scale,
     size: cardinalSize,
@@ -373,7 +382,7 @@ export async function generateStarMapPdfBlob(
     color: cardColor,
     opacity: borderColor.a,
   });
-  page.drawText('W', {
+  page.drawText(cardW, {
     x: cx - cardinalDist - 12.0 * scale,
     y: cy - 3.5 * scale,
     size: cardinalSize,

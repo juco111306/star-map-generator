@@ -47,6 +47,7 @@ export async function GET(
     const names = url.searchParams.get('names') || '';
     const date = url.searchParams.get('date') || '22 September 2026';
     const location = url.searchParams.get('location') || 'Amsterdam, Nederland';
+    const locale = url.searchParams.get('locale') || 'nl';
 
     const pdfBytes = await generateStarMapPdfBlob(
       {
@@ -94,7 +95,8 @@ export async function GET(
         showMattedBorder: false,
         dividerStyle: 'diamond',
       },
-      orderId
+      orderId,
+      locale
     );
 
     const buffer = Buffer.from(pdfBytes);

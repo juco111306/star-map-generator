@@ -11,7 +11,7 @@ const stripe = stripeKey
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { amount, email, shippingDetails, posterSize, frameStyle, orderId } = body;
+    const { amount, email, shippingDetails, posterSize, frameStyle, orderId, locale } = body;
 
     if (!stripe) {
       console.warn("STRIPE_SECRET_KEY or STRIPE_RESTRICTED_KEY is not defined in environment variables.");
@@ -30,21 +30,36 @@ export async function POST(request: NextRequest) {
     const amountInCents = numericAmount > 100 ? Math.round(numericAmount) : Math.round(numericAmount * 100);
 
     const isDigital = frameStyle === "digital";
-    const productName = "Stellaire • Gepersonaliseerde Sterrenposter";
-    const productDesc = isDigital
-      ? "Digitaal Hoge Resolutie Vector PDF Bestand (300 DPI)"
-      : `${posterSize || "50x70"} cm • Classic Matte Fine-Art Print`;
+    const activeLocale = locale === 'de' ? 'de' : locale === 'en' ? 'en' : 'nl';
+
+    const productNames: Record<string, string> = {
+      nl: "Stellaire • Gepersonaliseerde Sterrenposter",
+      de: "Stellaire • Personalisierte Sternenkarte",
+      en: "Stellaire • Personalized Custom Star Map",
+    };
+
+    const productDescs: Record<string, string> = {
+      nl: isDigital
+        ? "Digitaal Hoge Resolutie Vector PDF Bestand (300 DPI)"
+        : `${posterSize || "50x70"} cm • Classic Matte Fine-Art Print`,
+      de: isDigital
+        ? "Digitale Vektor-PDF-Datei in Hochauflösung (300 DPI)"
+        : `${posterSize || "50x70"} cm • Museums-Fine-Art-Druck`,
+      en: isDigital
+        ? "Digital High-Resolution Vector PDF File (300 DPI)"
+        : `${posterSize || "50x70"} cm • Museum Fine-Art Cotton Print`,
+    };
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "ideal", "bancontact"],
+      payment_method_types: ["card", "ideal", "bancontact", "sofort", "klarna", "sepa_debit"],
       customer_email: email || undefined,
       line_items: [
         {
           price_data: {
             currency: "eur",
             product_data: {
-              name: productName,
-              description: productDesc,
+              name: productNames[activeLocale],
+              description: productDescs[activeLocale],
             },
             unit_amount: amountInCents,
           },
@@ -52,8 +67,8 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId || ""}&amount=${numericAmount}`,
-      cancel_url: `${origin}/`,
+      success_url: `${origin}/${activeLocale}/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId || ""}&amount=${numericAmount}`,
+      cancel_url: `${origin}/${activeLocale}/`,
       metadata: {
         orderId: orderId || "",
         customerEmail: email || "",
@@ -61,6 +76,7 @@ export async function POST(request: NextRequest) {
         shippingAddress: JSON.stringify(shippingDetails || {}),
         posterSize: posterSize || "",
         frameStyle: frameStyle || "",
+        locale: activeLocale,
       },
     });
 

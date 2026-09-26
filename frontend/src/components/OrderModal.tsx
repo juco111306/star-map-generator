@@ -24,6 +24,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./CheckoutPage";
 import convertToSubcurrency from "../utils/convertToSubcurrency";
+import { useLanguage } from '../context/LanguageContext';
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || '';
 const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
@@ -42,6 +43,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   onOrderSuccess,
   onOpenReturnPolicy,
 }) => {
+  const { locale, t } = useLanguage();
   const [customer, setCustomer] = useState<CustomerDetails>({
     name: '',
     email: '',
@@ -51,7 +53,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     city: '',
     state: '',
     postal_code: '',
-    country: 'Nederland',
+    country: locale === 'de' ? 'Deutschland' : locale === 'en' ? 'United Kingdom' : 'Nederland',
     gift_note: '',
     producer_notes: '',
   });
@@ -129,7 +131,15 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         location_text: config.locationBlock?.text || '',
         coords_text: config.coordsBlock?.text || '',
         pdf_filename: `${orderId}_print_ready_300dpi.pdf`,
-        carrier: isDigital ? 'Digitale Levering per E-mail' : 'PostNL',
+        carrier: isDigital
+          ? t.orderModal.digitalDeliveryNotice
+          : (payloadCustomer.country || '').toLowerCase().includes('duits') || (payloadCustomer.country || '').toLowerCase().includes('deutsch') || (payloadCustomer.country || '').toLowerCase().includes('germany')
+          ? 'DHL'
+          : (payloadCustomer.country || '').toLowerCase().includes('belgië') || (payloadCustomer.country || '').toLowerCase().includes('belgium')
+          ? 'Bpost'
+          : (payloadCustomer.country || '').toLowerCase().includes('kingdom') || (payloadCustomer.country || '').toLowerCase().includes('uk')
+          ? 'Royal Mail'
+          : 'PostNL',
         map_config: config,
       };
 
@@ -154,6 +164,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             posterSize: config.posterSize,
             frameStyle: config.frameStyle,
             styleId: config.styleId,
+            locale: locale,
           }),
         });
 
@@ -472,14 +483,17 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">Land *</label>
+                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.countryLabel}</label>
                   <select
                     value={customer.country}
                     onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   >
-                    <option value="Nederland">Nederland (Tracked via vertrouwde partners)</option>
-                    <option value="België">België (Tracked via vertrouwde partners)</option>
+                    {t.orderModal.countries.map((c) => (
+                      <option key={c.code} value={c.name}>
+                        {c.name} ({c.shippingNote})
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -489,31 +503,31 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {!isDigital && (
               <div className="space-y-3 pt-2 border-t border-[#E8E4DC]">
                 <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                  2. Cadeaukaartje & Aanwijzingen voor de Drukker
+                  {t.orderModal.giftSectionTitle}
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="text-[11px] text-[#57534E] font-medium block mb-1">
-                      Kosteloos Cadeaukaartje (Met Waszegel)
+                      {t.orderModal.giftNoteLabel}
                     </label>
                     <textarea
                       rows={2}
                       value={customer.gift_note}
                       onChange={(e) => setCustomer({ ...customer, gift_note: e.target.value })}
-                      placeholder="bijv. Gefeliciteerd met jullie 1-jarig huwelijk! Dit was de hemel toen ons avontuur begon."
+                      placeholder={t.orderModal.giftNotePlaceholder}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                     />
                   </div>
                   <div>
                     <label className="text-[11px] text-[#57534E] font-medium block mb-1">
-                      Aanwijzingen voor de Drukker
+                      {t.orderModal.producerNoteLabel}
                     </label>
                     <textarea
                       rows={2}
                       value={customer.producer_notes}
                       onChange={(e) => setCustomer({ ...customer, producer_notes: e.target.value })}
-                      placeholder="bijv. Classic Matte papier, extra zorgvuldig centreren."
+                      placeholder={t.orderModal.producerNotePlaceholder}
                       className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                     />
                   </div>
@@ -526,7 +540,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-[#A37055] shrink-0" />
                 <span>
-                  <strong>Gepersonaliseerd maatwerk:</strong> Geen fysieke retour na druk, wél 100% terugbetaling van de ontwerpprijs (€19,-) bij ontevredenheid &amp; kosteloze herdruk bij schade.
+                  <strong>{t.orderModal.policyNoticeStrong}</strong> {t.orderModal.policyNoticeText}
                 </span>
               </div>
               {onOpenReturnPolicy && (
@@ -535,7 +549,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   onClick={onOpenReturnPolicy}
                   className="text-[#A37055] font-semibold hover:underline shrink-0 text-[11px] text-left sm:text-right"
                 >
-                  Lees retourbeleid &rarr;
+                  {t.orderModal.readPolicyLink}
                 </button>
               )}
             </div>
@@ -543,7 +557,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">
               <span className="text-[11px] text-[#78716C]">
-                {isDigital ? 'Digitale instant levering' : 'Productie via meester-atelier • Vertrouwde partners (zoals PostNL, Bpost)'}
+                {isDigital ? t.orderModal.digitalDeliveryNotice : t.orderModal.physicalDeliveryNotice}
               </span>
 
               <div className="flex items-center space-x-2">
@@ -552,7 +566,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   onClick={onClose}
                   className="px-4 py-2 rounded-full text-xs font-medium text-[#78716C] hover:text-[#1C1917]"
                 >
-                  Annuleren
+                  {t.orderModal.cancelButton}
                 </button>
 
                 <button
@@ -563,12 +577,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>300 DPI PDF Genereren...</span>
+                      <span>{t.common.loading}</span>
                     </>
                   ) : (
                     <>
                       <Printer className="w-3.5 h-3.5" />
-                      <span>Bestelling Plaatsen ({priceDetails.formattedPrice})</span>
+                      <span>{t.orderModal.proceedToPayment} ({priceDetails.formattedPrice})</span>
                     </>
                   )}
                 </button>

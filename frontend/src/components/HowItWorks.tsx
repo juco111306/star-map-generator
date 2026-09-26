@@ -2,32 +2,32 @@
 
 import React from 'react';
 import { Calendar, Printer, Sparkles, ArrowRight, Feather } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HowItWorksProps {
   onStartCustomizing: () => void;
 }
 
 export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartCustomizing }) => {
+  const { t } = useLanguage();
+
   const steps = [
     {
-      number: '01',
-      title: 'Kies Jouw Bijzondere Moment',
-      description:
-        'Selecteer een datum, tijdstip en locatie op aarde—van een historische gracht in Amsterdam of Brugge tot het strand van jullie huwelijksreis.',
+      number: t.howItWorks.step1Num,
+      title: t.howItWorks.step1Title,
+      description: t.howItWorks.step1Desc,
       icon: <Calendar className="w-5 h-5 text-[#A37055]" />,
     },
     {
-      number: '02',
-      title: 'Personaliseer in Onze Studio',
-      description:
-        'Voeg jullie namen toe in elegante kalligrafie, kies een romantische titel, stem lettergroottes af tot 100 pt en kies jouw favoriete kunststijl.',
+      number: t.howItWorks.step2Num,
+      title: t.howItWorks.step2Title,
+      description: t.howItWorks.step2Desc,
       icon: <Feather className="w-5 h-5 text-[#A37055]" />,
     },
     {
-      number: '03',
-      title: 'Ambachtelijk Gedrukt & Geleverd',
-      description:
-        'Individueel gedrukt op 285 gsm archiefwaardig fine-art papier, optioneel ingelijst in een slank houten kader en snel bezorgd via vertrouwde partners (zoals PostNL, Bpost).',
+      number: t.howItWorks.step3Num,
+      title: t.howItWorks.step3Title,
+      description: t.howItWorks.step3Desc,
       icon: <Printer className="w-5 h-5 text-[#A37055]" />,
     },
   ];
@@ -38,13 +38,13 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartCustomizing }) =>
         <div className="text-center max-w-xl mx-auto space-y-3">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#F3EFE7] border border-[#E4DDD0] text-[#78716C] text-xs font-medium">
             <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>HET AMBACHTELIJKE PROCES</span>
+            <span>{t.howItWorks.badge}</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-[#1C1917]">
-            Hoe Jouw Sterrenposter Wordt Gemaakt
+            {t.howItWorks.title}
           </h2>
           <p className="text-[#57534E] text-sm font-light leading-relaxed">
-            Van wetenschappelijke NASA-berekeningen tot fysiek meesterwerk in drie eenvoudige stappen.
+            {t.howItWorks.subtitle}
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartCustomizing }) =>
             onClick={onStartCustomizing}
             className="inline-flex items-center space-x-2 px-7 py-3.5 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs tracking-wide shadow-sm hover:shadow-md transition-all transform hover:-translate-y-0.5"
           >
-            <span>Ontwerp nu jouw sterrenkaart</span>
+            <span>{t.howItWorks.ctaButton}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

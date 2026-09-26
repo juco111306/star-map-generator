@@ -18,6 +18,7 @@ import {
   Loader2,
   Frame,
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface StarMapPreviewProps {
   config: MapConfig;
@@ -32,6 +33,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   isLoading,
   onFrameChange,
 }) => {
+  const { cardinalPoints } = useLanguage();
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -837,7 +839,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                       fontWeight="600"
                       fontFamily={`'${config.coordsBlock?.font || 'Montserrat'}', sans-serif`}
                     >
-                      N
+                      {cardinalPoints.n}
                     </text>
                     <text
                       x={cx}
@@ -848,7 +850,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                       fontWeight="600"
                       fontFamily={`'${config.coordsBlock?.font || 'Montserrat'}', sans-serif`}
                     >
-                      S
+                      {cardinalPoints.s}
                     </text>
                     <text
                       x={cx - radius - 15}
@@ -859,7 +861,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                       fontWeight="600"
                       fontFamily={`'${config.coordsBlock?.font || 'Montserrat'}', sans-serif`}
                     >
-                      E
+                      {cardinalPoints.e}
                     </text>
                     <text
                       x={cx + radius + 15}
@@ -870,7 +872,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                       fontWeight="600"
                       fontFamily={`'${config.coordsBlock?.font || 'Montserrat'}', sans-serif`}
                     >
-                      W
+                      {cardinalPoints.w}
                     </text>
                   </g>
                 )}

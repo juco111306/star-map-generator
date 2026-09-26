@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Sparkles, ShieldCheck, Mail, Heart, Info, Truck } from 'lucide-react';
+import { Sparkles, ShieldCheck, Mail, Truck, Info } from 'lucide-react';
 import { AppView } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FooterProps {
   onNavigate: (view: AppView) => void;
@@ -10,6 +11,8 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }) => {
+  const { t } = useLanguage();
+
   const handleScrollTo = (id: string) => {
     onNavigate('landing');
     setTimeout(() => {
@@ -29,22 +32,22 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
                 <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
               </div>
               <span className="font-serif text-base font-bold text-[#1C1917] tracking-wider">
-                STELLAIRE ATELIER
+                {t.common.brandName}
               </span>
             </div>
             <p className="text-[11px] text-[#57534E] leading-relaxed font-light">
-              Een ambachtelijke ontwerpstudio gewijd aan het vastleggen van jouw meest dierbare levensmomenten onder de exacte stand van de sterrenhemel.
+              {t.footer.brandDesc}
             </p>
             <div className="pt-1 flex items-center gap-1.5 text-[10.5px] text-[#A37055] font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-[#A37055]" />
-              <span>Pilot Editie voor Nederland & België</span>
+              <span>{t.footer.editionBadge}</span>
             </div>
           </div>
 
           {/* Product & Studio Links */}
           <div className="space-y-2.5">
             <h4 className="font-semibold text-[#1C1917] text-xs uppercase tracking-wider">
-              Onze Sterrenkaarten
+              {t.footer.col1Title}
             </h4>
             <ul className="space-y-2 text-[11px]">
               <li>
@@ -52,7 +55,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
                   onClick={() => onNavigate('customizer')}
                   className="hover:text-[#A37055] transition-colors"
                 >
-                  Ontwerp Jouw Sterrenposter
+                  {t.footer.linkDesign}
                 </button>
               </li>
               <li>
@@ -60,7 +63,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
                   onClick={() => handleScrollTo('stijlen')}
                   className="hover:text-[#1C1917] transition-colors"
                 >
-                  Bekijk de Kunststijlen
+                  {t.footer.linkStyles}
                 </button>
               </li>
               <li>
@@ -68,7 +71,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
                   onClick={() => handleScrollTo('how-it-works')}
                   className="hover:text-[#1C1917] transition-colors"
                 >
-                  Hoe het werkt
+                  {t.footer.linkHowItWorks}
                 </button>
               </li>
               <li>
@@ -76,7 +79,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
                   onClick={() => handleScrollTo('faq')}
                   className="hover:text-[#1C1917] transition-colors"
                 >
-                  Veelgestelde Vragen (FAQ)
+                  {t.footer.linkFAQ}
                 </button>
               </li>
             </ul>
@@ -85,24 +88,24 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
           {/* Quality & Craft Standards */}
           <div className="space-y-2.5">
             <h4 className="font-semibold text-[#1C1917] text-xs uppercase tracking-wider">
-              Kwaliteit & Garantie
+              {t.footer.col2Title}
             </h4>
             <ul className="space-y-2 text-[11px]">
               <li className="flex items-center gap-1.5 text-[#57534E]">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#A37055] shrink-0" />
-                <span>300 DPI 285 gsm Katoenpapier</span>
+                <span>{t.footer.point1}</span>
               </li>
               <li className="flex items-center gap-1.5 text-[#57534E]">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#A37055] shrink-0" />
-                <span>Officiële NASA JPL & Skyfield data</span>
+                <span>{t.footer.point2}</span>
               </li>
               <li className="flex items-center gap-1.5 text-[#57534E]">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#A37055] shrink-0" />
-                <span>Slanke houten fotolijsten met museumglas</span>
+                <span>{t.footer.point3}</span>
               </li>
               <li className="flex items-center gap-1.5 text-[#57534E]">
                 <Truck className="w-3.5 h-3.5 text-[#A37055] shrink-0" />
-                <span>Gratis verzekerde verzending via vertrouwde partners (zoals PostNL, Bpost)</span>
+                <span>{t.footer.shippingPartnerText}</span>
               </li>
               {onOpenReturnPolicy && (
                 <li className="pt-1">
@@ -110,45 +113,45 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
                     onClick={onOpenReturnPolicy}
                     className="text-[#A37055] font-semibold hover:underline flex items-center gap-1"
                   >
-                    <span>Retourbeleid &amp; Garantievoorwaarden &rarr;</span>
+                    <span>{t.footer.returnPolicyLinkText}</span>
                   </button>
                 </li>
               )}
             </ul>
           </div>
 
-          {/* Pilot Transparency Note */}
+          {/* Customer Care */}
           <div className="space-y-2.5">
             <h4 className="font-semibold text-[#1C1917] text-xs uppercase tracking-wider flex items-center gap-1.5">
               <Info className="w-3.5 h-3.5 text-[#A37055]" />
-              <span>Klantenservice &amp; Atelier</span>
+              <span>{t.footer.col3Title}</span>
             </h4>
             <p className="text-[11px] text-[#57534E] leading-relaxed font-light">
-              Heb je een vraag over een bestelling of wil je gebruikmaken van onze ontwerpgarantie? Ons atelier reageert binnen 24 uur op werkdagen.
+              {t.footer.col3Desc}
             </p>
             <div className="pt-2">
               <a
-                href="mailto:klantenservice@stellaire.nl"
+                href={`mailto:${t.footer.email}`}
                 className="inline-flex items-center gap-1 text-[11px] font-medium text-[#1C1917] hover:text-[#A37055] transition-colors"
               >
                 <Mail className="w-3.5 h-3.5 text-[#A37055]" />
-                <span>klantenservice@stellaire.nl</span>
+                <span>{t.footer.email}</span>
               </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom Legal, Payment, and Copyright */}
+        {/* Bottom Legal, Regional Payment Icons, and Copyright */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
           <div className="flex flex-wrap items-center gap-3 text-[#8C827A]">
-            <span>&copy; {new Date().getFullYear()} Stellaire Atelier. Alle rechten voorbehouden.</span>
+            <span>&copy; {new Date().getFullYear()} {t.footer.copyright}</span>
             <span>•</span>
             {onOpenReturnPolicy && (
               <button
                 onClick={onOpenReturnPolicy}
                 className="hover:text-[#1C1917] transition-colors underline"
               >
-                Retourbeleid
+                {t.footer.returnPolicyShort}
               </button>
             )}
             <span>•</span>
@@ -156,14 +159,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
               onClick={() => handleScrollTo('faq')}
               className="hover:text-[#1C1917] transition-colors underline"
             >
-              FAQ
+              {t.footer.faqShort}
             </button>
           </div>
-          <div className="flex items-center space-x-3 text-[10px] text-[#8C827A]">
-            <span className="px-2 py-0.5 rounded bg-white border border-[#E0D9CD] font-medium text-[#57534E]">iDEAL</span>
-            <span className="px-2 py-0.5 rounded bg-white border border-[#E0D9CD] font-medium text-[#57534E]">Bancontact</span>
-            <span className="px-2 py-0.5 rounded bg-white border border-[#E0D9CD] font-medium text-[#57534E]">Klarna</span>
-            <span className="px-2 py-0.5 rounded bg-white border border-[#E0D9CD] font-medium text-[#57534E]">Visa / Mastercard</span>
+
+          {/* Regional Dynamic Payment Badges */}
+          <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-[#8C827A]">
+            {t.footer.paymentBadges.map((badge, idx) => (
+              <span
+                key={idx}
+                className="px-2 py-0.5 rounded bg-white border border-[#E0D9CD] font-medium text-[#57534E] shadow-2xs"
+              >
+                {badge}
+              </span>
+            ))}
           </div>
         </div>
       </div>

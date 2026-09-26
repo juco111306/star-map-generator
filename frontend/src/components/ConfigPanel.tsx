@@ -34,6 +34,7 @@ import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, Po
 import { StyleSelector } from './StyleSelector';
 import { apiFetch } from '../utils/api';
 import { calculatePrice, FRAME_OPTIONS, METRIC_SIZES } from '../utils/pricing';
+import { useLanguage } from '../context/LanguageContext';
 
 interface ConfigPanelProps {
   config: MapConfig;
@@ -48,15 +49,6 @@ interface ConfigPanelProps {
 
 export type StudioTab = 'location' | 'text' | 'font' | 'design' | 'format';
 
-const TITLE_SUGGESTIONS = [
-  "The Night We Met",
-  "De nacht dat onze sterren samenkwamen",
-  "De nacht waarin we 'Ja' zeiden",
-  "Toen een ster werd geboren",
-  "Het begin van ons avontuur",
-  "Onder deze hemel",
-];
-
 export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   config,
   onChange,
@@ -67,12 +59,37 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   isExporting,
   onBackToProducts,
 }) => {
+  const { locale, t, formatDate } = useLanguage();
   const [activeTab, setActiveTab] = useState<StudioTab>('location');
   const [searchQuery, setSearchQuery] = useState(config.locationName);
   const [geocodeResults, setGeocodeResults] = useState<GeocodeResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isCustomizingTypography, setIsCustomizingTypography] = useState(false);
+
+  const regionalPopularLocations = React.useMemo(() => {
+    if (locale === 'de') {
+      return [
+        { name: 'Berlin, Deutschland', lat: 52.5200, lon: 13.4050 },
+        { name: 'München, Deutschland', lat: 48.1351, lon: 11.5820 },
+        { name: 'Hamburg, Deutschland', lat: 53.5511, lon: 9.9937 },
+        { name: 'Köln, Deutschland', lat: 50.9375, lon: 6.9603 },
+        { name: 'Wien, Österreich', lat: 48.2082, lon: 16.3738 },
+        { name: 'Zürich, Schweiz', lat: 47.3769, lon: 8.5417 },
+      ];
+    }
+    if (locale === 'en') {
+      return [
+        { name: 'London, United Kingdom', lat: 51.5074, lon: -0.1278 },
+        { name: 'New York, United States', lat: 40.7128, lon: -74.0060 },
+        { name: 'Paris, France', lat: 48.8566, lon: 2.3522 },
+        { name: 'Amsterdam, Netherlands', lat: 52.3676, lon: 4.9041 },
+        { name: 'Dublin, Ireland', lat: 53.3498, lon: -6.2603 },
+        { name: 'Edinburgh, United Kingdom', lat: 55.9533, lon: -3.1883 },
+      ];
+    }
+    return POPULAR_LOCATIONS;
+  }, [locale]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Debounced geocoding search
@@ -118,8 +135,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     setSearchQuery(loc.name);
     setShowDropdown(false);
 
-    const latStr = `${Math.abs(loc.lat).toFixed(4)}° ${loc.lat >= 0 ? 'N' : 'S'}`;
-    const lonStr = `${Math.abs(loc.lon).toFixed(4)}° ${loc.lon >= 0 ? 'E' : 'W'}`;
+    const latStr = `${Math.abs(loc.lat).toFixed(4)}° ${loc.lat >= 0 ? t.studio.cardinalPoints.n : t.studio.cardinalPoints.s}`;
+    const lonStr = `${Math.abs(loc.lon).toFixed(4)}° ${loc.lon >= 0 ? t.studio.cardinalPoints.e : t.studio.cardinalPoints.w}`;
 
     onChange({
       locationName: loc.name,
@@ -184,19 +201,19 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   const currentPriceDetails = calculatePrice(config.posterSize, config.frameStyle);
 
   const layoutVariations: { id: LayoutVariation; label: string; desc: string; badge?: string }[] = [
-    { id: 'standard_stack', label: 'De Standaard Galerij', desc: 'Klassieke tijdloze tekststapel onder de sterrenkaart', badge: 'Populair' },
-    { id: 'top_title', label: 'Titel Bovenaan', desc: 'Hoofdtitel bovenaan, sterrenhemel gecentreerd' },
-    { id: 'curved_border', label: 'Gebogen Randschrift', desc: 'Titel buigt sierlijk langs de buitenrand van de cirkel' },
-    { id: 'moon_phases', label: 'De Maanfasen', desc: '7 opeenvolgende maanstanden als elegant scheidingselement', badge: 'Populair' },
-    { id: 'framed', label: 'Galerijkader (Keyline)', desc: 'Verfijnde dubbele binnenrand en passe-partout belijning' },
+    { id: 'standard_stack', label: 'De Standaard Galerij', desc: t.studio.standardStackDesc, badge: 'Populair' },
+    { id: 'top_title', label: 'Titel Bovenaan', desc: t.studio.topTitleDesc },
+    { id: 'curved_border', label: 'Gebogen Randschrift', desc: t.studio.curvedBorderDesc },
+    { id: 'moon_phases', label: 'De Maanfasen', desc: t.studio.moonPhasesDesc, badge: 'Populair' },
+    { id: 'framed', label: 'Galerijkader (Keyline)', desc: t.studio.framedDesc },
   ];
 
   const stepsList: { id: StudioTab; num: number; title: string; label: string; icon: any }[] = [
-    { id: 'location', num: 1, title: 'Locatie', label: '1. Locatie', icon: MapPin },
-    { id: 'design', num: 2, title: 'Vorm & Stijl', label: '2. Vorm & Stijl', icon: Sparkles },
-    { id: 'text', num: 3, title: 'Tekst', label: '3. Tekst', icon: Type },
-    { id: 'font', num: 4, title: 'Typografie', label: '4. Typografie', icon: Sliders },
-    { id: 'format', num: 5, title: 'Formaat', label: '5. Formaat', icon: Maximize2 },
+    { id: 'location', num: 1, title: t.studio.stepperLocation, label: t.studio.stepperLocation, icon: MapPin },
+    { id: 'design', num: 2, title: t.studio.stepperShapeStyle, label: t.studio.stepperShapeStyle, icon: Sparkles },
+    { id: 'text', num: 3, title: t.studio.stepperText, label: t.studio.stepperText, icon: Type },
+    { id: 'font', num: 4, title: t.studio.stepperTypography, label: t.studio.stepperTypography, icon: Sliders },
+    { id: 'format', num: 5, title: t.studio.stepperFormat, label: t.studio.stepperFormat, icon: Maximize2 },
   ];
 
   const currentStepIdx = stepsList.findIndex((s) => s.id === activeTab);
@@ -324,9 +341,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
               {/* Popular quick picks */}
               <div className="space-y-1.5 pt-1">
-                <span className="text-[10.5px] text-[#78716C] block font-medium">Populaire Steden in NL & BE:</span>
+                <span className="text-[10.5px] text-[#78716C] block font-medium">{t.studio.popularCitiesTitle}</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {POPULAR_LOCATIONS.map((loc) => (
+                  {regionalPopularLocations.map((loc) => (
                     <button
                       key={loc.name}
                       type="button"
@@ -348,31 +365,24 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-[#A37055]" />
-                <span>Datum & Tijdstip</span>
+                <span>{t.studio.dateTimeTitle}</span>
               </label>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">Datum</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">{t.studio.dateLabel}</label>
                   <input
                     type="date"
                     value={config.date}
                     onChange={(e) => {
                       const newDate = e.target.value;
-                      const dObj = new Date(newDate);
-                      const monthNames = [
-                        'JANUARI', 'FEBRUARI', 'MAART', 'APRIL', 'MEI', 'JUNI',
-                        'JULI', 'AUGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DECEMBER',
-                      ];
-                      const formattedDate = !isNaN(dObj.getTime())
-                        ? `${dObj.getUTCDate()} ${monthNames[dObj.getUTCMonth()]} ${dObj.getUTCFullYear()}`
-                        : newDate;
+                      const formattedDate = formatDate(newDate);
 
                       onChange({
                         date: newDate,
                         dateBlock: {
                           ...config.dateBlock,
-                          text: formattedDate,
+                          text: formattedDate ? formattedDate.toUpperCase() : newDate,
                         },
                       });
                     }}
@@ -381,7 +391,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-[#78716C] block mb-1">Tijdstip</label>
+                  <label className="text-[10px] text-[#78716C] block mb-1">{t.studio.timeLabel}</label>
                   <input
                     type="time"
                     value={config.time}
@@ -590,10 +600,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="space-y-1.5 pt-1">
                 <span className="text-[10px] text-[#78716C] font-medium flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-[#A37055]" />
-                  <span>Populaire Inscriptie Suggesties:</span>
+                  <span>{t.studio.titleSuggestionsTitle}</span>
                 </span>
                 <div className="flex flex-wrap gap-1.5">
-                  {TITLE_SUGGESTIONS.map((suggestion) => {
+                  {t.studio.titleSuggestions.map((suggestion) => {
                     const isSelected =
                       config.titleBlock.text.trim().toLowerCase() === suggestion.toLowerCase();
                     return (

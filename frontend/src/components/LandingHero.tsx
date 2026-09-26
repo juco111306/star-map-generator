@@ -1,16 +1,19 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Star, Sparkles, ShieldCheck, Heart, Award, MapPin, Truck, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Star, Sparkles, ShieldCheck, Heart, Award, MapPin, Truck } from 'lucide-react';
 import { AppView } from '../types';
 import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
 import { MysticalMilkyWay } from './MysticalMilkyWay';
+import { useLanguage } from '../context/LanguageContext';
 
 interface LandingHeroProps {
   onNavigate: (view: AppView) => void;
 }
 
 export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
+  const { locale, t } = useLanguage();
+
   const handleScrollToStyles = () => {
     const el = document.getElementById('stijlen');
     if (el) {
@@ -19,6 +22,19 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
       onNavigate('customizer');
     }
   };
+
+  const isDe = locale === 'de';
+  const isEn = locale === 'en';
+
+  const previewTitle = t.hero.previewDefaultTitle;
+  const previewNames = t.hero.previewDefaultNames;
+  const previewDate = t.hero.previewDefaultDate;
+  const previewLocation = t.hero.previewDefaultLocation;
+  const previewCoords = isDe
+    ? '52.5200° N • 13.4050° O'
+    : isEn
+    ? '51.5074° N • 0.1278° W'
+    : '52.3676° N • 4.9041° E';
 
   return (
     <section className="relative overflow-hidden pt-10 pb-16 lg:pt-14 lg:pb-24 bg-[#FAF8F5]">
@@ -32,18 +48,18 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
             {/* Pill Badge */}
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#F3EFE7] border border-[#E4DDD0] text-[#78716C] text-xs font-medium">
               <Sparkles className="w-3.5 h-3.5 text-[#A37055]" />
-              <span>Museumkwaliteit Sterrenposters • Nederland & België</span>
+              <span>{t.hero.badge}</span>
             </div>
 
             {/* Main Emotive Headline */}
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-[#1C1917] leading-[1.18]">
-              Cadeaus die vasthouden <br />
-              <span className="italic text-[#A37055]">wat woorden niet kunnen.</span>
+              {t.hero.headlinePart1} <br />
+              <span className="italic text-[#A37055]">{t.hero.headlinePart2}</span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-[#57534E] text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
-              De exacte stand van de sterren op het moment dat jullie elkaar ontmoetten, elkaar het jawoord gaven of een nieuw leven verwelkomden. Wetenschappelijk berekend via NASA-astronomie en met de hand ingelijst in museumkwaliteit.
+              {t.hero.subtitle}
             </p>
 
             {/* CTA Buttons */}
@@ -52,7 +68,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate('customizer')}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs tracking-wide shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
               >
-                <span>Ontwerp jouw sterrenkaart</span>
+                <span>{t.hero.ctaDesign}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
 
@@ -60,7 +76,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 onClick={handleScrollToStyles}
                 className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#292524] border border-[#D6D0C7] font-medium text-xs tracking-wide transition-all shadow-sm"
               >
-                Bekijk Kunststijlen
+                {t.hero.ctaStyles}
               </button>
             </div>
 
@@ -72,7 +88,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                 ))}
               </div>
               <span>
-                <strong className="text-[#1C1917] font-medium">4.98 / 5.0</strong> uit meer dan 3.200+ dierbare herinneringen
+                <strong className="text-[#1C1917] font-medium">4.98 / 5.0</strong> • {t.socialProof.totalReviews}
               </span>
             </div>
           </div>
@@ -83,9 +99,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
               {/* Soft warm shadow */}
               <div className="absolute -inset-2 rounded-[32px] bg-[#E8E1D3]/50 blur-xl opacity-80" />
 
-              {/* Gelato Natural Wood Frame (Light Wood) - Thin & Sharp 90° Edges */}
+              {/* Natural Wood Frame */}
               <div className="relative rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[8px] sm:p-[10px] shadow-[0_24px_55px_-12px_rgba(40,25,10,0.24),0_8px_20px_-4px_rgba(40,25,10,0.12)] ring-1 ring-[#C8B28E]/60 group-hover:shadow-[0_30px_65px_-10px_rgba(40,25,10,0.3)] transition-all duration-300">
-                {/* Artwork Thumbnail - Perfectly Flush Fit with Wooden Frame (No White Borders) */}
                 <div
                   onClick={() => onNavigate('customizer')}
                   className="relative rounded-none overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer shadow-[inset_0_1px_3px_rgba(0,0,0,0.35)]"
@@ -104,73 +119,78 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                       </filter>
                     </defs>
 
-                    {/* Archival Canvas Background */}
+                    {/* Celestial Background Texture */}
                     <rect width="1000" height="1400" fill="#0B132B" />
-                    
-                    {/* Inner Fine Matting Keyline */}
-                    <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
-                    {/* Celestial Sphere Masked Contents */}
+                    {/* Deep Space Radial Gradient inside Circle */}
+                    <circle cx="500" cy="480" r="399" fill="url(#hero-space-gradient)" />
+                    <defs>
+                      <radialGradient id="hero-space-gradient" cx="50%" cy="45%" r="55%">
+                        <stop offset="0%" stopColor="#1C2A4A" />
+                        <stop offset="60%" stopColor="#0E172E" />
+                        <stop offset="100%" stopColor="#080C1B" />
+                      </radialGradient>
+                    </defs>
+
+                    {/* Masked Astronomical Elements */}
                     <g clipPath="url(#hero-celestial-mask)">
-                      {/* Deep Midnight Blue Disk Base */}
-                      <circle cx="500" cy="480" r="400" fill="#070D1F" />
+                      {/* Mystical Milky Way */}
+                      <MysticalMilkyWay cx={500} cy={480} radius={399} angle={35} opacity={0.65} />
 
-                      {/* Mystical Realistic Milky Way Galactic Band */}
-                      <MysticalMilkyWay cx={500} cy={480} radius={400} rotation={-28} idPrefix="hero-mw" />
-
-                      {/* Authentic Constellation Lines (matching StarMapPreview 0.85px) */}
-                      {SAMPLE_CONSTELLATION_LINES.map((line, idx) => (
+                      {/* Constellation Lines */}
+                      {SAMPLE_CONSTELLATION_LINES.map((l, i) => (
                         <line
-                          key={idx}
-                          x1={500 + line.x1 * 400}
-                          y1={480 - line.y1 * 400}
-                          x2={500 + line.x2 * 400}
-                          y2={480 - line.y2 * 400}
-                          stroke="rgba(255, 255, 255, 0.42)"
-                          strokeWidth="0.85"
-                          strokeLinecap="round"
+                          key={i}
+                          x1={l.x1}
+                          y1={l.y1}
+                          x2={l.x2}
+                          y2={l.y2}
+                          stroke="rgba(255, 255, 255, 0.32)"
+                          strokeWidth="1.2"
+                          strokeDasharray="none"
                         />
                       ))}
 
-                      {/* Full Visible Astronomical Stars with exact natural radii */}
-                      {SAMPLE_STARS.map((s, idx) => (
+                      {/* Visible Stars */}
+                      {SAMPLE_STARS.map((s, i) => (
                         <circle
-                          key={idx}
-                          cx={500 + s.x * 400}
-                          cy={480 - s.y * 400}
-                          r={s.r}
-                          fill="#FFFFFF"
-                          opacity={s.bright ? 1.0 : 0.85}
+                          key={i}
+                          cx={s.x}
+                          cy={s.y}
+                          r={s.bright ? s.r * 1.4 : s.r * 1.1}
+                          fill={s.bright ? '#FFFFFF' : 'rgba(255, 255, 255, 0.75)'}
                           filter={s.bright ? 'url(#hero-star-glow)' : undefined}
                         />
                       ))}
                     </g>
 
-                    {/* Celestial Boundary Rings & Compass */}
-                    <circle cx="500" cy="480" r="400" fill="none" stroke="rgba(255, 255, 255, 0.48)" strokeWidth="3" />
-                    <circle cx="500" cy="480" r="372" fill="none" stroke="rgba(255, 255, 255, 0.24)" strokeWidth="1.5" strokeDasharray="8 6" />
-                    <circle cx="500" cy="480" r="275" fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="1" />
+                    {/* Celestial Boundary Ring & Cardinal Points */}
+                    <circle cx="500" cy="480" r="399" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
+                    <circle cx="500" cy="480" r="407" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="0.8" />
 
-                    {/* Compass Cardinal Degree Ticks */}
-                    <line x1="500" y1="72" x2="500" y2="92" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
-                    <line x1="500" y1="868" x2="500" y2="888" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
-                    <line x1="92" y1="480" x2="112" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
-                    <line x1="888" y1="480" x2="908" y2="480" stroke="rgba(255,255,255,0.7)" strokeWidth="2.5" />
+                    {/* Cardinal Points */}
+                    <text x="500" y="68" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="10" fontFamily="Montserrat, sans-serif" fontWeight="600">
+                      {t.studio.cardinalPoints.n}
+                    </text>
+                    <text x="500" y="897" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="10" fontFamily="Montserrat, sans-serif" fontWeight="600">
+                      {t.studio.cardinalPoints.s}
+                    </text>
+                    <text x="88" y="483" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="10" fontFamily="Montserrat, sans-serif" fontWeight="600">
+                      {t.studio.cardinalPoints.e}
+                    </text>
+                    <text x="912" y="483" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="10" fontFamily="Montserrat, sans-serif" fontWeight="600">
+                      {t.studio.cardinalPoints.w}
+                    </text>
 
-                    <text x="500" y="60" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">N</text>
-                    <text x="500" y="915" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">S</text>
-                    <text x="75" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">W</text>
-                    <text x="925" y="487" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="18" fontFamily="sans-serif" fontWeight="bold">E</text>
-
-                    {/* Prominent, Harmonious Studio Typography Proportions */}
-                    {/* 1. Main Title Inscription */}
-                    <text x="500" y="955" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="700" letterSpacing="4.5">
-                      THE NIGHT WE MET
+                    {/* Typography Block */}
+                    {/* 1. Main Milestone Title */}
+                    <text x="500" y="968" textAnchor="middle" fill="#FFFFFF" fontSize="38" fontFamily="Cinzel, serif" fontWeight="600" letterSpacing="4">
+                      {previewTitle}
                     </text>
 
                     {/* 2. Couple Calligraphy Names */}
                     <text x="500" y="1028" textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="60" fontFamily="'Great Vibes', cursive, serif" fontStyle="italic">
-                      Emma &amp; Daan
+                      {previewNames}
                     </text>
 
                     {/* 3. Decorative Divider */}
@@ -182,49 +202,49 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
 
                     {/* 4. Significant Date */}
                     <text x="500" y="1144" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
-                      22 SEPTEMBER 2026
+                      {previewDate}
                     </text>
 
-                    {/* 5. Location & GPS Coordinates */}
+                    {/* 5. Location & Coordinates */}
                     <text x="500" y="1195" textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize="22" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="2.2">
-                      AMSTERDAM, NEDERLAND • 52.3676° N • 4.9041° E
+                      {previewLocation} • {previewCoords}
                     </text>
                   </svg>
 
                   {/* Understated Minimalist Badge */}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md border border-[#E7E3DC] px-3 py-1 rounded-full text-[10px] font-medium text-[#1C1917] tracking-wider shadow-sm">
-                    MUSEUMKWALITEIT PRINT
+                    {t.hero.previewBadge}
                   </div>
 
                   {/* Hover Prompt */}
                   <div className="absolute inset-0 bg-[#1C1917]/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <span className="px-4 py-2 rounded-full bg-white text-[#1C1917] font-semibold text-xs shadow-xl flex items-center gap-1.5 transform translate-y-1 group-hover:translate-y-0 transition-transform">
-                      <span>Personaliseer in Atelier Studio</span>
+                      <span>{t.navbar.ctaButton}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>
                 </div>
               </div>
 
-            {/* Card Information */}
-            <div className="pt-3.5 px-1 flex items-center justify-between">
-              <div>
-                <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
-                  De Gepersonaliseerde Sterrenposter
-                </h3>
-                <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
-                  <MapPin className="w-3 h-3 text-[#A37055]" />
-                  <span>Amsterdam • Inclusief Natuurlijk Houten Kwaliteitslijst (Licht Hout)</span>
-                </p>
-              </div>
-              <div className="text-right">
-                <span className="text-[11px] text-[#A8A29E] line-through block">€29,00</span>
-                <span className="font-serif text-sm font-bold text-[#1C1917]">vanaf €19,00</span>
+              {/* Card Information */}
+              <div className="pt-3.5 px-1 flex items-center justify-between">
+                <div>
+                  <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
+                    {t.common.brandName}
+                  </h3>
+                  <p className="text-[11px] text-[#78716C] flex items-center gap-1 mt-0.5">
+                    <MapPin className="w-3 h-3 text-[#A37055]" />
+                    <span>{previewLocation}</span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-[11px] text-[#A8A29E] line-through block">€29,00</span>
+                  <span className="font-serif text-sm font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} €19,00</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
         {/* Feature Highlights Grid */}
         <div className="mt-14 pt-10 border-t border-[#EAE5DC] grid grid-cols-2 md:grid-cols-4 gap-6 text-center sm:text-left">
@@ -233,8 +253,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
               <Award className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-[#1C1917]">Echte NASA Sterrendata</h4>
-              <p className="text-[11px] text-[#78716C]">Wetenschappelijk nauwkeurig</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">NASA &amp; Skyfield Data</h4>
+              <p className="text-[11px] text-[#78716C]">{t.hero.trustPoint1}</p>
             </div>
           </div>
 
@@ -243,8 +263,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
               <Truck className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-[#1C1917]">Gratis Verzending NL & BE</h4>
-              <p className="text-[11px] text-[#78716C]">Via vertrouwde partners (zoals PostNL, Bpost)</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">{t.navbar.bannerText}</h4>
+              <p className="text-[11px] text-[#78716C]">{t.footer.shippingPartnerText}</p>
             </div>
           </div>
 
@@ -253,8 +273,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-[#1C1917]">285 gsm Katoenpapier</h4>
-              <p className="text-[11px] text-[#78716C]">Museum archiefkwaliteit</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">285 gsm Fine-Art</h4>
+              <p className="text-[11px] text-[#78716C]">{t.hero.trustPoint2}</p>
             </div>
           </div>
 
@@ -263,8 +283,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
               <Heart className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-[#1C1917]">Ambachtelijk Ingelijst</h4>
-              <p className="text-[11px] text-[#78716C]">Ervaren inlijstpartner</p>
+              <h4 className="text-xs font-bold text-[#1C1917]">{t.catalog.framed.title}</h4>
+              <p className="text-[11px] text-[#78716C]">{t.catalog.framed.subtitle}</p>
             </div>
           </div>
         </div>

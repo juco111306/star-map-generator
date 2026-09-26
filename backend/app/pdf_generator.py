@@ -297,6 +297,7 @@ def _draw_celestial_compass_ring(
     text_color: Color,
     scale: float,
     font_name: str,
+    locale: str = "nl",
 ):
     """Draw astronomical double ring with degree ticks and cardinal points (N, S, E, W)."""
     outer_r = radius + 9.0 * scale
@@ -332,14 +333,19 @@ def _draw_celestial_compass_ring(
     c.setFillColor(text_color)
     cardinal_offset = outer_r + 8.5 * scale
 
+    card_n = "N"
+    card_s = "Z" if locale == "nl" else "S"
+    card_e = "E" if locale == "en" else "O"
+    card_w = "W"
+
     # North (top)
-    c.drawCentredString(cx, cy + cardinal_offset, "N")
+    c.drawCentredString(cx, cy + cardinal_offset, card_n)
     # South (bottom)
-    c.drawCentredString(cx, cy - cardinal_offset - 4 * scale, "S")
+    c.drawCentredString(cx, cy - cardinal_offset - 4 * scale, card_s)
     # East (left when looking up)
-    c.drawRightString(cx - cardinal_offset - 2 * scale, cy - 2.5 * scale, "E")
+    c.drawRightString(cx - cardinal_offset - 2 * scale, cy - 2.5 * scale, card_e)
     # West (right when looking up)
-    c.drawString(cx + cardinal_offset + 2 * scale, cy - 2.5 * scale, "W")
+    c.drawString(cx + cardinal_offset + 2 * scale, cy - 2.5 * scale, card_w)
 
     c.restoreState()
 
@@ -899,6 +905,7 @@ def generate_star_map_pdf(params: Dict[str, Any]) -> bytes:
                 text_color=parse_color(style["text_color"]),
                 scale=scale,
                 font_name=resolve_font(coords_block.get("font"), "Montserrat"),
+                locale=str(params.get("locale", "nl")).lower(),
             )
 
     # 6. Typography Layout & Rendering

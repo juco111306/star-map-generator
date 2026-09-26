@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CustomerTrackingModalProps {
   isOpen: boolean;
@@ -35,6 +36,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
   initialOrderId = '',
   initialEmail = '',
 }) => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'track' | 'history'>('track');
 
   // Track single order form state
@@ -55,7 +57,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
   const handleTrackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!orderId.trim() || !trackEmail.trim()) {
-      setTrackError('Vul alstublieft zowel uw bestelnummer als uw e-mailadres in.');
+      setTrackError(t.tracking.orderNumberLabel + ' & ' + t.tracking.emailLabel);
       return;
     }
 
@@ -160,11 +162,11 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
   };
 
   const steps = [
-    { title: 'Ontvangen', desc: 'Compositie vastgelegd' },
-    { title: 'In Productie', desc: '300 DPI vector PDF' },
-    { title: 'Gedrukt', desc: '285 gsm katoen' },
-    { title: 'Verzonden', desc: 'Track & Trace partner' },
-    { title: 'Bezorgd', desc: 'Op bestemming' },
+    { title: t.tracking.stepReceived, desc: 'Astronomical record' },
+    { title: t.tracking.stepValidated, desc: 'Skyfield verification' },
+    { title: t.tracking.stepPrinting, desc: '285 gsm cotton' },
+    { title: t.tracking.stepFraming, desc: 'Quality inspection' },
+    { title: t.tracking.stepShipped, desc: t.footer.shippingPartnerText },
   ];
 
   return (
@@ -178,13 +180,13 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
             </div>
             <div>
               <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide flex items-center gap-2">
-                <span>Drukkerij &amp; Bestelstatus</span>
+                <span>{t.tracking.modalTitle}</span>
                 <span className="text-[10px] uppercase font-sans font-semibold px-2 py-0.5 rounded-full bg-[#E8E2D5] text-[#57534E]">
                   Realtime Atelier Status
                 </span>
               </h3>
               <p className="text-[11px] text-[#78716C]">
-                Log in met uw bestelnummer en e-mailadres om de productiestatus in onze drukkerij te bekijken
+                {t.tracking.modalSubtitle}
               </p>
             </div>
           </div>
@@ -208,7 +210,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
             }`}
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>Drukkerij Status Bekijken</span>
+            <span>{t.tracking.modalTitle}</span>
           </button>
           <button
             onClick={() => setActiveTab('history')}
@@ -235,12 +237,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block mb-1">
-                      Bestelnummer *
+                      {t.tracking.orderNumberLabel}
                     </label>
                     <input
                       type="text"
                       required
-                      placeholder="bijv. STL-19565"
+                      placeholder={t.tracking.orderNumberPlaceholder}
                       value={orderId}
                       onChange={(e) => setOrderId(e.target.value)}
                       className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] uppercase tracking-wider font-mono shadow-sm"
@@ -248,12 +250,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block mb-1">
-                      E-mailadres *
+                      {t.tracking.emailLabel}
                     </label>
                     <input
                       type="email"
                       required
-                      placeholder="uw@email.nl"
+                      placeholder={t.tracking.emailPlaceholder}
                       value={trackEmail}
                       onChange={(e) => setTrackEmail(e.target.value)}
                       className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
@@ -270,7 +272,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
 
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-[11px] text-[#A8A29E]">
-                    Geen wachtwoord vereist • Veilig op basis van e-mail en bestelnummer
+                    Veilig op basis van e-mail en bestelnummer
                   </span>
                   <button
                     type="submit"
@@ -280,12 +282,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                     {isTrackingLoading ? (
                       <>
                         <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Inloggen...</span>
+                        <span>{t.tracking.searching}</span>
                       </>
                     ) : (
                       <>
                         <Printer className="w-3.5 h-3.5" />
-                        <span>Drukkerij Status Bekijken</span>
+                        <span>{t.tracking.submitButton}</span>
                       </>
                     )}
                   </button>

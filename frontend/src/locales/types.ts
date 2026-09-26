@@ -1,0 +1,303 @@
+export type Locale = 'nl' | 'de' | 'en';
+
+export interface CardinalPoints {
+  n: string;
+  s: string;
+  e: string;
+  w: string;
+}
+
+export interface ReviewItem {
+  id: string;
+  author: string;
+  location: string;
+  rating: number;
+  date: string;
+  title: string;
+  comment: string;
+  occasion: string;
+  verified: boolean;
+}
+
+export interface FAQItem {
+  q: string;
+  a: string;
+}
+
+export interface ProductCopy {
+  title: string;
+  subtitle: string;
+  badge: string;
+  description: string;
+  pricePrefix: string;
+  features: string[];
+  cta: string;
+}
+
+export interface Translations {
+  locale: Locale;
+  localeName: string;
+  localeFlag: string;
+  common: {
+    brandName: string;
+    brandTagline: string;
+    currency: string;
+    vatIncluded: string;
+    cancel: string;
+    close: string;
+    back: string;
+    next: string;
+    save: string;
+    loading: string;
+    or: string;
+  };
+  navbar: {
+    bannerText: string;
+    bannerSub: string;
+    howItWorks: string;
+    styles: string;
+    studio: string;
+    printer: string;
+    ctaButton: string;
+    ctaMobile: string;
+    languageSelect: string;
+  };
+  geoBanner: {
+    suggestionText: string;
+    switchAction: string;
+    dismissAction: string;
+  };
+  hero: {
+    badge: string;
+    headlinePart1: string;
+    headlinePart2: string;
+    subtitle: string;
+    ctaDesign: string;
+    ctaStyles: string;
+    trustPoint1: string;
+    trustPoint2: string;
+    trustPoint3: string;
+    previewDefaultTitle: string;
+    previewDefaultNames: string;
+    previewDefaultDate: string;
+    previewDefaultLocation: string;
+    previewBadge: string;
+  };
+  catalog: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    digital: ProductCopy;
+    poster: ProductCopy;
+    framed: ProductCopy;
+    deliveryTimePhysical: string;
+    deliveryTimeDigital: string;
+    shippingTrust: string;
+  };
+  howItWorks: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    step1Num: string;
+    step1Title: string;
+    step1Desc: string;
+    step2Num: string;
+    step2Title: string;
+    step2Desc: string;
+    step3Num: string;
+    step3Title: string;
+    step3Desc: string;
+    ctaButton: string;
+  };
+  socialProof: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    ratingScore: string;
+    totalReviews: string;
+    verifiedBuyer: string;
+    reviews: ReviewItem[];
+  };
+  faq: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    items: FAQItem[];
+    helpHeading: string;
+    helpText: string;
+    contactButton: string;
+    returnPolicyButton: string;
+  };
+  footer: {
+    brandDesc: string;
+    editionBadge: string;
+    col1Title: string;
+    linkDesign: string;
+    linkStyles: string;
+    linkHowItWorks: string;
+    linkFAQ: string;
+    col2Title: string;
+    point1: string;
+    point2: string;
+    point3: string;
+    point4: string;
+    returnPolicyLinkText: string;
+    col3Title: string;
+    col3Desc: string;
+    email: string;
+    copyright: string;
+    returnPolicyShort: string;
+    faqShort: string;
+    paymentBadges: string[];
+    shippingPartnerText: string;
+  };
+  returnPolicy: {
+    modalTitle: string;
+    modalSubtitle: string;
+    customGoodsTitle: string;
+    customGoodsText: string;
+    designRefundTitle: string;
+    designRefundText: string;
+    damageGuaranteeTitle: string;
+    damageGuaranteeText: string;
+    damageCoverage1: string;
+    damageCoverage2: string;
+    claimStepsTitle: string;
+    claimTimeframe: string;
+    claimTimeframeText: string;
+    claimPhotosTitle: string;
+    claimPhotosText1: string;
+    claimPhotosText2: string;
+    claimHowToTitle: string;
+    claimHowToText: string;
+    closeButton: string;
+  };
+  tracking: {
+    modalTitle: string;
+    modalSubtitle: string;
+    orderNumberLabel: string;
+    orderNumberPlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    submitButton: string;
+    searching: string;
+    notFoundError: string;
+    timelineTitle: string;
+    stepReceived: string;
+    stepValidated: string;
+    stepPrinting: string;
+    stepFraming: string;
+    stepShipped: string;
+    carrierPrefix: string;
+    trackingPrefix: string;
+    carrierDefault: string;
+    backButton: string;
+  };
+  studio: {
+    breadcrumbHome: string;
+    breadcrumbProduct: string;
+    backToHome: string;
+    stepperLocation: string;
+    stepperShapeStyle: string;
+    stepperText: string;
+    stepperTypography: string;
+    stepperFormat: string;
+    stepLocationTitle: string;
+    locationSearchPlaceholder: string;
+    searchingLocation: string;
+    noLocationFound: string;
+    popularCitiesTitle: string;
+    dateTimeTitle: string;
+    dateLabel: string;
+    timeLabel: string;
+    stepStyleTitle: string;
+    maskShapeTitle: string;
+    maskCircle: string;
+    maskHeart: string;
+    celestialTogglesTitle: string;
+    toggleConstellations: string;
+    toggleGrid: string;
+    toggleMilkyWay: string;
+    toggleMattedBorder: string;
+    stepTextTitle: string;
+    titleBlockLabel: string;
+    titleSuggestionsTitle: string;
+    titleSuggestions: string[];
+    namesBlockLabel: string;
+    namesPlaceholder: string;
+    dateBlockLabel: string;
+    locationBlockLabel: string;
+    coordsBlockLabel: string;
+    stepTypographyTitle: string;
+    presetsTitle: string;
+    dividerTitle: string;
+    stepFormatTitle: string;
+    digitalOptionTitle: string;
+    digitalOptionDesc: string;
+    posterOptionTitle: string;
+    posterOptionDesc: string;
+    framedOptionTitle: string;
+    framedOptionDesc: string;
+    frameColorOak: string;
+    frameColorWalnut: string;
+    frameColorBlack: string;
+    frameColorWhite: string;
+    cardinalPoints: CardinalPoints;
+    monthNames: string[];
+    prevStep: string;
+    nextStep: string;
+    orderButton: string;
+    totalLabel: string;
+    standardStackDesc: string;
+    topTitleDesc: string;
+    curvedBorderDesc: string;
+    moonPhasesDesc: string;
+    framedDesc: string;
+  };
+  orderModal: {
+    modalTitle: string;
+    modalSubtitle: string;
+    orderSummaryTitle: string;
+    digitalNotice: string;
+    physicalNotice: string;
+    customerInfoTitle: string;
+    nameLabel: string;
+    emailLabel: string;
+    phoneLabel: string;
+    addressLabel: string;
+    cityLabel: string;
+    stateLabel: string;
+    postalCodeLabel: string;
+    countryLabel: string;
+    countries: { code: string; name: string; shippingNote: string }[];
+    giftSectionTitle: string;
+    giftNoteLabel: string;
+    giftNotePlaceholder: string;
+    producerNoteLabel: string;
+    producerNotePlaceholder: string;
+    policyNoticeStrong: string;
+    policyNoticeText: string;
+    readPolicyLink: string;
+    cancelButton: string;
+    proceedToPayment: string;
+    digitalDeliveryNotice: string;
+    physicalDeliveryNotice: string;
+    paymentMethodsTitle: string;
+    paymentBadges: string[];
+  };
+  paymentSuccess: {
+    pageTitle: string;
+    orderConfirmedTitle: string;
+    orderNumberPrefix: string;
+    thankYouMessage: string;
+    digitalTitle: string;
+    digitalSubtitle: string;
+    downloadPdfButton: string;
+    generatingPdf: string;
+    physicalTitle: string;
+    physicalSubtitle: string;
+    craftNotice: string;
+    checkStatusButton: string;
+    continueExploringButton: string;
+  };
+}

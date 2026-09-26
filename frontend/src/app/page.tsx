@@ -16,9 +16,12 @@ import { ProducerPortal } from '../components/ProducerPortal';
 import { PilotNotice } from '../components/PilotNotice';
 import { FAQ } from '../components/FAQ';
 import { ReturnPolicyModal } from '../components/ReturnPolicyModal';
+import { GeoLanguageBanner } from '../components/GeoLanguageBanner';
 import { AppView, CelestialData, FrameStyle, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
 import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
+import { useLanguage } from '../context/LanguageContext';
+import { Locale } from '../locales';
 
 const INITIAL_CELESTIAL_DATA: CelestialData = {
   stars: SAMPLE_STARS.map((s) => ({
@@ -44,25 +47,80 @@ const INITIAL_CELESTIAL_DATA: CelestialData = {
   total_visible_lines: SAMPLE_CONSTELLATION_LINES.length,
 };
 
-export default function Home() {
+const LOCALE_DEFAULTS: Record<
+  Locale,
+  {
+    title: string;
+    names: string;
+    locationName: string;
+    lat: number;
+    lng: number;
+    dateStr: string;
+    coords: string;
+  }
+> = {
+  nl: {
+    title: 'DE NACHT WAARIN WE ELKAAR VONDEN',
+    names: 'Emma & Daan',
+    locationName: 'Amsterdam, Nederland',
+    lat: 52.3676,
+    lng: 4.9041,
+    dateStr: '22 SEPTEMBER 2026',
+    coords: '52.3676° N • 4.9041° E',
+  },
+  de: {
+    title: 'DIE NACHT, IN DER WIR UNS TRAFEN',
+    names: 'Emma & Lukas',
+    locationName: 'Berlin, Deutschland',
+    lat: 52.5200,
+    lng: 13.4050,
+    dateStr: '22. SEPTEMBER 2026',
+    coords: '52.5200° N • 13.4050° O',
+  },
+  en: {
+    title: 'THE NIGHT WE MET',
+    names: 'Emma & Lucas',
+    locationName: 'London, United Kingdom',
+    lat: 51.5074,
+    lng: -0.1278,
+    dateStr: 'SEPTEMBER 22, 2026',
+    coords: '51.5074° N • 0.1278° W',
+  },
+};
+
+interface HomeProps {
+  initialLocale?: Locale;
+}
+
+export default function Home({ initialLocale }: HomeProps = {}) {
+  const { locale, changeLocale } = useLanguage();
   const [currentView, setCurrentView] = useState<AppView>('landing');
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [isReturnPolicyOpen, setIsReturnPolicyOpen] = useState(false);
   const [orders, setOrders] = useState<OrderRecord[]>([]);
 
-  const [config, setConfig] = useState<MapConfig>({
+  // Sync initialLocale with LanguageContext if provided
+  useEffect(() => {
+    if (initialLocale && initialLocale !== locale) {
+      changeLocale(initialLocale);
+    }
+  }, [initialLocale, locale, changeLocale]);
+
+  const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
+
+  const [config, setConfig] = useState<MapConfig>(() => ({
     posterSize: '50x70',
     styleId: 'midnight_classic',
-    locationName: 'Amsterdam, Nederland',
-    latitude: 52.3676,
-    longitude: 4.9041,
+    locationName: activeDef.locationName,
+    latitude: activeDef.lat,
+    longitude: activeDef.lng,
     date: '2026-09-22',
     time: '21:00',
 
     // Fully customizable text blocks
     titleBlock: {
-      text: 'DE NACHT WAARIN WE ELKAAR VONDEN',
+      text: activeDef.title,
       font: 'Cinzel',
       size: 38,
       tracking: 3,
@@ -71,7 +129,7 @@ export default function Home() {
       enabled: true,
     },
     namesBlock: {
-      text: 'Emma & Daan',
+      text: activeDef.names,
       font: 'Great Vibes',
       size: 51,
       tracking: 1,
@@ -89,7 +147,7 @@ export default function Home() {
       enabled: false,
     },
     dateBlock: {
-      text: '22 SEPTEMBER 2026',
+      text: activeDef.dateStr,
       font: 'Montserrat',
       size: 27,
       tracking: 2.5,
@@ -98,7 +156,7 @@ export default function Home() {
       enabled: true,
     },
     locationBlock: {
-      text: 'AMSTERDAM, NEDERLAND',
+      text: activeDef.locationName.toUpperCase(),
       font: 'Montserrat',
       size: 21,
       tracking: 2,
@@ -107,7 +165,7 @@ export default function Home() {
       enabled: true,
     },
     coordsBlock: {
-      text: '52.3676° N • 4.9041° E',
+      text: activeDef.coords,
       font: 'Montserrat',
       size: 21,
       tracking: 1.8,
@@ -126,7 +184,57 @@ export default function Home() {
     dividerStyle: 'diamond',
     dividerSize: 34,
     frameStyle: 'digital',
-  });
+  }));
+
+  // Track locale changes to translate default poster sample text seamlessly
+  const prevLocaleRef = useRef<Locale>(locale);
+  useEffect(() => {
+    const prev = prevLocaleRef.current;
+    if (prev !== locale) {
+      prevLocaleRef.current = locale;
+      const prevDef = LOCALE_DEFAULTS[prev] || LOCALE_DEFAULTS.nl;
+      const nextDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
+
+      setConfig((prevConfig) => {
+        const allTitles = Object.values(LOCALE_DEFAULTS).map((d) => d.title);
+        const allNames = Object.values(LOCALE_DEFAULTS).map((d) => d.names);
+        const allLocs = Object.values(LOCALE_DEFAULTS).map((d) => d.locationName);
+        const allDates = Object.values(LOCALE_DEFAULTS).map((d) => d.dateStr);
+
+        const isDefaultTitle = allTitles.includes(prevConfig.titleBlock.text);
+        const isDefaultNames = allNames.includes(prevConfig.namesBlock.text);
+        const isDefaultLoc = allLocs.includes(prevConfig.locationName);
+        const isDefaultDate = allDates.includes(prevConfig.dateBlock.text);
+
+        return {
+          ...prevConfig,
+          locationName: isDefaultLoc ? nextDef.locationName : prevConfig.locationName,
+          latitude: isDefaultLoc ? nextDef.lat : prevConfig.latitude,
+          longitude: isDefaultLoc ? nextDef.lng : prevConfig.longitude,
+          titleBlock: {
+            ...prevConfig.titleBlock,
+            text: isDefaultTitle ? nextDef.title : prevConfig.titleBlock.text,
+          },
+          namesBlock: {
+            ...prevConfig.namesBlock,
+            text: isDefaultNames ? nextDef.names : prevConfig.namesBlock.text,
+          },
+          dateBlock: {
+            ...prevConfig.dateBlock,
+            text: isDefaultDate ? nextDef.dateStr : prevConfig.dateBlock.text,
+          },
+          locationBlock: {
+            ...prevConfig.locationBlock,
+            text: isDefaultLoc ? nextDef.locationName.toUpperCase() : prevConfig.locationBlock.text,
+          },
+          coordsBlock: {
+            ...prevConfig.coordsBlock,
+            text: isDefaultLoc ? nextDef.coords : prevConfig.coordsBlock.text,
+          },
+        };
+      });
+    }
+  }, [locale]);
 
   const [celestialData, setCelestialData] = useState<CelestialData | null>(INITIAL_CELESTIAL_DATA);
   const [isLoadingStars, setIsLoadingStars] = useState(false);
@@ -208,6 +316,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-montserrat">
+      {/* Geolocation Regional Language Banner */}
+      <GeoLanguageBanner />
+
       {/* Global Luxury Navigation Bar */}
       <Navbar
         currentView={currentView}

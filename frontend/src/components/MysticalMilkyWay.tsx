@@ -5,6 +5,7 @@ interface MysticalMilkyWayProps {
   cy: number;
   radius: number;
   rotation?: number;
+  angle?: number;
   opacity?: number;
   idPrefix?: string;
   isWatercolor?: boolean;
@@ -20,11 +21,13 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
   cx,
   cy,
   radius,
-  rotation = -28,
+  rotation,
+  angle,
   opacity = 0.95,
   idPrefix = 'mmw',
   isWatercolor = false,
 }) => {
+  const rot = angle !== undefined ? angle : rotation !== undefined ? rotation : -28;
   // Generate authentic micro-stardust particles along the galactic spine
   const stardust = useMemo(() => {
     const dots: { x: number; y: number; r: number; opacity: number }[] = [];
@@ -40,7 +43,7 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
       const spineY = Math.sin(t * Math.PI * 0.8) * radius * 0.12 + perpOffset * spineSpread;
 
       // Rotate by angle
-      const rad = (rotation * Math.PI) / 180;
+      const rad = (rot * Math.PI) / 180;
       const rotX = spineX * Math.cos(rad) - spineY * Math.sin(rad);
       const rotY = spineX * Math.sin(rad) + spineY * Math.cos(rad);
 
@@ -55,7 +58,7 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
       }
     }
     return dots;
-  }, [cx, cy, radius, rotation]);
+  }, [cx, cy, radius, rot]);
 
   const blurWideId = `${idPrefix}-blur-wide`;
   const blurMidId = `${idPrefix}-blur-mid`;
@@ -107,7 +110,7 @@ export const MysticalMilkyWay: React.FC<MysticalMilkyWayProps> = ({
       </defs>
 
       {/* Layer 1: Broad Diffuse Galactic Cloud (Soft outer atmosphere) */}
-      <g transform={`rotate(${rotation} ${cx} ${cy})`}>
+      <g transform={`rotate(${rot} ${cx} ${cy})`}>
         <ellipse
           cx={cx - radius * 0.04}
           cy={cy}
