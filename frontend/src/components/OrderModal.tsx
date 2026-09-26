@@ -84,6 +84,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         city: customer.city.trim() || 'Digitaal',
         postal_code: customer.postal_code.trim() || '0000',
         country: customer.country || 'Nederland',
+        gift_note: isDigital ? '' : customer.gift_note,
+        producer_notes: isDigital ? '' : customer.producer_notes,
       };
 
       // 1. Calculate price from pricing engine
@@ -108,6 +110,32 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       }
 
       const orderId = registeredOrder?.order_id || `STL-${Math.floor(10000 + Math.random() * 90000)}`;
+
+      // Persist complete order details in localStorage for reliable retrieval on /payment-success
+      const localOrderData = {
+        order_id: orderId,
+        created_at: new Date().toISOString(),
+        status: 'in_production',
+        customer: payloadCustomer,
+        poster_size: config.posterSize,
+        style_id: config.styleId,
+        frame_style: config.frameStyle,
+        title_text: config.titleBlock?.text || '',
+        names_text: config.namesBlock?.text || '',
+        date_text: config.dateBlock?.text || '',
+        location_text: config.locationBlock?.text || '',
+        coords_text: config.coordsBlock?.text || '',
+        pdf_filename: `${orderId}_print_ready_300dpi.pdf`,
+        carrier: isDigital ? 'Digitale Levering per E-mail' : 'PostNL',
+        map_config: config,
+      };
+
+      try {
+        localStorage.setItem('stellaire_last_order', JSON.stringify(localOrderData));
+        localStorage.setItem(`stellaire_order_${orderId}`, JSON.stringify(localOrderData));
+      } catch (storageErr) {
+        console.warn('localStorage save warning:', storageErr);
+      }
 
       // 3. Call the Next.js checkout route
       let checkoutData: any = null;
@@ -454,39 +482,41 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               </div>
             )}
 
-            {/* Optional Gift Message & Print Workshop Instructions */}
-            <div className="space-y-3 pt-2 border-t border-[#E8E4DC]">
-              <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
-                2. Cadeaukaartje & Aanwijzingen voor de Drukker
-              </span>
+            {/* Optional Gift Message & Print Workshop Instructions (physical orders only) */}
+            {!isDigital && (
+              <div className="space-y-3 pt-2 border-t border-[#E8E4DC]">
+                <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
+                  2. Cadeaukaartje & Aanwijzingen voor de Drukker
+                </span>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">
-                    Kosteloos Cadeaukaartje (Met Waszegel)
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={customer.gift_note}
-                    onChange={(e) => setCustomer({ ...customer, gift_note: e.target.value })}
-                    placeholder="bijv. Gefeliciteerd met jullie 1-jarig huwelijk! Dit was de hemel toen ons avontuur begon."
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] text-[#57534E] font-medium block mb-1">
-                    Aanwijzingen voor de Drukker
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={customer.producer_notes}
-                    onChange={(e) => setCustomer({ ...customer, producer_notes: e.target.value })}
-                    placeholder="bijv. Classic Matte papier, extra zorgvuldig centreren."
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">
+                      Kosteloos Cadeaukaartje (Met Waszegel)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={customer.gift_note}
+                      onChange={(e) => setCustomer({ ...customer, gift_note: e.target.value })}
+                      placeholder="bijv. Gefeliciteerd met jullie 1-jarig huwelijk! Dit was de hemel toen ons avontuur begon."
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">
+                      Aanwijzingen voor de Drukker
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={customer.producer_notes}
+                      onChange={(e) => setCustomer({ ...customer, producer_notes: e.target.value })}
+                      placeholder="bijv. Classic Matte papier, extra zorgvuldig centreren."
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">

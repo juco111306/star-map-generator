@@ -19,9 +19,12 @@ import {
   Truck,
   Heart,
   Home as HomeIcon,
+  Loader2,
+  FileCheck,
 } from 'lucide-react';
-import { OrderRecord } from '@/types';
+import { OrderRecord, MapConfig } from '@/types';
 import { apiFetch } from '@/utils/api';
+import { generateStarMapPdfBlob } from '@/utils/pdfGenerator';
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
@@ -30,7 +33,10 @@ function PaymentSuccessContent() {
   const amountParam = searchParams.get('amount') || '';
 
   const [order, setOrder] = useState<OrderRecord | null>(null);
+  const [orderConfig, setOrderConfig] = useState<MapConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -41,6 +47,24 @@ function PaymentSuccessContent() {
       origin: { y: 0.6 },
     });
 
+    // 1. Immediately attempt to load order details from localStorage for 0-latency display
+    let localSavedOrder: any = null;
+    try {
+      const stored =
+        (orderId && localStorage.getItem(`stellaire_order_${orderId}`)) ||
+        localStorage.getItem('stellaire_last_order');
+      if (stored) {
+        localSavedOrder = JSON.parse(stored);
+        setOrder(localSavedOrder);
+        if (localSavedOrder.map_config) {
+          setOrderConfig(localSavedOrder.map_config);
+        }
+      }
+    } catch (e) {
+      console.warn('LocalStorage order read warning:', e);
+    }
+
+    // 2. Fetch official order from backend if available
     const loadOrder = async () => {
       if (!orderId) {
         setIsLoading(false);
@@ -71,7 +95,7 @@ function PaymentSuccessContent() {
           }
         }
       } catch (err) {
-        console.warn('Could not load order record:', err);
+        console.warn('Backend order sync note:', err);
       } finally {
         setIsLoading(false);
       }
@@ -88,6 +112,104 @@ function PaymentSuccessContent() {
       navigator.clipboard.writeText(displayOrderId);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  // Robust, 100% reliable 300 DPI PDF download handler
+  const handleDownloadPdf = async () => {
+    setIsDownloading(true);
+    setDownloadSuccess(false);
+
+    try {
+      let pdfBlob: Blob | null = null;
+
+      // 1. Try fetching from Next.js / backend order route
+      try {
+        const res = await fetch(`/api/orders/${displayOrderId}/pdf`);
+        if (res.ok) {
+          const candidate = await res.blob();
+          if (
+            candidate.size > 2000 &&
+            (candidate.type.includes('pdf') || candidate.type.includes('octet-stream'))
+          ) {
+            pdfBlob = candidate;
+          }
+        }
+      } catch (fetchErr) {
+        console.warn('API PDF fetch attempt:', fetchErr);
+      }
+
+      // 2. If backend endpoint returned non-PDF or failed, generate high-res 300 DPI vector PDF directly!
+      if (!pdfBlob) {
+        const activeConfig: Partial<MapConfig> = orderConfig || {
+          posterSize: (order?.poster_size as any) || '50x70',
+          styleId: order?.style_id || 'midnight_classic',
+          frameStyle: (order?.frame_style as any) || 'digital',
+          titleBlock: {
+            text: order?.title_text || 'The Night We Met',
+            font: 'Playfair Display',
+            size: 34,
+            tracking: 3,
+            uppercase: true,
+            italic: false,
+            enabled: true,
+          },
+          namesBlock: {
+            text: order?.names_text || '',
+            font: 'Great Vibes',
+            size: 22,
+            tracking: 1.5,
+            uppercase: false,
+            italic: true,
+            enabled: !!order?.names_text,
+          },
+          dateBlock: {
+            text: order?.date_text || '22 September 2026',
+            font: 'Montserrat',
+            size: 16,
+            tracking: 2.2,
+            uppercase: true,
+            italic: false,
+            enabled: true,
+          },
+          locationBlock: {
+            text: order?.location_text || 'Amsterdam, Nederland',
+            font: 'Montserrat',
+            size: 14,
+            tracking: 1.8,
+            uppercase: true,
+            italic: false,
+            enabled: true,
+          },
+          showCelestialGrid: true,
+          showConstellationLines: true,
+          showMilkyWay: true,
+          showMattedBorder: false,
+          dividerStyle: 'diamond',
+        };
+
+        const pdfBytes = await generateStarMapPdfBlob(activeConfig, displayOrderId);
+        pdfBlob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      }
+
+      // 3. Trigger immediate browser download
+      const blobUrl = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `${displayOrderId}_print_ready_300dpi.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 5000);
+    } catch (err: any) {
+      console.error('Download PDF error:', err);
+      // Fallback: direct window navigation to route
+      window.open(`/api/orders/${displayOrderId}/pdf`, '_blank');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -137,7 +259,9 @@ function PaymentSuccessContent() {
             </h1>
 
             <p className="text-[#57534E] text-sm sm:text-base max-w-lg mx-auto font-light leading-relaxed">
-              Jouw unieke sterrenhemel is met astronomische precisie berekend en doorgestuurd naar ons atelier voor productie.
+              {isDigital
+                ? 'Jouw gepersonaliseerde sterrenkaart is met astronomische precisie berekend en jouw 300 DPI vector PDF staat direct klaar voor download.'
+                : 'Jouw unieke sterrenhemel is met astronomische precisie berekend en doorgestuurd naar ons atelier voor productie.'}
             </p>
           </div>
 
@@ -158,6 +282,54 @@ function PaymentSuccessContent() {
           </div>
         </div>
 
+        {/* Digital Edition Instant Download Callout Banner */}
+        {isDigital && (
+          <div className="p-6 bg-gradient-to-r from-sky-50 via-white to-sky-50 border border-sky-200 rounded-3xl shadow-sm space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 rounded-2xl bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-md">
+                <Download className="w-5 h-5" />
+              </div>
+              <div className="space-y-1">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-sky-700">
+                  Instant Digitale Levering
+                </span>
+                <h3 className="font-serif text-base font-bold text-[#1C1917]">
+                  Jouw 300 DPI Drukklare Vector PDF Staat Klaar
+                </h3>
+                <p className="text-xs text-[#57534E] leading-relaxed">
+                  Geen wachttijd. Klik op de onderstaande knop om direct jouw officiële museum-kwaliteit printbestand (300 DPI vector) te downloaden naar jouw computer of telefoon.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={handleDownloadPdf}
+                disabled={isDownloading}
+                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-white font-semibold text-xs shadow-lg flex items-center justify-center gap-2.5 transition transform hover:-translate-y-0.5 disabled:opacity-60 cursor-pointer"
+              >
+                {isDownloading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-sky-300" />
+                    <span>300 DPI PDF Genereren & Downloaden...</span>
+                  </>
+                ) : downloadSuccess ? (
+                  <>
+                    <FileCheck className="w-4 h-4 text-emerald-400" />
+                    <span>Download Succesvol Gestart!</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 text-sky-400" />
+                    <span>Download Print-Ready PDF (300 DPI Vector)</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Order Details & Summary Card */}
         <div className="bg-white rounded-3xl border border-[#E2DDD5] shadow-sm overflow-hidden divide-y divide-[#F2ECE1]">
           {/* Status Row */}
@@ -176,7 +348,7 @@ function PaymentSuccessContent() {
                     {isDigital
                       ? 'Gereed voor Download'
                       : order?.gelato_order_id
-                      ? `In Productie bij Gelato (#${order.gelato_order_id})`
+                      ? `In Productie bij Inlijstpartner (#${order.gelato_order_id})`
                       : 'In Atelier Productie'}
                   </span>
                 </p>
@@ -250,17 +422,30 @@ function PaymentSuccessContent() {
 
           {/* Action Buttons */}
           <div className="p-5 sm:p-6 bg-[#FAF8F5]/40 flex flex-col sm:flex-row items-center gap-3">
-            {/* Download PDF button */}
-            {displayOrderId && (
-              <a
-                href={`/api/orders/${displayOrderId}/pdf`}
-                download={`${displayOrderId}_print_ready_300dpi.pdf`}
-                className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-white font-medium text-xs shadow-md flex items-center justify-center gap-2 transition"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download Print-Ready PDF (300 DPI)</span>
-              </a>
-            )}
+            {/* Primary Action Button */}
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              disabled={isDownloading}
+              className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-white font-medium text-xs shadow-md flex items-center justify-center gap-2 transition disabled:opacity-60 cursor-pointer"
+            >
+              {isDownloading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Voorbereiden...</span>
+                </>
+              ) : downloadSuccess ? (
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Download Gestart!</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 text-sky-400" />
+                  <span>Download Print-Ready PDF (300 DPI)</span>
+                </>
+              )}
+            </button>
 
             <Link
               href="/"
@@ -292,7 +477,7 @@ function PaymentSuccessContent() {
               <p className="text-[11px] font-light leading-relaxed">
                 {isDigital
                   ? 'Jouw digitale vectorbestand staat direct klaar voor download en is ook naar jouw e-mail verzonden.'
-                  : 'Onze inlijstpartner Gelato drukt de poster op 200 gsm fine-art papier en monteert deze zorgvuldig in de lijst.'}
+                  : 'Onze inlijstpartner drukt de poster op 200 gsm fine-art papier en monteert deze zorgvuldig in de lijst.'}
               </p>
             </div>
 

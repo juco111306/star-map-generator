@@ -127,8 +127,6 @@ export default function Home() {
 
   const [celestialData, setCelestialData] = useState<CelestialData | null>(INITIAL_CELESTIAL_DATA);
   const [isLoadingStars, setIsLoadingStars] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-  const [exportError, setExportError] = useState<string | null>(null);
 
   // Fetch initial orders count for the producer queue
   const fetchOrdersQueue = async () => {
@@ -199,69 +197,6 @@ export default function Home() {
 
   const handleConfigChange = (updates: Partial<MapConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
-  };
-
-  // Instant PDF proof download
-  const handleInstantProofExport = async () => {
-    setIsExporting(true);
-    setExportError(null);
-
-    try {
-      const isoDateTime = `${config.date}T${config.time || '21:00'}:00Z`;
-      const payload = {
-        latitude: config.latitude,
-        longitude: config.longitude,
-        date_time: isoDateTime,
-        poster_size: config.posterSize,
-        style_id: config.styleId,
-        titleBlock: config.titleBlock,
-        namesBlock: config.namesBlock,
-        taglineBlock: config.taglineBlock,
-        dateBlock: config.dateBlock,
-        locationBlock: config.locationBlock,
-        coordsBlock: config.coordsBlock,
-        show_matted_border: config.showMattedBorder,
-        show_celestial_grid: config.showCelestialGrid,
-        show_constellation_lines: config.showConstellationLines,
-        show_milky_way: config.showMilkyWay,
-        divider_style: config.dividerStyle,
-        frame_style: config.frameStyle,
-      };
-
-      const res = await apiFetch('/api/generate-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || 'Failed to generate proof PDF');
-      }
-
-      const blob = await res.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = `stellaire-star-map-${config.styleId}-${config.posterSize}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-
-      try {
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 },
-        });
-      } catch {}
-    } catch (err: any) {
-      console.error('Export proof error:', err);
-      setExportError(err.message || 'Error generating PDF');
-    } finally {
-      setIsExporting(false);
-    }
   };
 
   const handleOrderSuccess = (order: OrderRecord) => {
@@ -340,8 +275,6 @@ export default function Home() {
             }
             isLoadingStars={isLoadingStars}
             onOpenOrderModal={() => setIsOrderModalOpen(true)}
-            onInstantExport={handleInstantProofExport}
-            isExporting={isExporting}
             onBackToProducts={() => setCurrentView('products')}
           />
 
@@ -352,13 +285,6 @@ export default function Home() {
             isLoading={isLoadingStars}
           />
 
-          {/* Export Error Alert if any */}
-          {exportError && (
-            <div className="absolute top-4 right-4 z-40 bg-red-500/90 backdrop-blur-md border border-red-400 text-white px-4 py-2.5 rounded-2xl text-xs shadow-2xl flex items-center gap-2">
-              <span>{exportError}</span>
-              <button onClick={() => setExportError(null)} className="ml-2 font-bold">✕</button>
-            </div>
-          )}
         </main>
       )}
 

@@ -489,15 +489,20 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         style={{ transform: isFullscreen ? undefined : `scale(${zoomLevel})` }}
       >
         <div
-          className={`w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none lg:w-auto lg:h-[calc(100vh-165px)] lg:max-h-[750px] ${aspectRatioClass} overflow-hidden relative transition-all duration-300 ${frameContainerStyle}`}
+          className={`w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none lg:w-auto lg:h-[calc(100vh-165px)] lg:max-h-[750px] ${aspectRatioClass} overflow-hidden relative transition-all duration-300 select-none ${frameContainerStyle}`}
           style={{
             backgroundColor: currentStyle.bgColor,
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
           }}
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
         >
           {/* SVG Vector Star Map Rendering */}
           <svg
             viewBox={`0 0 ${vbWidth} ${vbHeight}`}
-            className="w-full h-full select-none"
+            className="w-full h-full select-none pointer-events-none"
+            onContextMenu={(e) => e.preventDefault()}
           >
             <defs>
               {/* Circular Clip Mask */}

@@ -41,8 +41,8 @@ interface ConfigPanelProps {
   onRefreshStars: () => void;
   isLoadingStars: boolean;
   onOpenOrderModal: () => void;
-  onInstantExport: () => void;
-  isExporting: boolean;
+  onInstantExport?: () => void;
+  isExporting?: boolean;
   onBackToProducts: () => void;
 }
 
@@ -1319,24 +1319,12 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          {/* Quick PDF Proof Preview */}
-          <button
-            type="button"
-            onClick={onInstantExport}
-            disabled={isExporting}
-            className="flex-1 py-3 rounded-xl bg-white hover:bg-[#F2EDE4] border border-[#D6D0C7] text-[#1C1917] font-medium text-xs flex items-center justify-center gap-1.5 transition disabled:opacity-50 shadow-sm"
-            title="Download direct een proefdruk PDF"
-          >
-            <Printer className="w-3.5 h-3.5 text-[#A37055]" />
-            <span>{isExporting ? 'Genereren...' : 'Proefdruk PDF'}</span>
-          </button>
-
+        <div>
           {/* Primary Order Action Button */}
           <button
             type="button"
             onClick={onOpenOrderModal}
-            className="flex-[2] py-3 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-1.5 transition transform hover:-translate-y-0.5"
+            className="w-full py-3.5 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition transform hover:-translate-y-0.5"
           >
             <span>Bestellen ({currentPriceDetails.formattedPrice})</span>
             <ChevronRight className="w-4 h-4" />
