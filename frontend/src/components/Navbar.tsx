@@ -67,17 +67,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </button>
 
-        {/* Center Navigation Links */}
-        <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 text-xs font-medium">
+        {/* Center Navigation Links / Tabs */}
+        <nav className="hidden md:flex items-center p-1 bg-[#F2EDE4]/80 backdrop-blur-sm rounded-full border border-[#E4DDD0] space-x-1 text-xs">
           <button
             onClick={() => handleScrollToSection('how-it-works')}
-            className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-[#F2EFE9] transition-all"
+            className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-white transition-all font-medium"
           >
             Hoe het werkt
           </button>
           <button
             onClick={() => handleScrollToSection('stijlen')}
-            className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-[#F2EFE9] transition-all"
+            className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-white transition-all font-medium"
           >
             Kunststijlen
           </button>
@@ -86,7 +86,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className={`px-4 py-1.5 rounded-full transition-all flex items-center gap-1.5 font-semibold shadow-xs ${
               currentView === 'customizer'
                 ? 'bg-[#1C1917] text-[#FAF8F5] ring-2 ring-[#A37055]/30'
-                : 'bg-[#F2ECE1] text-[#1C1917] hover:bg-[#1C1917] hover:text-white border border-[#E0D7C9]'
+                : 'bg-[#FAF8F5] text-[#1C1917] hover:bg-[#1C1917] hover:text-white border border-[#E0D7C9]'
             }`}
           >
             <span>Ontwerpstudio</span>
@@ -95,46 +95,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           {onOpenTrackingModal && (
             <button
               onClick={onOpenTrackingModal}
-              className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-[#F2EFE9] transition-all flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-full text-[#57534E] hover:text-[#1C1917] hover:bg-white transition-all font-medium flex items-center gap-1.5"
+              title="Log in met e-mailadres en bestelnummer om de status van uw order in de drukkerij te bekijken"
             >
-              <Package className="w-3.5 h-3.5 text-[#A37055]" />
-              <span>Bestelling Volgen</span>
+              <Printer className="w-3.5 h-3.5 text-[#A37055]" />
+              <span>Drukkerij</span>
             </button>
           )}
         </nav>
 
         {/* Right Action Buttons */}
         <div className="flex items-center space-x-2">
-          {/* Customer Order Tracking (Mobile + Quick Access) */}
+          {/* Mobile Drukkerij Order Status Login Button */}
           {onOpenTrackingModal && (
             <button
               onClick={onOpenTrackingModal}
-              className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all border bg-[#FAF8F5] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917] hover:text-[#1C1917]"
-              title="Volg uw bestelling"
+              className="md:hidden px-2.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all border bg-[#FAF8F5] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917] hover:text-[#1C1917]"
+              title="Drukkerij status & inloggen"
             >
-              <Package className="w-3.5 h-3.5 text-[#A37055]" />
-              <span className="hidden md:inline">Volgen</span>
+              <Printer className="w-3.5 h-3.5 text-[#A37055]" />
+              <span className="text-[11px]">Drukkerij</span>
             </button>
           )}
-
-          {/* Print Workshop Queue button */}
-          <button
-            onClick={() => onNavigate('producer')}
-            className={`px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all border ${
-              currentView === 'producer'
-                ? 'bg-[#1C1917] text-[#FAF8F5] border-[#1C1917]'
-                : 'bg-[#FBF9F6] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917] hover:text-[#1C1917]'
-            }`}
-            title="Drukkerij bestellingenoverzicht"
-          >
-            <Printer className="w-3.5 h-3.5 text-[#A37055]" />
-            <span className="hidden sm:inline">Drukkerij</span>
-            {orderCount > 0 && (
-              <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-[#A37055] text-white font-bold text-[10px]">
-                {orderCount}
-              </span>
-            )}
-          </button>
 
           {/* Primary CTA */}
           <button

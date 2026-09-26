@@ -7,6 +7,7 @@ import {
   SAMPLE_STARS,
   SAMPLE_CONSTELLATION_LINES,
 } from '../constants/sampleCelestialData';
+import { MysticalMilkyWay } from './MysticalMilkyWay';
 
 interface StyleSelectorProps {
   selectedStyleId: string;
@@ -95,7 +96,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               'rgba(255,255,255,0.45)',
               390,
               0,
-              <ellipse cx="485" cy="450" rx="290" ry="170" fill="rgba(255,255,255,0.075)" transform="rotate(-25 485 450)" />
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-28} idPrefix="sel-mw-midnight" />
             )}
 
             {/* Celestial Rings & Cardinal Ticks */}
@@ -157,7 +158,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               'rgba(255,255,255,0.55)',
               390,
               95,
-              <ellipse cx="485" cy="450" rx="250" ry="140" fill="rgba(255,255,255,0.12)" transform="rotate(-20 485 450)" />
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-20} idPrefix="sel-mw-teal" isWatercolor={true} opacity={0.7} />
             )}
 
             <circle cx="500" cy="460" r="390" fill="none" stroke="#0C4B56" strokeWidth="3.5" />
@@ -196,7 +197,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               '#D4AF37',
               'rgba(212,175,55,0.48)',
               390,
-              190
+              190,
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-15} idPrefix="sel-mw-emerald" opacity={0.65} />
             )}
 
             <circle cx="500" cy="460" r="390" fill="none" stroke="#D4AF37" strokeWidth="3.5" />
@@ -246,7 +248,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               '#FFFFFF',
               'rgba(255,235,238,0.45)',
               390,
-              280
+              280,
+              <MysticalMilkyWay cx={500} cy={460} radius={390} rotation={-35} idPrefix="sel-mw-burgundy" opacity={0.75} />
             )}
 
             <circle cx="500" cy="460" r="390" fill="none" stroke="rgba(255,235,238,0.45)" strokeWidth="3" />

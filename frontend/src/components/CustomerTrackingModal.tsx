@@ -174,14 +174,17 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
         <div className="px-6 py-4 bg-[#F5F2EB] border-b border-[#E8E4DC] flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-9 h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#1C1917] shadow-sm">
-              <Package className="w-4 h-4 text-[#A37055]" />
+              <Printer className="w-4 h-4 text-[#A37055]" />
             </div>
             <div>
-              <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
-                Bestelling Volgen & Klantendashboard
+              <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide flex items-center gap-2">
+                <span>Drukkerij &amp; Bestelstatus</span>
+                <span className="text-[10px] uppercase font-sans font-semibold px-2 py-0.5 rounded-full bg-[#E8E2D5] text-[#57534E]">
+                  Realtime Atelier Status
+                </span>
               </h3>
               <p className="text-[11px] text-[#78716C]">
-                Volg de live voortgang van uw atelier-sterrenposters en download uw bestanden
+                Log in met uw bestelnummer en e-mailadres om de productiestatus in onze drukkerij te bekijken
               </p>
             </div>
           </div>
@@ -204,8 +207,8 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                 : 'border-transparent text-[#78716C] hover:text-[#1C1917]'
             }`}
           >
-            <Search className="w-3.5 h-3.5" />
-            <span>Bestelling Volgen (Track & Trace)</span>
+            <Printer className="w-3.5 h-3.5" />
+            <span>Drukkerij Status Bekijken</span>
           </button>
           <button
             onClick={() => setActiveTab('history')}
@@ -245,7 +248,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block mb-1">
-                      E-mailadres bij Bestelling *
+                      E-mailadres *
                     </label>
                     <input
                       type="email"
@@ -267,7 +270,7 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
 
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-[11px] text-[#A8A29E]">
-                    Geen wachtwoord vereist • Veilig op basis van e-mailverificatie
+                    Geen wachtwoord vereist • Veilig op basis van e-mail en bestelnummer
                   </span>
                   <button
                     type="submit"
@@ -277,12 +280,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                     {isTrackingLoading ? (
                       <>
                         <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Zoeken...</span>
+                        <span>Inloggen...</span>
                       </>
                     ) : (
                       <>
-                        <Search className="w-3.5 h-3.5" />
-                        <span>Volg Bestelling</span>
+                        <Printer className="w-3.5 h-3.5" />
+                        <span>Drukkerij Status Bekijken</span>
                       </>
                     )}
                   </button>

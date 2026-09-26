@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { DESIGN_STYLES } from '../constants/styles';
 import { CelestialData, FrameStyle, MapConfig } from '../types';
 import { MoonPhasesDivider } from './MoonPhasesDivider';
+import { MysticalMilkyWay } from './MysticalMilkyWay';
 import {
   SAMPLE_STARS,
   SAMPLE_CONSTELLATION_LINES,
@@ -428,17 +429,16 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   // Frame styling wrapper with natural studio light shadows (Gelato Classic Matte Wooden Frames)
   const frameContainerStyle = useMemo(() => {
     switch (config.frameStyle) {
-      case 'digital':
-        return 'p-0 rounded-none shadow-[0_20px_45px_-12px_rgba(56,189,248,0.22),0_8px_18px_-6px_rgba(28,25,23,0.1)] border border-[#BAE6FD] ring-2 ring-sky-400/25';
       case 'black':
         return 'p-0 bg-[#161514] rounded-none shadow-[0_25px_60px_-15px_rgba(0,0,0,0.45),0_10px_25px_-5px_rgba(0,0,0,0.25)] border-[6px] sm:border-[8px] border-[#1C1A18] ring-1 ring-black/50';
       case 'oak':
         return 'p-0 bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] rounded-none shadow-[0_25px_60px_-12px_rgba(40,25,10,0.24),0_10px_22px_-5px_rgba(40,25,10,0.14)] border-[6px] sm:border-[8px] border-[#DFC9A6] ring-1 ring-[#C8B28E]/60';
       case 'white':
         return 'p-0 bg-[#FFFFFF] rounded-none shadow-[0_25px_60px_-15px_rgba(28,25,23,0.25),0_10px_25px_-5px_rgba(28,25,23,0.12)] border-[6px] sm:border-[8px] border-[#FAF8F5] ring-1 ring-[#D8D4CC]';
+      case 'digital':
       case 'none':
       default:
-        return 'p-0 rounded-none shadow-[0_20px_45px_-12px_rgba(28,25,23,0.22),0_8px_18px_-6px_rgba(28,25,23,0.1)] border border-[#E7E2D9]';
+        return 'p-0 rounded-none shadow-[0_20px_45px_-12px_rgba(28,25,23,0.18),0_8px_18px_-6px_rgba(28,25,23,0.08)] border border-white';
     }
   }, [config.frameStyle]);
 
@@ -622,43 +622,18 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                 />
               )}
 
-              {/* Milky Way Soft Luminous Nebula Ellipses */}
-              {config.showMilkyWay && !currentStyle.isWatercolor && !currentStyle.constellationsOnly && (
-                <g opacity="0.85">
-                  <ellipse
-                    cx={cx - 15}
-                    cy={cy - 10}
-                    rx={radius * 0.75}
-                    ry={radius * 0.45}
-                    fill="rgba(255,255,255,0.08)"
-                    transform={`rotate(-25 ${cx - 15} ${cy - 10})`}
-                  />
-                  <ellipse
-                    cx={cx + 10}
-                    cy={cy + 15}
-                    rx={radius * 0.6}
-                    ry={radius * 0.3}
-                    fill="rgba(255,255,255,0.05)"
-                    transform={`rotate(-32 ${cx + 10} ${cy + 15})`}
-                  />
-                </g>
-              )}
-
-              {/* Milky Way Stardust Nebula Overlay (if enabled) */}
-              {config.showMilkyWay && !currentStyle.isWatercolor && !currentStyle.constellationsOnly && (
-                <image
-                  href="/textures/milky_way.png"
-                  x={cx - radius * 1.05}
-                  y={cy - radius * 1.05}
-                  width={radius * 2.1}
-                  height={radius * 2.1}
-                  preserveAspectRatio="xMidYMid slice"
-                  opacity={0.88}
+              {/* Mystical Realistic Milky Way Galactic Band */}
+              {config.showMilkyWay && !currentStyle.constellationsOnly && (
+                <MysticalMilkyWay
+                  cx={cx}
+                  cy={cy}
+                  radius={radius}
+                  rotation={-28}
+                  idPrefix="preview-mw"
+                  isWatercolor={currentStyle.isWatercolor}
+                  opacity={currentStyle.isWatercolor ? 0.75 : 0.95}
                 />
               )}
-
-              {/* Stardust nebula glow */}
-              <circle cx={cx} cy={cy} r={radius} fill="url(#celestial-nebula-glow)" />
 
               {/* Delicate Celestial Grid: Altitude Circles, Equator, Meridian & Prime Vertical Axes */}
               {config.showCelestialGrid && (

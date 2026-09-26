@@ -4,6 +4,7 @@ import React from 'react';
 import { ArrowRight, Star, Sparkles, ShieldCheck, Heart, Award, MapPin, Truck, CheckCircle2 } from 'lucide-react';
 import { AppView } from '../types';
 import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
+import { MysticalMilkyWay } from './MysticalMilkyWay';
 
 interface LandingHeroProps {
   onNavigate: (view: AppView) => void;
@@ -114,9 +115,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                       {/* Deep Midnight Blue Disk Base */}
                       <circle cx="500" cy="480" r="400" fill="#070D1F" />
 
-                      {/* Milky Way Soft Luminous Nebula */}
-                      <ellipse cx="485" cy="470" rx="300" ry="180" fill="rgba(255,255,255,0.075)" transform="rotate(-25 485 470)" />
-                      <ellipse cx="510" cy="495" rx="240" ry="120" fill="rgba(255,255,255,0.045)" transform="rotate(-32 510 495)" />
+                      {/* Mystical Realistic Milky Way Galactic Band */}
+                      <MysticalMilkyWay cx={500} cy={480} radius={400} rotation={-28} idPrefix="hero-mw" />
 
                       {/* Authentic Constellation Lines (matching StarMapPreview 0.85px) */}
                       {SAMPLE_CONSTELLATION_LINES.map((line, idx) => (

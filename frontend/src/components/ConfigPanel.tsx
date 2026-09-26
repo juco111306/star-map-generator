@@ -192,11 +192,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   ];
 
   const stepsList: { id: StudioTab; num: number; title: string; label: string; icon: any }[] = [
-    { id: 'location', num: 1, title: 'Locatie & Tijd', label: '1. Locatie & Tijd', icon: MapPin },
+    { id: 'location', num: 1, title: 'Locatie', label: '1. Locatie', icon: MapPin },
     { id: 'design', num: 2, title: 'Vorm & Stijl', label: '2. Vorm & Stijl', icon: Sparkles },
     { id: 'text', num: 3, title: 'Tekst', label: '3. Tekst', icon: Type },
     { id: 'font', num: 4, title: 'Typografie', label: '4. Typografie', icon: Sliders },
-    { id: 'format', num: 5, title: 'Formaat & Lijst', label: '5. Formaat & Lijst', icon: Maximize2 },
+    { id: 'format', num: 5, title: 'Formaat', label: '5. Formaat', icon: Maximize2 },
   ];
 
   const currentStepIdx = stepsList.findIndex((s) => s.id === activeTab);
@@ -229,9 +229,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           </button>
         </div>
 
-        {/* Studio 5-Step Stepper */}
+        {/* Studio 5-Step Stepper Tabs */}
         <div>
-          <div className="grid grid-cols-5 p-1 rounded-2xl bg-[#EFE9DF] border border-[#E2DDD5] gap-1 shadow-inner">
+          <div className="grid grid-cols-5 p-1.5 rounded-2xl bg-[#EDE7DE] border border-[#DDD5C7] gap-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
             {stepsList.map((step) => {
               const isCurrent = activeTab === step.id;
               return (
@@ -239,24 +239,32 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   key={step.id}
                   type="button"
                   onClick={() => setActiveTab(step.id)}
-                  className={`py-2 px-1 rounded-xl transition-all flex flex-col items-center justify-center text-center gap-1 ${
+                  className={`group relative py-2.5 px-1 rounded-xl transition-all duration-200 flex flex-col items-center justify-center text-center gap-1.5 min-h-[58px] ${
                     isCurrent
-                      ? 'bg-white text-[#1C1917] shadow-sm font-semibold'
-                      : 'text-[#6B655F] hover:text-[#1C1917] hover:bg-white/60'
+                      ? 'bg-white text-[#1C1917] shadow-sm ring-1 ring-black/5 font-semibold'
+                      : 'text-[#6B655F] hover:text-[#1C1917] hover:bg-white/60 font-medium'
                   }`}
                 >
                   <span
-                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold transition-colors ${
+                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10.5px] font-bold transition-all duration-200 ${
                       isCurrent
-                        ? 'bg-[#1C1917] text-[#FAF8F5]'
-                        : 'bg-[#DCD5C9] text-[#57534E]'
+                        ? 'bg-[#1C1917] text-[#FAF8F5] shadow-xs'
+                        : 'bg-[#DDD5C7] text-[#57534E] group-hover:bg-[#D0C7B9] group-hover:text-[#1C1917]'
                     }`}
                   >
                     {step.num}
                   </span>
-                  <span className="text-[10px] sm:text-[11px] leading-tight font-medium text-center break-words max-w-full">
+                  <span
+                    className={`text-[10.5px] sm:text-[11px] leading-tight text-center tracking-tight truncate max-w-full px-0.5 ${
+                      isCurrent ? 'font-semibold text-[#1C1917]' : 'font-medium text-[#6B655F]'
+                    }`}
+                  >
                     {step.title}
                   </span>
+                  {/* Active indicator pill at bottom */}
+                  {isCurrent && (
+                    <span className="absolute bottom-1 w-4 h-0.5 rounded-full bg-[#A37055]" />
+                  )}
                 </button>
               );
             })}
