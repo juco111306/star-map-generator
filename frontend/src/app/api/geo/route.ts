@@ -15,6 +15,12 @@ export async function GET(request: NextRequest) {
 
   const unit: 'in' | 'cm' = isNorthAmerica ? 'in' : 'cm';
   const currency: 'USD' | 'GBP' | 'EUR' = country === 'US' ? 'USD' : country === 'GB' ? 'GBP' : 'EUR';
+  const suggestedLocale =
+    country === 'DE' || country === 'AT' || country === 'CH'
+      ? 'de'
+      : country === 'NL' || country === 'BE'
+      ? 'nl'
+      : 'en';
 
   return NextResponse.json(
     {
@@ -22,6 +28,7 @@ export async function GET(request: NextRequest) {
       unit,
       isUK,
       currency,
+      suggestedLocale,
     },
     {
       headers: {
