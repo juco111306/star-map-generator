@@ -152,6 +152,7 @@ def build_gelato_order_payload(order: Dict[str, Any]) -> Dict[str, Any]:
         "orderReferenceId": order_id,
         "customerReferenceId": customer.get("email") or order_id,
         "currency": "EUR",
+        "shippingMethod": "normal",
         "items": [
             {
                 "itemReferenceId": f"{order_id}-item-1",
