@@ -1,28 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const runtime = 'edge';
+
 export async function GET(request: NextRequest) {
-  const country =
+  // Read Vercel IP Country header (or cloudflare/standard fallback)
+  const country = (
     request.headers.get('x-vercel-ip-country') ||
     request.headers.get('cf-ipcountry') ||
-    request.headers.get('x-country-code') ||
-    '';
+    'NL'
+  ).toUpperCase();
 
-  const acceptLang = request.headers.get('accept-language')?.toLowerCase() || '';
+  const isNorthAmerica = country === 'US' || country === 'CA';
+  const isUK = country === 'GB';
 
-  let suggestedLocale: 'nl' | 'de' | 'en' = 'en';
+  const unit: 'in' | 'cm' = isNorthAmerica ? 'in' : 'cm';
+  const currency: 'USD' | 'GBP' | 'EUR' = country === 'US' ? 'USD' : country === 'GB' ? 'GBP' : 'EUR';
 
-  const c = country.toUpperCase();
-  if (['DE', 'AT', 'CH'].includes(c) || acceptLang.startsWith('de')) {
-    suggestedLocale = 'de';
-  } else if (['NL', 'BE'].includes(c) || acceptLang.startsWith('nl')) {
-    suggestedLocale = 'nl';
-  } else {
-    suggestedLocale = 'en';
-  }
-
-  return NextResponse.json({
-    country: country || 'Unknown',
-    suggestedLocale,
-    acceptLanguage: acceptLang,
-  });
+  return NextResponse.json(
+    {
+      country,
+      unit,
+      isUK,
+      currency,
+    },
+    {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    }
+  );
 }

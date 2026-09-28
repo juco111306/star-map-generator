@@ -1,4 +1,4 @@
-import { PosterSize, FrameStyle } from '../types';
+import { PosterSize, FrameStyle, UnitSystem } from '../types';
 
 export interface PriceDetails {
   price: number;
@@ -14,32 +14,100 @@ export interface PriceDetails {
   shippingText: string;
 }
 
-export const getLocalizedMetricSizes = (locale: string = 'nl') => [
-  {
-    id: '20x30' as PosterSize,
-    label: '20 × 30 cm',
-    sub: locale === 'de' ? 'Kompakt (2:3)' : locale === 'en' ? 'Compact (2:3)' : 'Compact (2:3)',
-    aspect: '2:3',
-  },
+export interface PosterSizeOption {
+  id: PosterSize;
+  label: string;
+  sub: string;
+  aspect: string;
+  popular?: boolean;
+  unit: 'cm' | 'in';
+}
+
+/**
+ * Standard European Metric Trio (30x40, 40x50, 50x70 cm).
+ * If isUK is true, labels include the dual inch equivalent in brackets.
+ */
+export const getLocalizedMetricSizes = (locale: string = 'nl', isUK: boolean = false): PosterSizeOption[] => [
   {
     id: '30x40' as PosterSize,
-    label: '30 × 40 cm',
-    sub: locale === 'de' ? 'Klassische Galerie (3:4)' : locale === 'en' ? 'Classic Gallery (3:4)' : 'Klassieke Galerij (3:4)',
+    label: isUK ? '30 × 40 cm (12 × 16″)' : '30 × 40 cm',
+    sub:
+      locale === 'de'
+        ? 'Klassische Galerie (3:4)'
+        : locale === 'en'
+        ? 'Compact Gallery (3:4)'
+        : 'Klassieke Galerij (3:4)',
     aspect: '3:4',
-    popular: true,
+    unit: 'cm',
   },
   {
     id: '40x50' as PosterSize,
-    label: '40 × 50 cm',
-    sub: locale === 'de' ? 'Medium Format (4:5)' : locale === 'en' ? 'Medium Statement (4:5)' : 'Medium Statement (4:5)',
+    label: isUK ? '40 × 50 cm (16 × 20″)' : '40 × 50 cm',
+    sub:
+      locale === 'de'
+        ? 'Medium Statement (4:5)'
+        : locale === 'en'
+        ? 'Medium Statement (4:5)'
+        : 'Medium Statement (4:5)',
     aspect: '4:5',
+    unit: 'cm',
   },
   {
     id: '50x70' as PosterSize,
-    label: '50 × 70 cm',
-    sub: locale === 'de' ? 'Großes Format (5:7)' : locale === 'en' ? 'Grand Format (5:7)' : 'Groot Formaat (5:7)',
+    label: isUK ? '50 × 70 cm (20 × 28″)' : '50 × 70 cm',
+    sub:
+      locale === 'de'
+        ? 'Großes Format (5:7) • Bestseller'
+        : locale === 'en'
+        ? 'Grand Classic (5:7) • Bestseller'
+        : 'Groot Formaat (5:7) • Bestseller',
     aspect: '5:7',
     popular: true,
+    unit: 'cm',
+  },
+];
+
+/**
+ * Standard North American Imperial Trio (12x18", 18x24", 24x36").
+ * Produced in US Gelato facilities with standard local US frame sizing.
+ */
+export const getLocalizedImperialSizes = (locale: string = 'en'): PosterSizeOption[] => [
+  {
+    id: '12x18' as PosterSize,
+    label: '12 × 18″ (30 × 45 cm)',
+    sub:
+      locale === 'de'
+        ? 'Kompaktes Format (2:3)'
+        : locale === 'nl'
+        ? 'Compact Formaat (2:3)'
+        : 'Compact Gallery (2:3)',
+    aspect: '2:3',
+    unit: 'in',
+  },
+  {
+    id: '18x24' as PosterSize,
+    label: '18 × 24″ (45 × 60 cm)',
+    sub:
+      locale === 'de'
+        ? 'Galerie-Klassiker (3:4) • Bestseller'
+        : locale === 'nl'
+        ? 'Galerij Klassieker (3:4) • Bestseller'
+        : 'Classic Gallery (3:4) • Bestseller',
+    aspect: '3:4',
+    popular: true,
+    unit: 'in',
+  },
+  {
+    id: '24x36' as PosterSize,
+    label: '24 × 36″ (60 × 90 cm)',
+    sub:
+      locale === 'de'
+        ? 'Großes Statement (2:3)'
+        : locale === 'nl'
+        ? 'Groot Statement (2:3)'
+        : 'Grand Statement (2:3)',
+    aspect: '2:3',
+    unit: 'in',
   },
 ];
 
@@ -131,54 +199,74 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
   },
 ];
 
-export const METRIC_SIZES = getLocalizedMetricSizes('nl');
+export const METRIC_SIZES = getLocalizedMetricSizes('nl', false);
 export const FRAME_OPTIONS = getLocalizedFrameOptions('nl');
 
-// Base pricing matrix taking into account Gelato production costs, EU shipping, and healthy webshop margins
+// Base pricing matrix taking into account Gelato production costs, EU/US shipping, and healthy webshop margins
 const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; originalPrice: number }>> = {
   digital: {
-    '20x30': { price: 19, originalPrice: 29 },
     '30x40': { price: 19, originalPrice: 29 },
     '40x50': { price: 19, originalPrice: 29 },
     '50x70': { price: 19, originalPrice: 29 },
+    '12x18': { price: 19, originalPrice: 29 },
     '18x24': { price: 19, originalPrice: 29 },
     '24x36': { price: 19, originalPrice: 29 },
+    '20x30': { price: 19, originalPrice: 29 },
   },
   none: {
-    '20x30': { price: 29, originalPrice: 39 },
     '30x40': { price: 39, originalPrice: 49 },
     '40x50': { price: 49, originalPrice: 59 },
     '50x70': { price: 59, originalPrice: 74 },
+    '12x18': { price: 39, originalPrice: 49 },
     '18x24': { price: 49, originalPrice: 59 },
     '24x36': { price: 69, originalPrice: 89 },
+    '20x30': { price: 29, originalPrice: 39 },
   },
   black: {
-    '20x30': { price: 59, originalPrice: 79 },
     '30x40': { price: 74, originalPrice: 95 },
     '40x50': { price: 89, originalPrice: 115 },
     '50x70': { price: 119, originalPrice: 149 },
+    '12x18': { price: 69, originalPrice: 89 },
     '18x24': { price: 89, originalPrice: 115 },
     '24x36': { price: 139, originalPrice: 179 },
+    '20x30': { price: 59, originalPrice: 79 },
   },
   oak: {
-    '20x30': { price: 59, originalPrice: 79 },
     '30x40': { price: 74, originalPrice: 95 },
     '40x50': { price: 89, originalPrice: 115 },
     '50x70': { price: 119, originalPrice: 149 },
+    '12x18': { price: 69, originalPrice: 89 },
     '18x24': { price: 89, originalPrice: 115 },
     '24x36': { price: 139, originalPrice: 179 },
+    '20x30': { price: 59, originalPrice: 79 },
   },
   white: {
-    '20x30': { price: 59, originalPrice: 79 },
     '30x40': { price: 74, originalPrice: 95 },
     '40x50': { price: 89, originalPrice: 115 },
     '50x70': { price: 119, originalPrice: 149 },
+    '12x18': { price: 69, originalPrice: 89 },
     '18x24': { price: 89, originalPrice: 115 },
     '24x36': { price: 139, originalPrice: 179 },
+    '20x30': { price: 59, originalPrice: 79 },
   },
 };
 
-export function calculatePrice(size: PosterSize | string, frameStyle: FrameStyle | string): PriceDetails {
+const SIZE_LABELS_MAP: Record<string, string> = {
+  '30x40': '30 × 40 cm',
+  '40x50': '40 × 50 cm',
+  '50x70': '50 × 70 cm',
+  '12x18': '12 × 18″ (30 × 45 cm)',
+  '18x24': '18 × 24″ (45 × 60 cm)',
+  '24x36': '24 × 36″ (60 × 90 cm)',
+  '20x30': '20 × 30 cm',
+};
+
+export function calculatePrice(
+  size: PosterSize | string,
+  frameStyle: FrameStyle | string,
+  locale: string = 'nl',
+  isUK: boolean = false
+): PriceDetails {
   const safeSize = (size in PRICING_TABLE.digital ? size : '50x70') as PosterSize;
   const safeFrame = (frameStyle in PRICING_TABLE ? frameStyle : 'none') as FrameStyle;
 
@@ -188,13 +276,45 @@ export function calculatePrice(size: PosterSize | string, frameStyle: FrameStyle
   const isDigital = safeFrame === 'digital';
   const hasFrame = ['black', 'oak', 'white'].includes(safeFrame);
 
-  const frameOption = FRAME_OPTIONS.find((f) => f.id === safeFrame) || FRAME_OPTIONS[1];
-  const sizeOption = METRIC_SIZES.find((s) => s.id === safeSize) || {
-    id: safeSize as PosterSize,
-    label: `${safeSize.replace('x', ' × ')} cm`,
-    sub: 'Metrisch Formaat',
-    aspect: '3:4',
-  };
+  const frameOptions = getLocalizedFrameOptions(locale);
+  const frameOption = frameOptions.find((f) => f.id === safeFrame) || frameOptions[1];
+
+  let sizeLabel = SIZE_LABELS_MAP[safeSize] || `${safeSize.replace('x', ' × ')} cm`;
+  if (isUK) {
+    if (safeSize === '30x40') sizeLabel = '30 × 40 cm (12 × 16″)';
+    if (safeSize === '40x50') sizeLabel = '40 × 50 cm (16 × 20″)';
+    if (safeSize === '50x70') sizeLabel = '50 × 70 cm (20 × 28″)';
+  }
+
+  const typeLabel = isDigital
+    ? locale === 'de'
+      ? 'Digitale Vektor-PDF (300 DPI)'
+      : locale === 'en'
+      ? 'Digital Vector PDF (300 DPI)'
+      : 'Digitaal Bestand (300 DPI)'
+    : hasFrame
+    ? locale === 'de'
+      ? 'Massiver Holzrahmen'
+      : locale === 'en'
+      ? 'Solid Wood Frame'
+      : 'Houten Kwaliteitslijst'
+    : locale === 'de'
+    ? 'Classic Matte Kunstdruck'
+    : locale === 'en'
+    ? 'Classic Matte Poster'
+    : 'Classic Matte Poster';
+
+  const shippingText = isDigital
+    ? locale === 'de'
+      ? 'Sofort per E-Mail (Kostenlos)'
+      : locale === 'en'
+      ? 'Instant email delivery (Free)'
+      : 'Direct per e-mail (Gratis)'
+    : locale === 'de'
+    ? 'Kostenlose & versicherte Lieferung via DHL / DPD'
+    : locale === 'en'
+    ? 'Free & insured tracked delivery via trusted partners'
+    : 'Gratis en verzekerd in NL & BE via vertrouwde partners (zoals PostNL, Bpost)';
 
   return {
     price,
@@ -204,10 +324,10 @@ export function calculatePrice(size: PosterSize | string, frameStyle: FrameStyle
     savings: originalPrice - price,
     isDigital,
     hasFrame,
-    typeLabel: isDigital ? 'Digitaal Bestand (300 DPI)' : hasFrame ? 'Houten Kwaliteitslijst' : 'Classic Matte Poster',
+    typeLabel,
     frameLabel: frameOption.label,
-    sizeLabel: sizeOption.label,
-    shippingText: isDigital ? 'Direct per e-mail (Gratis)' : 'Gratis en verzekerd in NL & BE via vertrouwde partners (zoals PostNL, Bpost)',
+    sizeLabel,
+    shippingText,
   };
 }
 

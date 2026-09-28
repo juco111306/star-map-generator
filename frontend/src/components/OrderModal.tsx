@@ -65,7 +65,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   if (!isOpen) return null;
 
   const isDigital = config.frameStyle === 'digital';
-  const priceDetails = calculatePrice(config.posterSize, config.frameStyle);
+  const priceDetails = calculatePrice(config.posterSize, config.frameStyle, locale);
 
  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -370,7 +370,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     {config.namesBlock.text || (locale === 'de' ? 'Atelier-Meisterwerk' : locale === 'en' ? 'Artisan Keepsake' : 'Ambachtelijk Kunstwerk')}
                   </p>
                   <p className="text-[10px] text-[#A8A29E]">
-                    {config.frameStyle === 'digital' ? 'PDF (300 DPI)' : `${config.posterSize.replace('x', ' × ')} cm`} • {frameLabels[config.frameStyle]}
+                    {config.frameStyle === 'digital' ? 'PDF (300 DPI)' : priceDetails.sizeLabel} • {frameLabels[config.frameStyle]}
                   </p>
                 </div>
               </div>

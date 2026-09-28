@@ -32,9 +32,12 @@ import { GOOGLE_FONTS, POPULAR_LOCATIONS } from '../constants/styles';
 import { TYPOGRAPHY_PRESETS } from '../constants/presets';
 import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, PosterSize, TextBlockConfig } from '../types';
 import { StyleSelector } from './StyleSelector';
-import { apiFetch } from '../utils/api';
-import { calculatePrice, getLocalizedFrameOptions, getLocalizedMetricSizes } from '../utils/pricing';
-import { useLanguage } from '../context/LanguageContext';
+import {
+  calculatePrice,
+  getLocalizedFrameOptions,
+  getLocalizedMetricSizes,
+  getLocalizedImperialSizes,
+} from '../utils/pricing';
 
 interface ConfigPanelProps {
   config: MapConfig;
@@ -190,7 +193,53 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   };
 
   const frameOptions = getLocalizedFrameOptions(locale);
-  const metricSizes = getLocalizedMetricSizes(locale);
+
+  // Region-aware Unit System (Metric vs Imperial)
+  const [unitPreference, setUnitPreference] = useState<'cm' | 'in'>('cm');
+  const [isUK, setIsUK] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/geo')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.unit === 'in') {
+          setUnitPreference('in');
+          if (!['12x18', '18x24', '24x36'].includes(config.posterSize)) {
+            onChange({ posterSize: '18x24' });
+          }
+        }
+        if (data.isUK) {
+          setIsUK(true);
+        }
+      })
+      .catch(() => {
+        if (typeof Intl !== 'undefined') {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+          if (tz.includes('America') || tz.includes('US') || tz.includes('Canada')) {
+            setUnitPreference('in');
+            if (!['12x18', '18x24', '24x36'].includes(config.posterSize)) {
+              onChange({ posterSize: '18x24' });
+            }
+          }
+          if (tz.includes('London') || tz.includes('Europe/Belfast')) {
+            setIsUK(true);
+          }
+        }
+      });
+  }, []);
+
+  const handleUnitToggle = (unit: 'cm' | 'in') => {
+    setUnitPreference(unit);
+    if (unit === 'in' && !['12x18', '18x24', '24x36'].includes(config.posterSize)) {
+      onChange({ posterSize: '18x24' });
+    } else if (unit === 'cm' && !['30x40', '40x50', '50x70'].includes(config.posterSize)) {
+      onChange({ posterSize: '50x70' });
+    }
+  };
+
+  const activeSizes = unitPreference === 'in'
+    ? getLocalizedImperialSizes(locale)
+    : getLocalizedMetricSizes(locale, isUK);
 
   const dividers: { id: DividerStyle; label: string; symbol: string }[] = [
     { id: 'diamond', label: locale === 'de' ? 'Diamant' : locale === 'en' ? 'Diamond' : 'Diamant', symbol: '— ◆ —' },
@@ -201,7 +250,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     { id: 'none', label: locale === 'de' ? 'Kein' : locale === 'en' ? 'None' : 'Geen', symbol: '—' },
   ];
 
-  const currentPriceDetails = calculatePrice(config.posterSize, config.frameStyle);
+  const currentPriceDetails = calculatePrice(config.posterSize, config.frameStyle, locale, isUK);
 
   const layoutVariations: { id: LayoutVariation; label: string; desc: string; badge?: string }[] = [
     {
@@ -1286,40 +1335,71 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </div>
             </div>
 
-            {/* 2. Metric Sizes Only */}
+            {/* 2. Region-Aware Sizing with cm / in Toggle */}
             <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] space-y-3 shadow-sm">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#44403C] flex items-center gap-1.5">
                   <Maximize2 className="w-3.5 h-3.5 text-[#A37055]" />
                   <span>
-                    {locale === 'de' ? 'Postergröße (Metrisch)' : locale === 'en' ? 'Poster Size (Metric)' : 'Posterformaat (Metrisch)'}
+                    {unitPreference === 'in'
+                      ? (locale === 'de' ? 'Postergröße (Zoll)' : locale === 'en' ? 'Poster Size (Inches)' : 'Posterformaat (Inches)')
+                      : (locale === 'de' ? 'Postergröße (Metrisch)' : locale === 'en' ? 'Poster Size (Metric)' : 'Posterformaat (Metrisch)')}
                   </span>
                 </label>
-                <span className="text-[10px] text-[#A37055] font-medium">
-                  {config.frameStyle === 'digital'
-                    ? (locale === 'de' ? 'Skalierbarer 300 DPI Vektor' : locale === 'en' ? 'Scalable 300 DPI Vector' : 'Schaalbare 300 DPI Vector')
-                    : (locale === 'de' ? 'Exakte Metrische Maße' : locale === 'en' ? 'Exact Metric Sizes' : 'Exacte Metrische Maten')}
-                </span>
+
+                {/* Subtle Luxury Unit Switcher */}
+                <div className="inline-flex items-center p-0.5 rounded-lg bg-[#EFECE6] border border-[#E2DDD5] text-[10.5px] font-medium">
+                  <button
+                    type="button"
+                    onClick={() => handleUnitToggle('cm')}
+                    className={`px-2.5 py-0.5 rounded-md transition-all ${
+                      unitPreference === 'cm'
+                        ? 'bg-white text-[#1C1917] shadow-xs font-bold'
+                        : 'text-[#78716C] hover:text-[#1C1917]'
+                    }`}
+                  >
+                    cm
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleUnitToggle('in')}
+                    className={`px-2.5 py-0.5 rounded-md transition-all ${
+                      unitPreference === 'in'
+                        ? 'bg-white text-[#1C1917] shadow-xs font-bold'
+                        : 'text-[#78716C] hover:text-[#1C1917]'
+                    }`}
+                  >
+                    in
+                  </button>
+                </div>
               </div>
 
               <p className="text-[11px] text-[#78716C] font-light">
                 {config.frameStyle === 'digital'
                   ? (locale === 'de'
-                      ? 'Die druckfertige Vektor-PDF-Datei ist ohne Qualitätsverlust auf jedes metrische Format skalierbar.'
+                      ? 'Die druckfertige Vektor-PDF-Datei ist ohne Qualitätsverlust auf jedes Format skalierbar.'
                       : locale === 'en'
-                      ? 'The print-ready vector PDF file is scalable to any metric size without loss of quality.'
-                      : 'Het print-klare vector PDF bestand is schaalbaar naar elk metrisch formaat zonder kwaliteitsverlies.')
+                      ? 'The print-ready vector PDF file is scalable to any format without loss of quality.'
+                      : 'Het print-klare vector PDF bestand is schaalbaar naar elk formaat zonder kwaliteitsverlies.')
+                  : unitPreference === 'in'
+                  ? (locale === 'de'
+                      ? 'Standardmäßige US-Galeriegrößen in Zoll, passgenau für gängige Rahmen in den USA & Kanada.'
+                      : locale === 'en'
+                      ? 'Standard North American gallery sizes in inches, fitting US frames (Target, Michaels, Amazon US).'
+                      : 'Standaard Noord-Amerikaanse formaten in inches, passend voor universele lijsten.')
+                  : isUK
+                  ? 'Standard UK gallery sizes (cm & inches), fitting IKEA and UK high-street frames.'
                   : (locale === 'de'
-                      ? 'Standardmäßige europäische Galeriegrößen, passgenau für Rahmen und Wände.'
+                      ? 'Standardmäßige europäische Galeriegrößen in cm, passgenau für Rahmen (z. B. IKEA) und Wände.'
                       : locale === 'en'
-                      ? 'Standard European gallery sizes, fitting frames and wall spaces perfectly.'
-                      : 'Standaard Europese galerijmaten, perfect passend voor lijsten en muren.')}
+                      ? 'Standard European gallery sizes in cm, fitting frames (e.g. IKEA) and wall spaces perfectly.'
+                      : 'Standaard Europese galerijmaten in cm, perfect passend voor lijsten (zoals IKEA) en muren.')}
               </p>
 
-              <div className="grid grid-cols-2 gap-2.5">
-                {metricSizes.map((fo) => {
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {activeSizes.map((fo) => {
                   const isSelected = config.posterSize === fo.id;
-                  const sizePrice = calculatePrice(fo.id, config.frameStyle);
+                  const sizePrice = calculatePrice(fo.id, config.frameStyle, locale, isUK);
                   return (
                     <button
                       key={fo.id}

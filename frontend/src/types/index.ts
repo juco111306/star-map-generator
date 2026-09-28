@@ -1,4 +1,5 @@
-export type PosterSize = '20x30' | '30x40' | '40x50' | '50x70' | '18x24' | '24x36';
+export type PosterSize = '30x40' | '40x50' | '50x70' | '12x18' | '18x24' | '24x36' | '20x30';
+export type UnitSystem = 'metric' | 'imperial';
 
 export type LayoutVariation =
   | 'standard_stack'

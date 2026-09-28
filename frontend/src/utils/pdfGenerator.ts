@@ -121,6 +121,9 @@ export async function generateStarMapPdfBlob(
   } else if (posterSize === '18x24') {
     pageWidth = 1296.0;
     pageHeight = 1728.0;
+  } else if (posterSize === '12x18') {
+    pageWidth = 864.0;
+    pageHeight = 1296.0;
   }
 
   const page = pdfDoc.addPage([pageWidth, pageHeight]);

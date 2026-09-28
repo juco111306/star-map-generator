@@ -11,7 +11,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onExport, isExporting, posterSize }) => {
-  const pixelDimensions = posterSize === '18x24' ? '5,400 × 7,200 px' : '7,200 × 10,800 px';
+  const isInch = posterSize.includes('18') || posterSize.includes('24') || posterSize.includes('36');
+  const sizeLabel = isInch ? `${posterSize.replace('x', ' × ')}″` : `${posterSize.replace('x', ' × ')} cm`;
+  const pixelDimensions = '300 DPI Ultra HD';
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800 bg-[#0B132B]/90 backdrop-blur-md px-4 lg:px-8 py-3.5 flex items-center justify-between">
@@ -39,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({ onExport, isExporting, posterSiz
       <div className="flex items-center space-x-3">
         <div className="hidden md:flex flex-col text-right">
           <span className="text-xs font-medium text-slate-300">
-            {posterSize}&quot; Poster ({pixelDimensions})
+            {sizeLabel} Poster ({pixelDimensions})
           </span>
           <span className="text-[11px] text-slate-500">
             Print-Ready CMYK-Compliant PDF
@@ -59,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({ onExport, isExporting, posterSiz
           ) : (
             <>
               <Download className="w-4 h-4 mr-2 text-white" />
-              <span>Export PDF ({posterSize}&quot;)</span>
+              <span>Export PDF ({sizeLabel})</span>
             </>
           )}
         </button>
