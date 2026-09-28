@@ -161,6 +161,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
             >
               {t.footer.faqShort}
             </button>
+            <span>•</span>
+            <button
+              onClick={() => {
+                onNavigate('producer');
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+              }}
+              className="hover:text-[#1C1917] transition-colors underline"
+              title="Bekijk alle binnengekomen bestellingen, PDF's en Gelato statussen"
+            >
+              Atelier Wachtrij (Orders)
+            </button>
           </div>
 
           {/* Regional Dynamic Payment Badges */}
