@@ -245,6 +245,12 @@ export default function Home({ initialLocale }: HomeProps = {}) {
 
   useEffect(() => {
     fetchOrdersQueue();
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('admin') === 'true' || params.get('admin') === '1' || params.get('view') === 'producer') {
+        setCurrentView('producer');
+      }
+    }
   }, []);
 
   useEffect(() => {

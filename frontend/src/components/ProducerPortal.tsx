@@ -16,9 +16,12 @@ import {
   Truck,
   Check,
   Send,
+  Lock,
 } from 'lucide-react';
 import { OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
+
+const ADMIN_PIN = '1991';
 
 interface ProducerPortalProps {
   onBackToStudio: () => void;
@@ -28,6 +31,16 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Authentication state (persisted in sessionStorage for the browser session)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('stellaire_admin_auth') === 'true';
+    }
+    return false;
+  });
+  const [pinInput, setPinInput] = useState('');
+  const [pinError, setPinError] = useState(false);
 
   const fetchOrders = async () => {
     setIsLoading(true);
@@ -49,8 +62,32 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (isAuthenticated) {
+      fetchOrders();
+    }
+  }, [isAuthenticated]);
+
+  const handlePinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pinInput.trim() === ADMIN_PIN) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('stellaire_admin_auth', 'true');
+      }
+      setIsAuthenticated(true);
+      setPinError(false);
+    } else {
+      setPinError(true);
+      setPinInput('');
+    }
+  };
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('stellaire_admin_auth');
+    }
+    setIsAuthenticated(false);
+    setPinInput('');
+  };
 
   const handleUpdateStatus = async (
     orderId: string,
@@ -83,6 +120,70 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
     if (!bytes) return '1.1 MB';
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl border border-[#EBE7DF] p-8 sm:p-10 shadow-xl space-y-6 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-[#F5F2EB] border border-[#E2DDD5] mx-auto flex items-center justify-center text-[#A37055] shadow-xs">
+            <Lock className="w-7 h-7" />
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="font-serif text-2xl font-bold text-[#1C1917] tracking-wide">
+              Atelier Beheer
+            </h1>
+            <p className="text-xs text-[#78716C] leading-relaxed">
+              Dit beheerdersportaal is strikt beveiligd voor het atelier en de drukkerij. Voer de pincode in om toegang te krijgen.
+            </p>
+          </div>
+
+          <form onSubmit={handlePinSubmit} className="space-y-4">
+            <div>
+              <input
+                type="password"
+                maxLength={8}
+                autoFocus
+                placeholder="••••"
+                value={pinInput}
+                onChange={(e) => {
+                  setPinInput(e.target.value);
+                  setPinError(false);
+                }}
+                className={`w-full text-center tracking-[0.6em] font-mono text-2xl py-3 px-4 rounded-2xl bg-[#FAF8F5] border focus:outline-none transition ${
+                  pinError
+                    ? 'border-red-400 bg-red-50/40 text-red-900 focus:border-red-500'
+                    : 'border-[#E2DDD5] text-[#1C1917] focus:border-[#1C1917]'
+                }`}
+              />
+              {pinError && (
+                <p className="text-xs text-red-600 mt-2 font-medium">
+                  Onjuiste pincode. Probeer het opnieuw.
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md transition"
+            >
+              Ontgrendel Wachtrij &rarr;
+            </button>
+          </form>
+
+          <div className="pt-2 border-t border-[#F0ECE1]">
+            <button
+              onClick={onBackToStudio}
+              className="text-xs text-[#78716C] hover:text-[#1C1917] flex items-center justify-center gap-1.5 font-medium mx-auto transition"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Terug naar Atelier & Winkel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] py-10 px-4 sm:px-6 lg:px-8">
@@ -120,6 +221,15 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-[#1C1917]' : ''}`} />
               <span>Vernieuwen</span>
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="px-3.5 py-2 rounded-full bg-white hover:bg-rose-50 hover:border-rose-200 border border-[#E2DDD5] text-xs font-medium text-[#78716C] hover:text-rose-700 flex items-center gap-1.5 shadow-sm transition"
+              title="Vergrendel beheerdersportaal"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Vergrendelen</span>
             </button>
 
             <button

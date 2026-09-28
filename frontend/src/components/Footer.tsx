@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Sparkles, ShieldCheck, Mail, Truck, Info } from 'lucide-react';
+import { Sparkles, ShieldCheck, Mail, Truck, Info, Lock } from 'lucide-react';
 import { AppView } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -167,10 +167,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenReturnPolicy }
                 onNavigate('producer');
                 window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
               }}
-              className="hover:text-[#1C1917] transition-colors underline"
-              title="Bekijk alle binnengekomen bestellingen, PDF's en Gelato statussen"
+              className="hover:text-[#1C1917] transition-colors underline opacity-50 hover:opacity-100 inline-flex items-center gap-1"
+              title="Atelier Beheer (PIN beveiligd)"
             >
-              Atelier Wachtrij (Orders)
+              <Lock className="w-2.5 h-2.5" />
+              <span>Atelier Beheer</span>
             </button>
           </div>
 
