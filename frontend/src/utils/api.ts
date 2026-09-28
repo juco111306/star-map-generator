@@ -1,16 +1,27 @@
 /**
  * Resilient API fetcher that sends requests directly to the live backend
- * (e.g. Render) when configured, avoiding serverless timeout restrictions.
+ * (https://star-map-generator.onrender.com) when in production, avoiding
+ * serverless timeouts or unconfigured environment variables.
  */
 export async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
+
+  // Automatically detect if running in browser on localhost vs live cloud
+  const isLocalhost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+  const defaultBackend = isLocalhost
+    ? 'http://127.0.0.1:8000'
+    : 'https://star-map-generator.onrender.com';
+
   const remoteBackend = (
     process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_BACKEND_URL ||
-    ''
+    defaultBackend
   ).replace(/\/$/, '');
 
-  // If live backend URL is configured (e.g. on Render), call it directly!
+  // In live production, fetch directly from Render backend
   if (remoteBackend && remoteBackend.startsWith('http') && !remoteBackend.includes('127.0.0.1')) {
     try {
       const res = await fetch(`${remoteBackend}${cleanPath}`, init);
@@ -32,6 +43,5 @@ export async function apiFetch(path: string, init?: RequestInit): Promise<Respon
     // Network or proxy error
   }
 
-  const fallbackBase = remoteBackend || 'http://127.0.0.1:8000';
-  return fetch(`${fallbackBase}${cleanPath}`, init);
+  return fetch(`${remoteBackend}${cleanPath}`, init);
 }
