@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
-  const backendBase =
+  const backendBase = (
     process.env.BACKEND_INTERNAL_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_BACKEND_URL ||
-    'http://127.0.0.1:8000';
+    'http://127.0.0.1:8000'
+  ).replace(/\/$/, "");
 
   try {
     const body = await request.json();
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     const res = await fetch(`${backendBase}/api/orders`, {
       method: 'POST',
@@ -23,8 +25,8 @@ export async function POST(request: NextRequest) {
       const data = await res.json();
       return NextResponse.json(data);
     }
-  } catch {
-    // Backend offline / serverless
+  } catch (err) {
+    console.error('Error forwarding order to backend:', err);
   }
 
   // Fallback: Generate clean order reference
@@ -39,14 +41,16 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const backendBase =
+  const backendBase = (
     process.env.BACKEND_INTERNAL_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_BACKEND_URL ||
-    'http://127.0.0.1:8000';
+    'http://127.0.0.1:8000'
+  ).replace(/\/$/, "");
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     const res = await fetch(`${backendBase}/api/orders`, {
       signal: controller.signal,
@@ -57,7 +61,9 @@ export async function GET() {
       const data = await res.json();
       return NextResponse.json(data);
     }
-  } catch {
+  } catch (err) {
+    console.error('Error fetching orders from backend:', err);
+  }
     // Fallback
   }
 

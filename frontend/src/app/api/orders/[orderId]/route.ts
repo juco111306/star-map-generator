@@ -5,14 +5,16 @@ export async function GET(
   { params }: { params: { orderId: string } }
 ) {
   const orderId = params.orderId;
-  const backendBase =
+  const backendBase = (
     process.env.BACKEND_INTERNAL_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_BACKEND_URL ||
-    'http://127.0.0.1:8000';
+    'http://127.0.0.1:8000'
+  ).replace(/\/$/, "");
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     const res = await fetch(`${backendBase}/api/orders/${orderId}`, {
       signal: controller.signal,
@@ -23,7 +25,9 @@ export async function GET(
       const data = await res.json();
       return NextResponse.json(data);
     }
-  } catch {
+  } catch (err) {
+    console.error(`Error fetching order ${orderId} from backend:`, err);
+  }
     // Backend offline / serverless
   }
 

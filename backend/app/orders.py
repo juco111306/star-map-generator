@@ -417,6 +417,15 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
     raw_orders.insert(0, order_record)
     ORDERS_JSON.write_text(json.dumps(raw_orders, indent=2), encoding="utf-8")
 
+    # 5. Automatically dispatch physical orders to Gelato Print-on-Demand
+    if not is_digital:
+        try:
+            dispatch_res = dispatch_order_to_gelato(order_id)
+            if dispatch_res.get("order"):
+                order_record = dispatch_res["order"]
+        except Exception as e:
+            print(f"Auto gelato dispatch error for {order_id}: {e}")
+
     return order_record
 
 
