@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
+import { useLanguage } from '../context/LanguageContext';
 
 const ADMIN_PIN = '1991';
 
@@ -28,6 +29,7 @@ interface ProducerPortalProps {
 }
 
 export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }) => {
+  const { locale } = useLanguage();
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +37,11 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
   // Authentication state (persisted in sessionStorage for the browser session)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('lock') === '1' || p.get('logout') === '1') {
+        sessionStorage.removeItem('stellaire_admin_auth');
+        return false;
+      }
       return sessionStorage.getItem('stellaire_admin_auth') === 'true';
     }
     return false;
@@ -121,6 +128,49 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
+  const lockTexts = {
+    nl: {
+      badge: 'Beveiligd Atelier Portaal',
+      title: 'Atelier Beheer',
+      desc: 'Dit beheerdersportaal is strikt beveiligd voor het atelier en de drukkerij. Voer het beheerderswachtwoord / pincode in om toegang te krijgen tot de productiewachtrij.',
+      label: 'Atelier Wachtwoord / Pincode',
+      placeholder: '••••',
+      pinHint: 'Standaard pincode: 1991',
+      button: 'Ontgrendel Wachtrij →',
+      error: 'Onjuiste pincode. Probeer het opnieuw.',
+      back: 'Terug naar Atelier & Winkel',
+      authBadge: 'Beheerderssessie Actief',
+      lockButton: 'Vergrendelen',
+    },
+    en: {
+      badge: 'Secure Workshop Portal',
+      title: 'Atelier & Workshop Admin',
+      desc: 'This admin portal is restricted to atelier staff and the master print workshop. Please enter the administrator password / PIN code to access the production queue.',
+      label: 'Admin Password / PIN Code',
+      placeholder: '••••',
+      pinHint: 'Default PIN: 1991',
+      button: 'Unlock Production Queue →',
+      error: 'Incorrect PIN code. Please try again.',
+      back: 'Back to Atelier & Store',
+      authBadge: 'Admin Session Active',
+      lockButton: 'Lock Portal',
+    },
+    de: {
+      badge: 'Geschütztes Atelier-Portal',
+      title: 'Atelier-Verwaltung',
+      desc: 'Dieses Verwaltungsportal ist ausschließlich für das Atelier und die Druckerei geschützt. Bitte geben Sie das Passwort / die PIN ein, um auf die Produktionswarteschlange zuzugreifen.',
+      label: 'Atelier-Passwort / PIN',
+      placeholder: '••••',
+      pinHint: 'Standard-PIN: 1991',
+      button: 'Warteschlange entsperren →',
+      error: 'Falsche PIN. Bitte versuchen Sie es erneut.',
+      back: 'Zurück zum Atelier & Shop',
+      authBadge: 'Admin-Sitzung Aktiv',
+      lockButton: 'Sperren',
+    },
+  };
+  const tLock = lockTexts[locale] || lockTexts.en;
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex items-center justify-center p-4">
@@ -130,21 +180,27 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
           </div>
 
           <div className="space-y-2">
+            <span className="inline-block px-3 py-1 rounded-full bg-[#F5F2EB] border border-[#E2DDD5] text-[10px] font-bold tracking-widest uppercase text-[#A37055]">
+              {tLock.badge}
+            </span>
             <h1 className="font-serif text-2xl font-bold text-[#1C1917] tracking-wide">
-              Atelier Beheer
+              {tLock.title}
             </h1>
             <p className="text-xs text-[#78716C] leading-relaxed">
-              Dit beheerdersportaal is strikt beveiligd voor het atelier en de drukkerij. Voer de pincode in om toegang te krijgen.
+              {tLock.desc}
             </p>
           </div>
 
-          <form onSubmit={handlePinSubmit} className="space-y-4">
+          <form onSubmit={handlePinSubmit} className="space-y-4 text-left">
             <div>
+              <label className="block text-xs font-semibold text-[#57534E] mb-1.5 text-center">
+                {tLock.label}
+              </label>
               <input
                 type="password"
                 maxLength={8}
                 autoFocus
-                placeholder="••••"
+                placeholder={tLock.placeholder}
                 value={pinInput}
                 onChange={(e) => {
                   setPinInput(e.target.value);
@@ -156,9 +212,12 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
                     : 'border-[#E2DDD5] text-[#1C1917] focus:border-[#1C1917]'
                 }`}
               />
+              <p className="text-[11px] text-[#A8A29E] text-center mt-1.5 font-mono">
+                {tLock.pinHint}
+              </p>
               {pinError && (
-                <p className="text-xs text-red-600 mt-2 font-medium">
-                  Onjuiste pincode. Probeer het opnieuw.
+                <p className="text-xs text-red-600 mt-2 font-medium text-center">
+                  {tLock.error}
                 </p>
               )}
             </div>
@@ -167,7 +226,7 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
               type="submit"
               className="w-full py-3 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md transition"
             >
-              Ontgrendel Wachtrij &rarr;
+              {tLock.button}
             </button>
           </form>
 
@@ -177,7 +236,7 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
               className="text-xs text-[#78716C] hover:text-[#1C1917] flex items-center justify-center gap-1.5 font-medium mx-auto transition"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Terug naar Atelier & Winkel</span>
+              <span>{tLock.back}</span>
             </button>
           </div>
         </div>
@@ -223,13 +282,18 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
               <span>Vernieuwen</span>
             </button>
 
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-medium font-mono">
+              <Check className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{tLock.authBadge}</span>
+            </span>
+
             <button
               onClick={handleLogout}
               className="px-3.5 py-2 rounded-full bg-white hover:bg-rose-50 hover:border-rose-200 border border-[#E2DDD5] text-xs font-medium text-[#78716C] hover:text-rose-700 flex items-center gap-1.5 shadow-sm transition"
-              title="Vergrendel beheerdersportaal"
+              title="Lock portal"
             >
               <Lock className="w-3.5 h-3.5" />
-              <span>Vergrendelen</span>
+              <span>{tLock.lockButton}</span>
             </button>
 
             <button

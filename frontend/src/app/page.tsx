@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import confetti from 'canvas-confetti';
 import { Navbar } from '../components/Navbar';
 import { LandingHero } from '../components/LandingHero';
@@ -88,13 +89,53 @@ const LOCALE_DEFAULTS: Record<
   },
 };
 
-interface HomeProps {
-  initialLocale?: Locale;
+function SearchParamsWatcher({ onViewChange }: { onViewChange: (view: AppView) => void }) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const admin = searchParams.get('admin');
+    const view = searchParams.get('view');
+    if (admin === '1' || admin === 'true' || view === 'producer') {
+      onViewChange('producer');
+    }
+  }, [searchParams, onViewChange]);
+  return null;
 }
 
-export default function Home({ initialLocale }: HomeProps = {}) {
+interface HomeProps {
+  initialLocale?: Locale;
+  initialView?: AppView;
+  initialSearchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function Home({ initialLocale, initialView, initialSearchParams }: HomeProps = {}) {
   const { locale } = useLanguage();
-  const [currentView, setCurrentView] = useState<AppView>('landing');
+
+  const isInitialAdmin = Boolean(
+    initialView === 'producer' ||
+    initialSearchParams?.admin === '1' ||
+    initialSearchParams?.admin === 'true' ||
+    initialSearchParams?.view === 'producer'
+  );
+
+  const [currentView, setCurrentView] = useState<AppView>(() => {
+    if (isInitialAdmin) return 'producer';
+    if (initialView) return initialView;
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (
+          params.get('admin') === 'true' ||
+          params.get('admin') === '1' ||
+          params.get('view') === 'producer' ||
+          window.location.pathname.endsWith('/admin') ||
+          window.location.pathname === '/admin'
+        ) {
+          return 'producer';
+        }
+      } catch {}
+    }
+    return 'landing';
+  });
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [isReturnPolicyOpen, setIsReturnPolicyOpen] = useState(false);
@@ -245,12 +286,24 @@ export default function Home({ initialLocale }: HomeProps = {}) {
 
   useEffect(() => {
     fetchOrdersQueue();
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === 'true' || params.get('admin') === '1' || params.get('view') === 'producer') {
-        setCurrentView('producer');
+    const handleUrlCheck = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        if (
+          params.get('admin') === 'true' ||
+          params.get('admin') === '1' ||
+          params.get('view') === 'producer' ||
+          window.location.pathname.endsWith('/admin') ||
+          window.location.pathname === '/admin'
+        ) {
+          setCurrentView('producer');
+        }
       }
-    }
+    };
+
+    handleUrlCheck();
+    window.addEventListener('popstate', handleUrlCheck);
+    return () => window.removeEventListener('popstate', handleUrlCheck);
   }, []);
 
   useEffect(() => {
@@ -315,6 +368,10 @@ export default function Home({ initialLocale }: HomeProps = {}) {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-montserrat">
+      <Suspense fallback={null}>
+        <SearchParamsWatcher onViewChange={setCurrentView} />
+      </Suspense>
+
       {/* Geolocation Regional Language Banner */}
       <GeoLanguageBanner />
 

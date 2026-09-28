@@ -10,12 +10,24 @@ interface LocalePageProps {
   params: {
     locale: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default function LocalePage({ params }: LocalePageProps) {
+export default function LocalePage({ params, searchParams }: LocalePageProps) {
   const activeLocale: Locale = isValidLocale(params.locale)
     ? (params.locale as Locale)
     : DEFAULT_LOCALE;
 
-  return <Home initialLocale={activeLocale} />;
+  const isAdmin =
+    searchParams?.admin === '1' ||
+    searchParams?.admin === 'true' ||
+    searchParams?.view === 'producer';
+
+  return (
+    <Home
+      initialLocale={activeLocale}
+      initialView={isAdmin ? 'producer' : undefined}
+      initialSearchParams={searchParams}
+    />
+  );
 }
