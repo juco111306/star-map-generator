@@ -37,6 +37,18 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def root():
+    """Root endpoint welcoming visitors and providing API status."""
+    return {
+        "status": "online",
+        "service": "Stellaire Custom Star Map API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/api/health",
+    }
+
+
 @app.on_event("startup")
 async def startup_event():
     """Warm up astronomy data and fonts on startup."""
