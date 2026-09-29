@@ -103,10 +103,7 @@ export async function generateStarMapPdfBlob(
   let pageWidth = 1417.32;
   let pageHeight = 1984.25;
 
-  if (posterSize === '20x30') {
-    pageWidth = 566.93;
-    pageHeight = 850.39;
-  } else if (posterSize === '30x40') {
+  if (posterSize === '30x40') {
     pageWidth = 850.39;
     pageHeight = 1133.86;
   } else if (posterSize === '40x50') {

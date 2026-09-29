@@ -53,7 +53,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   let baseRadius = 410; // 5% smaller (balanced size)
   let baseCy = 485;
 
-  if (size === '20x30' || size === '24x36' || size === '12x18') {
+  if (size === '24x36' || size === '12x18') {
     vbHeight = 1500;
     aspectRatioClass = 'aspect-[2/3]';
     scaleFactor = size === '24x36' ? 1.25 : 1.0;

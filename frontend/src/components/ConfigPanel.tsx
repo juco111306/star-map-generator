@@ -31,6 +31,8 @@ import {
 import { GOOGLE_FONTS, POPULAR_LOCATIONS } from '../constants/styles';
 import { TYPOGRAPHY_PRESETS } from '../constants/presets';
 import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, PosterSize, TextBlockConfig } from '../types';
+import { useLanguage } from '../context/LanguageContext';
+import { apiFetch } from '../utils/api';
 import { StyleSelector } from './StyleSelector';
 import {
   calculatePrice,
