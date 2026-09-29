@@ -124,7 +124,35 @@ export async function generateStarMapPdfBlob(
   }
 
   const page = pdfDoc.addPage([pageWidth, pageHeight]);
-  const scale = pageWidth / 1296.0; // Normalized to 18x24
+  const scale = pageWidth / 1000.0; // Normalized canonical width 1000
+
+  // Canonical geometry matching Studio Preview
+  let vbHeight = 1400.0;
+  let scaleFactor = 1.15;
+  let baseRadius = 410.0;
+  let baseCy = 485.0;
+
+  if (posterSize === '24x36' || posterSize === '12x18') {
+    vbHeight = 1500.0;
+    scaleFactor = posterSize === '24x36' ? 1.25 : 1.0;
+    baseRadius = 435.0;
+    baseCy = 525.0;
+  } else if (posterSize === '30x40' || posterSize === '18x24') {
+    vbHeight = 1333.33;
+    scaleFactor = 1.0;
+    baseRadius = 391.0;
+    baseCy = 470.0;
+  } else if (posterSize === '40x50') {
+    vbHeight = 1250.0;
+    scaleFactor = 1.05;
+    baseRadius = 385.0;
+    baseCy = 445.0;
+  } else if (posterSize === '50x70') {
+    vbHeight = 1400.0;
+    scaleFactor = 1.15;
+    baseRadius = 410.0;
+    baseCy = 485.0;
+  }
 
   // 2. Load and embed classic standard typography fonts
   const fontSerifBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
@@ -157,8 +185,9 @@ export async function generateStarMapPdfBlob(
   });
 
   // Matted Gallery Passepartout Border (if enabled)
+  const isLarge = posterSize === '24x36' || posterSize === '50x70';
+  const matMargin = (isLarge ? 38.0 : 34.0) * scale;
   if (config.showMattedBorder) {
-    const matMargin = 55.0 * scale;
     // White outer passepartout
     page.drawRectangle({
       x: 0,
@@ -196,14 +225,14 @@ export async function generateStarMapPdfBlob(
       width: pageWidth - 2 * matMargin,
       height: pageHeight - 2 * matMargin,
       borderColor: rgb(0.8, 0.8, 0.8),
-      borderWidth: 0.8 * scale,
+      borderWidth: 0.65 * scale,
     });
   }
 
   // 5. Celestial Disc Coordinates & Sizing
-  const cx = pageWidth / 2.0;
-  const radius = Math.min(pageWidth * 0.41, pageHeight * 0.31);
-  const cy = pageHeight - radius - (config.showMattedBorder ? 120.0 : 95.0) * scale;
+  const cx = 500.0 * scale;
+  const radius = baseRadius * scale;
+  const cy = pageHeight - (baseCy * scale);
 
   // Celestial sphere background fill
   page.drawCircle({
@@ -407,76 +436,88 @@ export async function generateStarMapPdfBlob(
     opacity: 0.6,
   });
 
-  // 6. Typography Layout Section
-  // Space calculations flowing from bottom of the star map to page baseline
-  let currentY = cy - radius - 55.0 * scale;
+  // 6. Typography Layout Section with strictly locked title clearance
+  const effTitleSize = (config.titleBlock?.size || 38) * 0.78 * scaleFactor;
+  const titleAscender = effTitleSize * 0.72;
+  const titleTop = baseCy + baseRadius + 50.0 * scaleFactor;
+  let currentCanonicalY = titleTop;
 
   // Title Block
   const titleBlock = config.titleBlock;
   const titleText = (titleBlock?.text || 'The Night We Met').trim();
-  if (titleText) {
-    const titleSize = Math.max(18, (titleBlock?.size || 34) * 0.85 * scale);
-    const titleTracking = ((titleBlock?.tracking || 3.0) * scale);
+  if (titleBlock?.enabled !== false && titleText) {
+    const titleBaseline = titleTop + titleAscender;
+    const titleY = pageHeight - (titleBaseline * scale);
+    const titleSize = effTitleSize * scale;
+    const titleTracking = ((titleBlock?.tracking || 2.5) * scale);
     const formattedTitle = titleBlock?.uppercase ? titleText.toUpperCase() : titleText;
 
     drawCenteredText(
       page,
       formattedTitle,
-      currentY,
+      titleY,
       titleSize,
       fontSerifBold,
       textColor,
       titleTracking
     );
-    currentY -= titleSize * 1.35 + 10.0 * scale;
+    currentCanonicalY = titleBaseline + (effTitleSize * 0.28 + 26.0) * scaleFactor;
   }
 
   // Names / Dedication Block
   const namesBlock = config.namesBlock;
   const namesText = (namesBlock?.text || '').trim();
-  if (namesText) {
-    const namesSize = Math.max(14, (namesBlock?.size || 22) * 0.9 * scale);
-    const namesTracking = ((namesBlock?.tracking || 1.5) * scale);
+  if (namesBlock?.enabled !== false && namesText) {
+    const effNamesSize = (namesBlock?.size || 51) * 0.85 * scaleFactor;
+    const namesBaseline = currentCanonicalY + effNamesSize * 0.72;
+    const namesY = pageHeight - (namesBaseline * scale);
+    const namesSize = effNamesSize * scale;
+    const namesTracking = ((namesBlock?.tracking || 1.0) * scale);
     const formattedNames = namesBlock?.uppercase ? namesText.toUpperCase() : namesText;
 
     drawCenteredText(
       page,
       formattedNames,
-      currentY,
+      namesY,
       namesSize,
       fontSerifItalic,
       subtitleColor,
       namesTracking
     );
-    currentY -= namesSize * 1.25 + 12.0 * scale;
+    currentCanonicalY = namesBaseline + (effNamesSize * 0.28 + 24.0) * scaleFactor;
   }
 
   // Divider Ornament
   const dividerStyle = config.dividerStyle || 'diamond';
+  const divBaseSize = config.dividerSize || 34;
+  const divScale = (divBaseSize / 18.0) * scaleFactor;
+  const dividerHalfHeight = 4.5 * divScale;
+
   if (dividerStyle !== 'none') {
-    const divWidth = 140.0 * scale;
+    const divCanonicalY = currentCanonicalY + 12.0 * scaleFactor + dividerHalfHeight;
+    const divY = pageHeight - (divCanonicalY * scale);
+    const divWidth = 110.0 * divScale * scale;
     const divColor = rgb(subtitleColor.r, subtitleColor.g, subtitleColor.b);
 
     if (dividerStyle === 'diamond') {
       page.drawLine({
-        start: { x: cx - divWidth / 2, y: currentY },
-        end: { x: cx - 14 * scale, y: currentY },
-        thickness: 0.65 * scale,
+        start: { x: cx - divWidth / 2, y: divY },
+        end: { x: cx - 10.0 * divScale * scale, y: divY },
+        thickness: Math.max(0.5, 0.75 * divScale) * scale,
         color: divColor,
         opacity: 0.6,
       });
       page.drawLine({
-        start: { x: cx + 14 * scale, y: currentY },
-        end: { x: cx + divWidth / 2, y: currentY },
-        thickness: 0.65 * scale,
+        start: { x: cx + 10.0 * divScale * scale, y: divY },
+        end: { x: cx + divWidth / 2, y: divY },
+        thickness: Math.max(0.5, 0.75 * divScale) * scale,
         color: divColor,
         opacity: 0.6,
       });
-      // Rotated square diamond
-      const dSize = 5.0 * scale;
+      const dSize = 3.5 * divScale * scale;
       page.drawRectangle({
         x: cx - dSize / 2,
-        y: currentY - dSize / 2,
+        y: divY - dSize / 2,
         width: dSize,
         height: dSize,
         rotate: degrees(45),
@@ -485,58 +526,62 @@ export async function generateStarMapPdfBlob(
       });
     } else if (dividerStyle === 'dot') {
       page.drawLine({
-        start: { x: cx - divWidth / 2, y: currentY },
-        end: { x: cx - 10 * scale, y: currentY },
-        thickness: 0.65 * scale,
+        start: { x: cx - divWidth / 2, y: divY },
+        end: { x: cx - 8.0 * divScale * scale, y: divY },
+        thickness: Math.max(0.5, 0.75 * divScale) * scale,
         color: divColor,
         opacity: 0.6,
       });
       page.drawLine({
-        start: { x: cx + 10 * scale, y: currentY },
-        end: { x: cx + divWidth / 2, y: currentY },
-        thickness: 0.65 * scale,
+        start: { x: cx + 8.0 * divScale * scale, y: divY },
+        end: { x: cx + divWidth / 2, y: divY },
+        thickness: Math.max(0.5, 0.75 * divScale) * scale,
         color: divColor,
         opacity: 0.6,
       });
       page.drawCircle({
         x: cx,
-        y: currentY,
-        size: 2.5 * scale,
+        y: divY,
+        size: 2.0 * divScale * scale,
         color: divColor,
         opacity: subtitleColor.a,
       });
     } else {
-      // Clean continuous hairline
       page.drawLine({
-        start: { x: cx - divWidth / 2, y: currentY },
-        end: { x: cx + divWidth / 2, y: currentY },
-        thickness: 0.65 * scale,
+        start: { x: cx - divWidth / 2, y: divY },
+        end: { x: cx + divWidth / 2, y: divY },
+        thickness: Math.max(0.5, 0.75 * divScale) * scale,
         color: divColor,
         opacity: 0.6,
       });
     }
 
-    currentY -= 20.0 * scale;
+    currentCanonicalY = divCanonicalY + dividerHalfHeight + 16.0 * scaleFactor;
+  } else {
+    currentCanonicalY = currentCanonicalY + 14.0 * scaleFactor;
   }
 
   // Date Block
   const dateBlock = config.dateBlock;
   const dateText = (dateBlock?.text || '').trim();
-  if (dateText) {
-    const dateSize = Math.max(10, (dateBlock?.size || 16) * 0.85 * scale);
-    const dateTracking = ((dateBlock?.tracking || 2.2) * scale);
+  if (dateBlock?.enabled !== false && dateText) {
+    const effDateSize = (dateBlock?.size || 27) * 0.85 * scaleFactor;
+    const dateBaseline = currentCanonicalY + effDateSize * 0.72;
+    const dateY = pageHeight - (dateBaseline * scale);
+    const dateSize = effDateSize * scale;
+    const dateTracking = ((dateBlock?.tracking || 2.0) * scale);
     const formattedDate = dateBlock?.uppercase ? dateText.toUpperCase() : dateText;
 
     drawCenteredText(
       page,
       formattedDate,
-      currentY,
+      dateY,
       dateSize,
       fontSans,
       footerColor,
       dateTracking
     );
-    currentY -= dateSize * 1.35 + 8.0 * scale;
+    currentCanonicalY = dateBaseline + (effDateSize * 0.28 + 18.0) * scaleFactor;
   }
 
   // Location & Coordinates Block
@@ -550,13 +595,16 @@ export async function generateStarMapPdfBlob(
     .join('  •  ');
 
   if (combinedLoc) {
-    const locSize = Math.max(9, (config.coordsBlock?.size || 14) * 0.85 * scale);
+    const effCoordsSize = (config.coordsBlock?.size || 21) * 0.85 * scaleFactor;
+    const coordsBaseline = currentCanonicalY + effCoordsSize * 0.72;
+    const locY = pageHeight - (coordsBaseline * scale);
+    const locSize = effCoordsSize * scale;
     const locTracking = ((config.coordsBlock?.tracking || 1.8) * scale);
 
     drawCenteredText(
       page,
       combinedLoc,
-      currentY,
+      locY,
       locSize,
       fontSans,
       footerColor,

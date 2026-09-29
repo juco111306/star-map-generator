@@ -237,9 +237,10 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   }, [celestialData]);
 
   // Dynamic vertical positions for typography elements
+  // Dynamic vertical positions for typography elements with locked clearances
   const typographyLayout = useMemo(() => {
-    // Generous breathing space between circle bottom and main title inscription
-    let currentY = cy + radius + 85 * scaleFactor;
+    const effTitleSize = (config.titleBlock?.size || 38) * 0.78 * scaleFactor;
+    const titleAscender = effTitleSize * 0.72;
 
     const positions = {
       titleY: 0,
@@ -252,79 +253,84 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
 
     if (isTopTitleLayout) {
       // Top Title composition: Title dynamically positioned above circle
-      // to eliminate the excessive gap between title and celestial sphere
-      positions.titleY = (cy - radius) - 75 * scaleFactor;
+      // Baseline anchored with constant clearance above top of circle
+      const clearanceAbove = 45 * scaleFactor;
+      positions.titleY = (cy - radius) - clearanceAbove;
 
-      // Secondary details below celestial sphere with enhanced elegant spacing
-      currentY = cy + radius + 75 * scaleFactor;
+      // Secondary details below celestial sphere with locked constant clearance from circle bottom
+      let currentY = cy + radius + 52 * scaleFactor;
       if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
-        positions.namesY = currentY;
-        currentY += (config.namesBlock.size * 0.85 + 28) * scaleFactor;
+        const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
+        const namesAscender = effNamesSize * 0.72;
+        positions.namesY = currentY + namesAscender;
+        currentY = positions.namesY + (effNamesSize * 0.28 + 26) * scaleFactor;
       }
       if (config.dividerStyle !== 'none') {
         const divBaseSize = config.dividerSize || 34;
         const divScale = (divBaseSize / 18) * scaleFactor;
         const dividerHalfHeight = 4.5 * divScale;
 
-        positions.dividerY = currentY + 14 * scaleFactor + dividerHalfHeight;
+        positions.dividerY = currentY + 12 * scaleFactor + dividerHalfHeight;
         const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
-        const dateAscender = dateSize * 0.72 * scaleFactor;
-        positions.dateY = positions.dividerY + dividerHalfHeight + 18 * scaleFactor + dateAscender;
-        currentY = positions.dateY + (dateSize * 0.35 + 22) * scaleFactor;
+        const effDateSize = dateSize * 0.85 * scaleFactor;
+        const dateAscender = effDateSize * 0.72;
+        positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
+        currentY = positions.dateY + (effDateSize * 0.28 + 20) * scaleFactor;
       } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
         const dateSize = config.dateBlock.size;
-        const dateAscender = dateSize * 0.72 * scaleFactor;
-        positions.dateY = currentY + 18 * scaleFactor + dateAscender;
-        currentY = positions.dateY + (dateSize * 0.35 + 22) * scaleFactor;
+        const effDateSize = dateSize * 0.85 * scaleFactor;
+        const dateAscender = effDateSize * 0.72;
+        positions.dateY = currentY + 14 * scaleFactor + dateAscender;
+        currentY = positions.dateY + (effDateSize * 0.28 + 20) * scaleFactor;
       }
       if (
         (config.locationBlock?.enabled && config.locationBlock.text.trim()) ||
         (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
       ) {
         const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
-        positions.locY = currentY + (coordSize * 0.72 * scaleFactor);
+        const effCoordSize = coordSize * 0.85 * scaleFactor;
+        positions.locY = currentY + (effCoordSize * 0.72);
       }
       return positions;
     }
 
     if (isMoonPhasesLayout) {
-      // Moon phases row positioned underneath star map (twice the size) - unchanged
+      // Moon phases row positioned underneath star map
       positions.moonPhasesY = cy + radius + 40 * scaleFactor;
+      const moonsBottom = positions.moonPhasesY + 15 * scaleFactor;
+
+      // Title top locked with constant clearance below moons
+      const titleTop = moonsBottom + 32 * scaleFactor;
+      let afterTitleY = titleTop;
+      if (config.titleBlock?.enabled && config.titleBlock.text.trim()) {
+        positions.titleY = titleTop + titleAscender;
+        afterTitleY = positions.titleY + (effTitleSize * 0.28 + 24) * scaleFactor;
+      }
+
+      if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
+        const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
+        const namesAscender = effNamesSize * 0.72;
+        positions.namesY = afterTitleY + namesAscender;
+        afterTitleY = positions.namesY + (effNamesSize * 0.28 + 20) * scaleFactor;
+      }
 
       const divBaseSize = config.dividerSize || 34;
       const divScale = (divBaseSize / 18) * scaleFactor;
       const dividerHalfHeight = config.dividerStyle !== 'none' ? (4.5 * divScale) : 0;
-
-      // Anchored divider position keeping date and location text unchanged
       const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
-      const dateAscender = dateSize * 0.72 * scaleFactor;
+      const effDateSize = dateSize * 0.85 * scaleFactor;
+      const dateAscender = effDateSize * 0.72;
 
-      // Reference divider position for unchanged date/location layout
-      const baseDividerY = positions.moonPhasesY + 215 * scaleFactor;
-      const span = baseDividerY - positions.moonPhasesY;
-
-      // Position title+names starting at 1/3 distance between moons and the divider
-      const oneThirdOffset = span * (1.0 / 3.0);
-      positions.titleY = positions.moonPhasesY + oneThirdOffset;
-
-      let afterTitleY = positions.titleY;
-      if (config.titleBlock?.enabled && config.titleBlock.text.trim()) {
-        afterTitleY += (config.titleBlock.size * 0.85 + 24) * scaleFactor;
-      }
-      if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
-        positions.namesY = afterTitleY;
-        afterTitleY += (config.namesBlock.size * 0.85 + 20) * scaleFactor;
-      }
-
-      // Divider position: stays at baseDividerY unless large custom font pushes it down
+      const baseDividerY = positions.moonPhasesY + 200 * scaleFactor;
       positions.dividerY = Math.max(baseDividerY, afterTitleY + 12 * scaleFactor + dividerHalfHeight);
 
+      let currentY = positions.dividerY;
       if (config.dividerStyle !== 'none') {
         positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
-        currentY = positions.dateY + (dateSize * 0.35 + 18) * scaleFactor;
+        currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
       } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
         positions.dateY = positions.dividerY + 14 * scaleFactor + dateAscender;
-        currentY = positions.dateY + (dateSize * 0.35 + 18) * scaleFactor;
+        currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
       }
 
       if (
@@ -332,16 +338,20 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
       ) {
         const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
-        positions.locY = currentY + (coordSize * 0.72 * scaleFactor);
+        const effCoordSize = coordSize * 0.85 * scaleFactor;
+        positions.locY = currentY + (effCoordSize * 0.72);
       }
       return positions;
     }
 
     if (isCurvedLayout) {
-      currentY = cy + radius + 85 * scaleFactor;
+      // Primary title is curved above circle; details flow below circle with constant clearance
+      let currentY = cy + radius + 52 * scaleFactor;
       if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
-        positions.namesY = currentY;
-        currentY += (config.namesBlock.size * 0.85 + 24) * scaleFactor;
+        const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
+        const namesAscender = effNamesSize * 0.72;
+        positions.namesY = currentY + namesAscender;
+        currentY = positions.namesY + (effNamesSize * 0.28 + 24) * scaleFactor;
       }
       if (config.dividerStyle !== 'none') {
         const divBaseSize = config.dividerSize || 34;
@@ -350,34 +360,43 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
 
         positions.dividerY = currentY + 10 * scaleFactor + dividerHalfHeight;
         const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
-        const dateAscender = dateSize * 0.72 * scaleFactor;
+        const effDateSize = dateSize * 0.85 * scaleFactor;
+        const dateAscender = effDateSize * 0.72;
         positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
-        currentY = positions.dateY + (dateSize * 0.35 + 18) * scaleFactor;
+        currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
       } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
         const dateSize = config.dateBlock.size;
-        const dateAscender = dateSize * 0.72 * scaleFactor;
+        const effDateSize = dateSize * 0.85 * scaleFactor;
+        const dateAscender = effDateSize * 0.72;
         positions.dateY = currentY + 14 * scaleFactor + dateAscender;
-        currentY = positions.dateY + (dateSize * 0.35 + 18) * scaleFactor;
+        currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
       }
       if (
         (config.locationBlock?.enabled && config.locationBlock.text.trim()) ||
         (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
       ) {
         const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
-        positions.locY = currentY + (coordSize * 0.72 * scaleFactor);
+        const effCoordSize = coordSize * 0.85 * scaleFactor;
+        positions.locY = currentY + (effCoordSize * 0.72);
       }
       return positions;
     }
 
-    // Standard Stack and Framed layout
+    // Standard Stack and Framed layout:
+    // Strictly constant clearance from bottom of circle to the top of the title letters
+    const titleTop = cy + radius + 50 * scaleFactor;
+    let currentY = titleTop;
+
     if (config.titleBlock?.enabled && config.titleBlock.text.trim()) {
-      positions.titleY = currentY;
-      currentY += (config.titleBlock.size * 0.85 + 26) * scaleFactor;
+      positions.titleY = titleTop + titleAscender;
+      currentY = positions.titleY + (effTitleSize * 0.28 + 26) * scaleFactor;
     }
 
     if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
-      positions.namesY = currentY;
-      currentY += (config.namesBlock.size * 0.85 + 24) * scaleFactor;
+      const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
+      const namesAscender = effNamesSize * 0.72;
+      positions.namesY = currentY + namesAscender;
+      currentY = positions.namesY + (effNamesSize * 0.28 + 24) * scaleFactor;
     }
 
     if (config.dividerStyle !== 'none') {
@@ -387,14 +406,16 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
 
       positions.dividerY = currentY + 12 * scaleFactor + dividerHalfHeight;
       const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
-      const dateAscender = dateSize * 0.72 * scaleFactor;
+      const effDateSize = dateSize * 0.85 * scaleFactor;
+      const dateAscender = effDateSize * 0.72;
       positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
-      currentY = positions.dateY + (dateSize * 0.35 + 18) * scaleFactor;
+      currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
     } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
       const dateSize = config.dateBlock.size;
-      const dateAscender = dateSize * 0.72 * scaleFactor;
+      const effDateSize = dateSize * 0.85 * scaleFactor;
+      const dateAscender = effDateSize * 0.72;
       positions.dateY = currentY + 14 * scaleFactor + dateAscender;
-      currentY = positions.dateY + (dateSize * 0.35 + 18) * scaleFactor;
+      currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
     }
 
     if (
@@ -402,7 +423,8 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
     ) {
       const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
-      positions.locY = currentY + (coordSize * 0.72 * scaleFactor);
+      const effCoordSize = coordSize * 0.85 * scaleFactor;
+      positions.locY = currentY + (effCoordSize * 0.72);
     }
 
     return positions;
