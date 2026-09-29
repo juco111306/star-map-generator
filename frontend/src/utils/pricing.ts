@@ -1,8 +1,18 @@
 import { PosterSize, FrameStyle, UnitSystem } from '../types';
 
+export type Currency = 'EUR' | 'USD' | 'GBP';
+
+export const CURRENCY_SYMBOLS: Record<Currency, string> = {
+  EUR: '€',
+  USD: '$',
+  GBP: '£',
+};
+
 export interface PriceDetails {
   price: number;
   originalPrice: number;
+  currency: Currency;
+  currencySymbol: string;
   formattedPrice: string;
   formattedOriginalPrice: string;
   savings: number;
@@ -202,47 +212,133 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
 export const METRIC_SIZES = getLocalizedMetricSizes('nl', false);
 export const FRAME_OPTIONS = getLocalizedFrameOptions('nl');
 
-// Base pricing matrix taking into account Gelato production costs, EU/US shipping, and healthy webshop margins
-const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; originalPrice: number }>> = {
-  digital: {
-    '30x40': { price: 19, originalPrice: 29 },
-    '40x50': { price: 19, originalPrice: 29 },
-    '50x70': { price: 19, originalPrice: 29 },
-    '12x18': { price: 19, originalPrice: 29 },
-    '18x24': { price: 19, originalPrice: 29 },
-    '24x36': { price: 19, originalPrice: 29 },
+// Multi-currency pricing matrix taking into account Gelato production costs, local shipping, and healthy webshop margins
+export const PRICING_TABLE: Record<Currency, Record<FrameStyle, Record<string, { price: number; originalPrice: number }>>> = {
+  EUR: {
+    digital: {
+      '30x40': { price: 19, originalPrice: 29 },
+      '40x50': { price: 19, originalPrice: 29 },
+      '50x70': { price: 19, originalPrice: 29 },
+      '12x18': { price: 19, originalPrice: 29 },
+      '18x24': { price: 19, originalPrice: 29 },
+      '24x36': { price: 19, originalPrice: 29 },
+    },
+    none: {
+      '30x40': { price: 39, originalPrice: 49 },
+      '40x50': { price: 49, originalPrice: 59 },
+      '50x70': { price: 59, originalPrice: 74 },
+      '12x18': { price: 39, originalPrice: 49 },
+      '18x24': { price: 49, originalPrice: 59 },
+      '24x36': { price: 69, originalPrice: 89 },
+    },
+    black: {
+      '30x40': { price: 74, originalPrice: 95 },
+      '40x50': { price: 89, originalPrice: 115 },
+      '50x70': { price: 119, originalPrice: 149 },
+      '12x18': { price: 69, originalPrice: 89 },
+      '18x24': { price: 89, originalPrice: 115 },
+      '24x36': { price: 139, originalPrice: 179 },
+    },
+    oak: {
+      '30x40': { price: 74, originalPrice: 95 },
+      '40x50': { price: 89, originalPrice: 115 },
+      '50x70': { price: 119, originalPrice: 149 },
+      '12x18': { price: 69, originalPrice: 89 },
+      '18x24': { price: 89, originalPrice: 115 },
+      '24x36': { price: 139, originalPrice: 179 },
+    },
+    white: {
+      '30x40': { price: 74, originalPrice: 95 },
+      '40x50': { price: 89, originalPrice: 115 },
+      '50x70': { price: 119, originalPrice: 149 },
+      '12x18': { price: 69, originalPrice: 89 },
+      '18x24': { price: 89, originalPrice: 115 },
+      '24x36': { price: 139, originalPrice: 179 },
+    },
   },
-  none: {
-    '30x40': { price: 39, originalPrice: 49 },
-    '40x50': { price: 49, originalPrice: 59 },
-    '50x70': { price: 59, originalPrice: 74 },
-    '12x18': { price: 39, originalPrice: 49 },
-    '18x24': { price: 49, originalPrice: 59 },
-    '24x36': { price: 69, originalPrice: 89 },
+  USD: {
+    digital: {
+      '30x40': { price: 19, originalPrice: 29 },
+      '40x50': { price: 19, originalPrice: 29 },
+      '50x70': { price: 19, originalPrice: 29 },
+      '12x18': { price: 19, originalPrice: 29 },
+      '18x24': { price: 19, originalPrice: 29 },
+      '24x36': { price: 19, originalPrice: 29 },
+    },
+    none: {
+      '30x40': { price: 39, originalPrice: 49 },
+      '40x50': { price: 49, originalPrice: 59 },
+      '50x70': { price: 59, originalPrice: 74 },
+      '12x18': { price: 39, originalPrice: 49 },
+      '18x24': { price: 49, originalPrice: 59 },
+      '24x36': { price: 69, originalPrice: 89 },
+    },
+    black: {
+      '30x40': { price: 79, originalPrice: 99 },
+      '40x50': { price: 99, originalPrice: 129 },
+      '50x70': { price: 129, originalPrice: 159 },
+      '12x18': { price: 79, originalPrice: 99 },
+      '18x24': { price: 99, originalPrice: 129 },
+      '24x36': { price: 149, originalPrice: 189 },
+    },
+    oak: {
+      '30x40': { price: 79, originalPrice: 99 },
+      '40x50': { price: 99, originalPrice: 129 },
+      '50x70': { price: 129, originalPrice: 159 },
+      '12x18': { price: 79, originalPrice: 99 },
+      '18x24': { price: 99, originalPrice: 129 },
+      '24x36': { price: 149, originalPrice: 189 },
+    },
+    white: {
+      '30x40': { price: 79, originalPrice: 99 },
+      '40x50': { price: 99, originalPrice: 129 },
+      '50x70': { price: 129, originalPrice: 159 },
+      '12x18': { price: 79, originalPrice: 99 },
+      '18x24': { price: 99, originalPrice: 129 },
+      '24x36': { price: 149, originalPrice: 189 },
+    },
   },
-  black: {
-    '30x40': { price: 74, originalPrice: 95 },
-    '40x50': { price: 89, originalPrice: 115 },
-    '50x70': { price: 119, originalPrice: 149 },
-    '12x18': { price: 69, originalPrice: 89 },
-    '18x24': { price: 89, originalPrice: 115 },
-    '24x36': { price: 139, originalPrice: 179 },
-  },
-  oak: {
-    '30x40': { price: 74, originalPrice: 95 },
-    '40x50': { price: 89, originalPrice: 115 },
-    '50x70': { price: 119, originalPrice: 149 },
-    '12x18': { price: 69, originalPrice: 89 },
-    '18x24': { price: 89, originalPrice: 115 },
-    '24x36': { price: 139, originalPrice: 179 },
-  },
-  white: {
-    '30x40': { price: 74, originalPrice: 95 },
-    '40x50': { price: 89, originalPrice: 115 },
-    '50x70': { price: 119, originalPrice: 149 },
-    '12x18': { price: 69, originalPrice: 89 },
-    '18x24': { price: 89, originalPrice: 115 },
-    '24x36': { price: 139, originalPrice: 179 },
+  GBP: {
+    digital: {
+      '30x40': { price: 19, originalPrice: 29 },
+      '40x50': { price: 19, originalPrice: 29 },
+      '50x70': { price: 19, originalPrice: 29 },
+      '12x18': { price: 19, originalPrice: 29 },
+      '18x24': { price: 19, originalPrice: 29 },
+      '24x36': { price: 19, originalPrice: 29 },
+    },
+    none: {
+      '30x40': { price: 35, originalPrice: 45 },
+      '40x50': { price: 45, originalPrice: 55 },
+      '50x70': { price: 55, originalPrice: 69 },
+      '12x18': { price: 35, originalPrice: 45 },
+      '18x24': { price: 45, originalPrice: 55 },
+      '24x36': { price: 65, originalPrice: 79 },
+    },
+    black: {
+      '30x40': { price: 69, originalPrice: 89 },
+      '40x50': { price: 79, originalPrice: 99 },
+      '50x70': { price: 109, originalPrice: 139 },
+      '12x18': { price: 69, originalPrice: 89 },
+      '18x24': { price: 79, originalPrice: 99 },
+      '24x36': { price: 129, originalPrice: 159 },
+    },
+    oak: {
+      '30x40': { price: 69, originalPrice: 89 },
+      '40x50': { price: 79, originalPrice: 99 },
+      '50x70': { price: 109, originalPrice: 139 },
+      '12x18': { price: 69, originalPrice: 89 },
+      '18x24': { price: 79, originalPrice: 99 },
+      '24x36': { price: 129, originalPrice: 159 },
+    },
+    white: {
+      '30x40': { price: 69, originalPrice: 89 },
+      '40x50': { price: 79, originalPrice: 99 },
+      '50x70': { price: 109, originalPrice: 139 },
+      '12x18': { price: 69, originalPrice: 89 },
+      '18x24': { price: 79, originalPrice: 99 },
+      '24x36': { price: 129, originalPrice: 159 },
+    },
   },
 };
 
@@ -255,16 +351,58 @@ const SIZE_LABELS_MAP: Record<string, string> = {
   '24x36': '24 × 36″ (60 × 90 cm)',
 };
 
+export function formatPrice(amount: number, currency: Currency = 'EUR'): string {
+  if (currency === 'USD') {
+    return `$${amount}.00`;
+  }
+  if (currency === 'GBP') {
+    return `£${amount}.00`;
+  }
+  return `€${amount},00`;
+}
+
+export function getBaseStartingPrice(currency: Currency = 'EUR', locale: string = 'nl'): string {
+  if (currency === 'USD') {
+    return 'from $19.00';
+  }
+  if (currency === 'GBP') {
+    return 'from £19.00';
+  }
+  if (locale === 'de') {
+    return 'ab €19,00';
+  }
+  if (locale === 'en') {
+    return 'from €19.00';
+  }
+  return 'vanaf €19,00';
+}
+
+export function getBaseStartingOriginalPrice(currency: Currency = 'EUR'): string {
+  if (currency === 'USD') {
+    return '$29.00';
+  }
+  if (currency === 'GBP') {
+    return '£29.00';
+  }
+  return '€29,00';
+}
+
 export function calculatePrice(
   size: PosterSize | string,
   frameStyle: FrameStyle | string,
   locale: string = 'nl',
-  isUK: boolean = false
+  isUK: boolean = false,
+  currency?: Currency
 ): PriceDetails {
-  const safeSize = (size in PRICING_TABLE.digital ? size : '50x70') as PosterSize;
-  const safeFrame = (frameStyle in PRICING_TABLE ? frameStyle : 'none') as FrameStyle;
+  // Resolve effective currency
+  const effectiveCurrency: Currency =
+    currency || (isUK ? 'GBP' : locale === 'en' ? 'USD' : 'EUR');
 
-  const entry = PRICING_TABLE[safeFrame][safeSize] || { price: 19, originalPrice: 29 };
+  const currencyPricing = PRICING_TABLE[effectiveCurrency] || PRICING_TABLE.EUR;
+  const safeSize = (size in currencyPricing.digital ? size : '50x70') as PosterSize;
+  const safeFrame = (frameStyle in currencyPricing ? frameStyle : 'none') as FrameStyle;
+
+  const entry = currencyPricing[safeFrame][safeSize] || { price: 19, originalPrice: 29 };
   const price = entry.price;
   const originalPrice = entry.originalPrice;
   const isDigital = safeFrame === 'digital';
@@ -306,6 +444,10 @@ export function calculatePrice(
       : 'Direct per e-mail (Gratis)'
     : locale === 'de'
     ? 'Kostenlose & versicherte Lieferung via DHL / DPD'
+    : effectiveCurrency === 'USD'
+    ? 'Free & insured tracked delivery via USPS / FedEx'
+    : effectiveCurrency === 'GBP'
+    ? 'Free & insured tracked delivery via Royal Mail'
     : locale === 'en'
     ? 'Free & insured tracked delivery via trusted partners'
     : 'Gratis en verzekerd in NL & BE via vertrouwde partners (zoals PostNL, Bpost)';
@@ -313,8 +455,10 @@ export function calculatePrice(
   return {
     price,
     originalPrice,
-    formattedPrice: `€${price},00`,
-    formattedOriginalPrice: `€${originalPrice},00`,
+    currency: effectiveCurrency,
+    currencySymbol: CURRENCY_SYMBOLS[effectiveCurrency],
+    formattedPrice: formatPrice(price, effectiveCurrency),
+    formattedOriginalPrice: formatPrice(originalPrice, effectiveCurrency),
     savings: originalPrice - price,
     isDigital,
     hasFrame,

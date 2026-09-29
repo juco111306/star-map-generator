@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Locale, Translations, CardinalPoints, getDictionary, SUPPORTED_LOCALES, DEFAULT_LOCALE, isValidLocale } from '../locales';
+import { Currency, CURRENCY_SYMBOLS, formatPrice as formatPriceUtil } from '../utils/pricing';
 
 interface LanguageContextType {
   locale: Locale;
@@ -13,11 +14,17 @@ interface LanguageContextType {
   cardinalPoints: CardinalPoints;
   paymentBadges: string[];
   shippingPartnerText: string;
+  currency: Currency;
+  currencySymbol: string;
+  setCurrency: (newCurrency: Currency) => void;
+  formatPrice: (amount: number) => string;
+  isUK: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const COOKIE_NAME = 'stellaire_locale';
+export const CURRENCY_COOKIE_NAME = 'stellaire_currency';
 
 export const LanguageProvider: React.FC<{
   children: React.ReactNode;
@@ -51,6 +58,27 @@ export const LanguageProvider: React.FC<{
     return DEFAULT_LOCALE;
   });
 
+  const [isUK, setIsUK] = useState(false);
+
+  const [currency, setCurrencyState] = useState<Currency>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(CURRENCY_COOKIE_NAME);
+      if (saved && ['EUR', 'USD', 'GBP'].includes(saved)) {
+        return saved as Currency;
+      }
+    }
+    // Initial guess based on locale
+    if (initialLocale === 'de' || initialLocale === 'nl') return 'EUR';
+    if (initialLocale === 'en') {
+      if (typeof Intl !== 'undefined') {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        if (tz.includes('London') || tz.includes('Europe/Belfast')) return 'GBP';
+      }
+      return 'USD';
+    }
+    return 'EUR';
+  });
+
   // Sync state if initialLocale changes
   useEffect(() => {
     if (initialLocale && isValidLocale(initialLocale) && initialLocale !== locale) {
@@ -68,6 +96,48 @@ export const LanguageProvider: React.FC<{
     }
   }, [pathname, locale]);
 
+  // Geo IP detection on initial mount
+  useEffect(() => {
+    fetch('/api/geo')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.isUK) {
+          setIsUK(true);
+        }
+        const hasSavedCurrency =
+          typeof window !== 'undefined' && localStorage.getItem(CURRENCY_COOKIE_NAME);
+        if (!hasSavedCurrency && data.currency && ['EUR', 'USD', 'GBP'].includes(data.currency)) {
+          setCurrencyState(data.currency as Currency);
+        }
+      })
+      .catch(() => {
+        if (typeof Intl !== 'undefined') {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+          if (tz.includes('London') || tz.includes('Europe/Belfast')) {
+            setIsUK(true);
+            if (!localStorage.getItem(CURRENCY_COOKIE_NAME)) {
+              setCurrencyState('GBP');
+            }
+          } else if (tz.includes('America') || tz.includes('US') || tz.includes('Canada')) {
+            if (!localStorage.getItem(CURRENCY_COOKIE_NAME)) {
+              setCurrencyState('USD');
+            }
+          }
+        }
+      });
+  }, []);
+
+  const setCurrency = useCallback((newCurrency: Currency) => {
+    if (!['EUR', 'USD', 'GBP'].includes(newCurrency)) return;
+    setCurrencyState(newCurrency);
+    if (typeof document !== 'undefined') {
+      document.cookie = `${CURRENCY_COOKIE_NAME}=${newCurrency}; path=/; max-age=31536000; SameSite=Lax`;
+      try {
+        localStorage.setItem(CURRENCY_COOKIE_NAME, newCurrency);
+      } catch (err) {}
+    }
+  }, []);
+
   const changeLocale = useCallback((newLocale: Locale) => {
     if (!isValidLocale(newLocale)) return;
 
@@ -82,6 +152,15 @@ export const LanguageProvider: React.FC<{
       } catch (err) {}
     }
 
+    // Automatically adapt currency if the user hasn't explicitly set one in localStorage
+    if (typeof window !== 'undefined' && !localStorage.getItem(CURRENCY_COOKIE_NAME)) {
+      if (newLocale === 'de' || newLocale === 'nl') {
+        setCurrencyState('EUR');
+      } else if (newLocale === 'en') {
+        setCurrencyState(isUK ? 'GBP' : 'USD');
+      }
+    }
+
     // 3. Immediate and reliable navigation to target locale path
     if (typeof window !== 'undefined') {
       const curPath = window.location.pathname;
@@ -94,9 +173,15 @@ export const LanguageProvider: React.FC<{
       }
       window.location.href = targetPath;
     }
-  }, []);
+  }, [isUK]);
 
   const t = useMemo(() => getDictionary(locale), [locale]);
+
+  const currencySymbol = useMemo(() => CURRENCY_SYMBOLS[currency] || '€', [currency]);
+
+  const formatPrice = useCallback((amount: number): string => {
+    return formatPriceUtil(amount, currency);
+  }, [currency]);
 
   const formatDate = useCallback((dateStr: string): string => {
     if (!dateStr) return '';
@@ -125,7 +210,12 @@ export const LanguageProvider: React.FC<{
     cardinalPoints: t.studio.cardinalPoints,
     paymentBadges: t.footer.paymentBadges,
     shippingPartnerText: t.footer.shippingPartnerText,
-  }), [locale, t, changeLocale, formatDate]);
+    currency,
+    currencySymbol,
+    setCurrency,
+    formatPrice,
+    isUK,
+  }), [locale, t, changeLocale, formatDate, currency, currencySymbol, setCurrency, formatPrice, isUK]);
 
   return (
     <LanguageContext.Provider value={value}>
@@ -148,6 +238,11 @@ export const useLanguage = (): LanguageContextType => {
       cardinalPoints: fallbackT.studio.cardinalPoints,
       paymentBadges: fallbackT.footer.paymentBadges,
       shippingPartnerText: fallbackT.footer.shippingPartnerText,
+      currency: 'EUR',
+      currencySymbol: '€',
+      setCurrency: () => {},
+      formatPrice: (amt) => `€${amt},00`,
+      isUK: false,
     };
   }
   return context;

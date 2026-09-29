@@ -43,7 +43,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   onOrderSuccess,
   onOpenReturnPolicy,
 }) => {
-  const { locale, t } = useLanguage();
+  const { locale, t, currency, isUK } = useLanguage();
   const [customer, setCustomer] = useState<CustomerDetails>({
     name: '',
     email: '',
@@ -53,7 +53,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     city: '',
     state: '',
     postal_code: '',
-    country: locale === 'de' ? 'Deutschland' : locale === 'en' ? 'United Kingdom' : 'Nederland',
+    country: currency === 'USD' ? 'United States' : currency === 'GBP' ? 'United Kingdom' : locale === 'de' ? 'Deutschland' : locale === 'en' ? 'United States' : 'Nederland',
     gift_note: '',
     producer_notes: '',
   });
@@ -65,9 +65,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   if (!isOpen) return null;
 
   const isDigital = config.frameStyle === 'digital';
-  const priceDetails = calculatePrice(config.posterSize, config.frameStyle, locale);
+  const priceDetails = calculatePrice(config.posterSize, config.frameStyle, locale, isUK, currency);
+  const isUS =
+    (customer.country || '').toLowerCase().includes('united states') ||
+    (customer.country || '').toLowerCase().includes('verenigde staten') ||
+    (customer.country || '').toLowerCase().includes('vereinigte staaten') ||
+    (customer.country || '').toUpperCase() === 'US';
 
- const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!customer.name.trim() || !customer.email.trim()) {
@@ -76,6 +81,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     }
     if (!isDigital && (!customer.address_line1.trim() || !customer.city.trim() || !customer.postal_code.trim())) {
       setError(locale === 'de' ? 'Bitte geben Sie Ihre vollständige Lieferadresse für unsere Versandpartner ein.' : locale === 'en' ? 'Please enter your complete shipping address for our delivery partners.' : 'Vul alstublieft uw volledige bezorgadres in voor onze bezorgpartners.');
+      return;
+    }
+    if (!isDigital && isUS && !customer.state?.trim()) {
+      setError(t.orderModal.stateRequired);
       return;
     }
 
@@ -126,6 +135,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               dividerStyle: config.dividerStyle,
               layout_variation: config.layoutVariation,
               layoutVariation: config.layoutVariation,
+              currency: currency,
             },
           }),
         });
@@ -155,6 +165,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         pdf_filename: `${orderId}_print_ready_300dpi.pdf`,
         carrier: isDigital
           ? t.orderModal.digitalDeliveryNotice
+          : (payloadCustomer.country || '').toLowerCase().includes('united states') || (payloadCustomer.country || '').toLowerCase().includes('usa')
+          ? 'USPS'
           : (payloadCustomer.country || '').toLowerCase().includes('duits') || (payloadCustomer.country || '').toLowerCase().includes('deutsch') || (payloadCustomer.country || '').toLowerCase().includes('germany')
           ? 'DHL'
           : (payloadCustomer.country || '').toLowerCase().includes('belgië') || (payloadCustomer.country || '').toLowerCase().includes('belgium')
@@ -162,6 +174,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           : (payloadCustomer.country || '').toLowerCase().includes('kingdom') || (payloadCustomer.country || '').toLowerCase().includes('uk')
           ? 'Royal Mail'
           : 'PostNL',
+        currency: currency,
+        formatted_price: priceDetails.formattedPrice,
         map_config: config,
       };
 
@@ -182,6 +196,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             orderId: orderId,
             email: payloadCustomer.email,
             amount: amount,
+            currency: currency.toLowerCase(),
             shippingDetails: payloadCustomer,
             posterSize: config.posterSize,
             frameStyle: config.frameStyle,
@@ -335,6 +350,12 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <span className="text-[#78716C]">{t.studio.totalLabel}</span>
                 <span className="text-[#1C1917] font-bold">{priceDetails.formattedPrice}</span>
               </div>
+              <div className="flex justify-between text-[11px] text-[#78716C]">
+                <span>{isUS ? 'Sales Tax (Gelato US):' : (locale === 'de' ? 'MwSt. (inkl.):' : locale === 'en' ? 'VAT (included):' : 'Btw (inbegrepen):')}</span>
+                <span className="text-emerald-700 font-medium">
+                  {isUS ? 'Inbegrepen & Voldaan' : 'Inbegrepen'}
+                </span>
+              </div>
               <div className="flex justify-between pt-2 border-t border-[#F0ECE1]">
                 <span className="text-[#78716C]">
                   {completedOrder.frame_style === 'digital'
@@ -407,6 +428,17 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   <span className="text-xs font-bold text-[#1C1917]">{priceDetails.formattedPrice}</span>
                 </div>
               </div>
+            </div>
+
+            {/* Tax & Fulfillment Guarantee Pill */}
+            <div className="flex items-center justify-between px-3.5 py-2 bg-[#F9F7F2] rounded-xl border border-[#E8E4DC] text-[11px] text-[#57534E]">
+              <span className="flex items-center gap-1.5 font-medium text-[#1C1917]">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>{isUS ? t.orderModal.usSalesTaxNotice : t.orderModal.taxIncludedNotice}</span>
+              </span>
+              <span className="text-[#78716C] font-mono text-[10px]">
+                {isUS ? 'US POD • Gelato' : 'NL/EU Atelier'}
+              </span>
             </div>
 
             {/* Customer & Shipping / Delivery Fields */}
@@ -504,13 +536,18 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.stateLabel}</label>
+                    <label className="text-[11px] text-[#57534E] font-medium block mb-1">
+                      {t.orderModal.stateLabel} {isUS ? '*' : ''}
+                    </label>
                     <input
                       type="text"
+                      required={isUS}
                       value={customer.state}
                       onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
-                      placeholder={locale === 'de' ? 'Bayern' : locale === 'en' ? 'Greater London' : 'Noord-Holland'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      placeholder={isUS ? 'z. B. NY / CA / TX' : (locale === 'de' ? 'Bayern' : locale === 'en' ? 'Greater London' : 'Noord-Holland')}
+                      className={`w-full bg-white border rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm ${
+                        isUS && !customer.state?.trim() ? 'border-amber-300' : 'border-[#E2DDD5]'
+                      }`}
                     />
                   </div>
                   <div>

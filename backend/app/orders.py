@@ -65,6 +65,7 @@ class OrderRecord(BaseModel):
     gelato_status: Optional[str] = ""
     gelato_submitted_at: Optional[str] = ""
     gelato_error: Optional[str] = ""
+    currency: Optional[str] = "EUR"
     timeline: List[TimelineEvent] = Field(default_factory=list)
 
 
@@ -159,6 +160,10 @@ def _normalize_order(order: Dict[str, Any]) -> Dict[str, Any]:
     normalized["gelato_status"] = normalized.get("gelato_status", "")
     normalized["gelato_submitted_at"] = normalized.get("gelato_submitted_at", "")
     normalized["gelato_error"] = normalized.get("gelato_error", "")
+    normalized["gelato_total_vat"] = float(normalized.get("gelato_total_vat") or 0.0)
+    normalized["gelato_total_cost"] = float(normalized.get("gelato_total_cost") or 0.0)
+    normalized["gelato_currency"] = normalized.get("gelato_currency", "EUR")
+    normalized["gelato_tax_note"] = normalized.get("gelato_tax_note", "")
 
     # Ensure timeline exists
     if not normalized.get("timeline"):
@@ -458,8 +463,21 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
     date_block = config.get("dateBlock") or {}
     location_block = config.get("locationBlock") or {}
 
+    currency = (config.get("currency") or "EUR").upper()
     is_digital = frame_style == "digital"
-    carrier = "Digitale Levering per E-mail" if is_digital else "PostNL"
+    cust_country = (req.customer.country or "").lower()
+    if is_digital:
+        carrier = "Digitale Levering per E-mail"
+    elif "united states" in cust_country or "usa" in cust_country:
+        carrier = "USPS"
+    elif "kingdom" in cust_country or "uk" in cust_country:
+        carrier = "Royal Mail"
+    elif "germany" in cust_country or "deutsch" in cust_country:
+        carrier = "DHL"
+    elif "belgi" in cust_country:
+        carrier = "Bpost"
+    else:
+        carrier = "PostNL"
 
     initial_timeline = [
         {
@@ -484,6 +502,7 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
         "poster_size": poster_size,
         "style_id": style_id,
         "frame_style": frame_style,
+        "currency": currency,
         "title_text": title_block.get("text") or config.get("main_title", "The Night We Met"),
         "names_text": names_block.get("text") or config.get("subtitle", "Emma & Noah"),
         "date_text": date_block.get("text") or config.get("date", "September 22, 2026"),
@@ -497,6 +516,10 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
         "gelato_status": "",
         "gelato_submitted_at": "",
         "gelato_error": "",
+        "gelato_total_vat": 0.0,
+        "gelato_total_cost": 0.0,
+        "gelato_currency": currency,
+        "gelato_tax_note": "",
         "timeline": initial_timeline,
     }
 
@@ -556,12 +579,20 @@ def dispatch_order_to_gelato(order_id: str) -> Dict[str, Any]:
         order["gelato_status"] = gelato_status
         order["gelato_error"] = ""
 
+        # Extract wholesale cost and sales tax / VAT
+        financials = result.get("financials", {})
+        order["gelato_total_vat"] = float(financials.get("total_vat") or 0.0)
+        order["gelato_total_cost"] = float(financials.get("total_incl_vat") or financials.get("total_cost") or 0.0)
+        order["gelato_currency"] = financials.get("currency", "EUR")
+        order["gelato_tax_note"] = financials.get("tax_note", "")
+
         if result.get("status") != "skipped":
+            tax_detail = f" • Btw/Tax: {order['gelato_currency']} {order['gelato_total_vat']:.2f}" if order["gelato_total_vat"] > 0 else ""
             timeline_event = {
                 "status": "in_production",
                 "timestamp": now_iso,
                 "title": "Verzonden naar Gelato Print-on-Demand",
-                "description": f"Printorder #{gelato_id or clean_id} is succesvol aangemeld bij inlijstpartner Gelato voor productie en bezorging.",
+                "description": f"Printorder #{gelato_id or clean_id} is succesvol aangemeld bij inlijstpartner Gelato voor productie en bezorging.{tax_detail}",
             }
             order.setdefault("timeline", []).append(timeline_event)
     else:

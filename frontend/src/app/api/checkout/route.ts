@@ -11,7 +11,7 @@ const stripe = stripeKey
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { amount, email, shippingDetails, posterSize, frameStyle, orderId, locale } = body;
+    const { amount, email, shippingDetails, posterSize, frameStyle, orderId, locale, currency } = body;
 
     if (!stripe) {
       console.warn("STRIPE_SECRET_KEY or STRIPE_RESTRICTED_KEY is not defined in environment variables.");
@@ -25,7 +25,11 @@ export async function POST(request: NextRequest) {
     const protocol = request.headers.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
     const origin = `${protocol}://${host}`;
 
-    // Convert amount to cents (e.g., €19 -> 1900, €29 -> 2900)
+    // Resolve checkout currency
+    const requestedCurrency = String(currency || (locale === 'en' ? 'usd' : 'eur')).toLowerCase().trim();
+    const stripeCurrency = ['usd', 'gbp', 'eur'].includes(requestedCurrency) ? requestedCurrency : 'eur';
+
+    // Convert amount to cents (e.g., $19 -> 1900, $29 -> 2900)
     const numericAmount = Number(amount) || 19;
     const amountInCents = numericAmount > 100 ? Math.round(numericAmount) : Math.round(numericAmount * 100);
 
@@ -38,25 +42,36 @@ export async function POST(request: NextRequest) {
       en: "Stellaire • Personalized Custom Star Map",
     };
 
+    const isImperial = ['12x18', '18x24', '24x36'].includes(posterSize);
+    const sizeUnit = isImperial ? '″' : ' cm';
+
     const productDescs: Record<string, string> = {
       nl: isDigital
         ? "Digitaal Hoge Resolutie Vector PDF Bestand (300 DPI)"
-        : `${posterSize || "50x70"} cm • Classic Matte Fine-Art Print`,
+        : `${posterSize || "50x70"}${sizeUnit} • Classic Matte Fine-Art Print`,
       de: isDigital
         ? "Digitale Vektor-PDF-Datei in Hochauflösung (300 DPI)"
-        : `${posterSize || "50x70"} cm • Museums-Fine-Art-Druck`,
+        : `${posterSize || "50x70"}${sizeUnit} • Museums-Fine-Art-Druck`,
       en: isDigital
         ? "Digital High-Resolution Vector PDF File (300 DPI)"
-        : `${posterSize || "50x70"} cm • Museum Fine-Art Cotton Print`,
+        : `${posterSize || (isImperial ? "18x24" : "50x70")}${sizeUnit} • Museum Fine-Art Cotton Print`,
     };
 
+    // Dynamically assign valid payment methods per currency to prevent Stripe API errors
+    const paymentMethodTypes: Stripe.Checkout.SessionCreateParams.PaymentMethodType[] =
+      stripeCurrency === 'eur'
+        ? ['card', 'ideal', 'bancontact', 'sofort', 'klarna', 'sepa_debit']
+        : stripeCurrency === 'gbp'
+        ? ['card', 'link', 'klarna']
+        : ['card', 'link', 'klarna'];
+
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "ideal", "bancontact", "sofort", "klarna", "sepa_debit"],
+      payment_method_types: paymentMethodTypes,
       customer_email: email || undefined,
       line_items: [
         {
           price_data: {
-            currency: "eur",
+            currency: stripeCurrency,
             product_data: {
               name: productNames[activeLocale],
               description: productDescs[activeLocale],
@@ -67,7 +82,7 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/${activeLocale}/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId || ""}&amount=${numericAmount}`,
+      success_url: `${origin}/${activeLocale}/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId || ""}&amount=${numericAmount}&currency=${stripeCurrency}`,
       cancel_url: `${origin}/${activeLocale}/`,
       metadata: {
         orderId: orderId || "",
@@ -77,6 +92,7 @@ export async function POST(request: NextRequest) {
         posterSize: posterSize || "",
         frameStyle: frameStyle || "",
         locale: activeLocale,
+        currency: stripeCurrency,
       },
     });
 

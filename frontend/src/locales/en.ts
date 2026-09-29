@@ -440,6 +440,9 @@ export const en: Translations = {
     addressLabel: 'Street Address & Number *',
     cityLabel: 'City *',
     stateLabel: 'State / Province / County',
+    stateRequired: 'Please enter your state (required for US deliveries, e.g. NY, CA).',
+    taxIncludedNotice: 'VAT Included (21%) & Free Shipping',
+    usSalesTaxNotice: 'Sales Tax: Included & Fulfilled by Gelato US',
     postalCodeLabel: 'Postal / ZIP Code *',
     countryLabel: 'Country *',
     countries: [

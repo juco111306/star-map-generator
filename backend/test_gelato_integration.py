@@ -4,6 +4,7 @@ Unit tests for the Gelato print-on-demand service and order dispatching.
 from app.gelato import (
     get_gelato_product_uid,
     normalize_country_code,
+    normalize_state_code,
     build_gelato_order_payload,
     submit_order_to_gelato,
 )
@@ -17,6 +18,18 @@ def test_normalize_country_code():
     assert normalize_country_code("United States") == "US"
     assert normalize_country_code("UK") == "GB"
     assert normalize_country_code("") == "NL"
+
+
+def test_normalize_state_code():
+    assert normalize_state_code("New York", "US") == "NY"
+    assert normalize_state_code("new york", "US") == "NY"
+    assert normalize_state_code("NY", "US") == "NY"
+    assert normalize_state_code("California", "US") == "CA"
+    assert normalize_state_code("california", "US") == "CA"
+    assert normalize_state_code("ca", "US") == "CA"
+    assert normalize_state_code("Texas", "US") == "TX"
+    assert normalize_state_code("Washington DC", "US") == "DC"
+    assert normalize_state_code("", "US") is None
 
 
 def test_get_gelato_product_uid():
@@ -119,15 +132,50 @@ def test_dispatch_order_to_gelato():
     assert dispatch_res["success"] is True
     assert dispatch_res["order"]["gelato_order_id"] != ""
     assert dispatch_res["order"]["gelato_submitted_at"] != ""
+    assert dispatch_res["order"]["gelato_total_vat"] >= 0.0
     # Check that Gelato event is present in the timeline
     timeline_titles = [e["title"] for e in dispatch_res["order"]["timeline"]]
     assert any("Gelato" in t for t in timeline_titles)
 
 
+def test_us_order_tax_and_payload():
+    sample_us_order = {
+        "order_id": "STL-US-TAX-101",
+        "poster_size": "18x24",
+        "frame_style": "oak",
+        "customer": {
+            "name": "Sarah Connor",
+            "email": "sarah@example.com",
+            "phone": "+1 555-0100",
+            "address_line1": "1048 Fifth Avenue",
+            "city": "New York",
+            "state": "New York",  # Full state name should be normalized to NY
+            "postal_code": "10028",
+            "country": "United States",
+        },
+    }
+
+    payload = build_gelato_order_payload(sample_us_order)
+    assert payload["shippingAddress"]["country"] == "US"
+    assert payload["shippingAddress"]["state"] == "NY"
+    assert payload["shippingAddress"]["stateCode"] == "NY"
+    assert payload["shippingAddress"]["postCode"] == "10028"
+
+    # Test submission & simulated US tax calculation
+    res = submit_order_to_gelato(sample_us_order)
+    assert res["success"] is True
+    assert "financials" in res
+    financials = res["financials"]
+    assert financials["total_vat"] > 0  # Tax should be computed for NY (8.875%)
+    assert "US State Sales Tax (NY)" in financials["tax_note"]
+
+
 if __name__ == "__main__":
     test_normalize_country_code()
+    test_normalize_state_code()
     test_get_gelato_product_uid()
     test_build_gelato_order_payload()
     test_digital_order_skipped()
     test_dispatch_order_to_gelato()
+    test_us_order_tax_and_payload()
     print("All Gelato tests passed successfully!")

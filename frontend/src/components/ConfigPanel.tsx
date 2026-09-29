@@ -64,7 +64,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   isExporting,
   onBackToProducts,
 }) => {
-  const { locale, t, formatDate } = useLanguage();
+  const { locale, t, formatDate, currency, setCurrency } = useLanguage();
   const [activeTab, setActiveTab] = useState<StudioTab>('location');
   const [searchQuery, setSearchQuery] = useState(config.locationName);
   const [geocodeResults, setGeocodeResults] = useState<GeocodeResult[]>([]);
@@ -213,6 +213,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         if (data.isUK) {
           setIsUK(true);
         }
+        if (data.currency && ['USD', 'GBP', 'EUR'].includes(data.currency)) {
+          setCurrency(data.currency);
+        }
       })
       .catch(() => {
         if (typeof Intl !== 'undefined') {
@@ -252,7 +255,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     { id: 'none', label: locale === 'de' ? 'Kein' : locale === 'en' ? 'None' : 'Geen', symbol: '—' },
   ];
 
-  const currentPriceDetails = calculatePrice(config.posterSize, config.frameStyle, locale, isUK);
+  const currentPriceDetails = calculatePrice(config.posterSize, config.frameStyle, locale, isUK, currency);
 
   const layoutVariations: { id: LayoutVariation; label: string; desc: string; badge?: string }[] = [
     {
@@ -1257,7 +1260,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {frameOptions.map((f) => {
                   const isSelected = config.frameStyle === f.id;
-                  const itemPrice = calculatePrice(config.posterSize, f.id);
+                  const itemPrice = calculatePrice(config.posterSize, f.id, locale, isUK, currency);
                   return (
                     <button
                       key={f.id}
@@ -1401,7 +1404,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {activeSizes.map((fo) => {
                   const isSelected = config.posterSize === fo.id;
-                  const sizePrice = calculatePrice(fo.id, config.frameStyle, locale, isUK);
+                  const sizePrice = calculatePrice(fo.id, config.frameStyle, locale, isUK, currency);
                   return (
                     <button
                       key={fo.id}

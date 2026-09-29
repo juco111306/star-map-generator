@@ -423,7 +423,15 @@ function PaymentSuccessContent() {
                 <span className="text-[10px] text-[#78716C] uppercase font-semibold">
                   {locale === 'de' ? 'Format' : locale === 'en' ? 'Size' : 'Formaat'}
                 </span>
-                <p className="font-bold text-[#1C1917]">{order?.poster_size || '50x70'} cm</p>
+                <p className="font-bold text-[#1C1917]">
+                  {order?.poster_size === '18x24'
+                    ? '18 × 24″ (45 × 60 cm)'
+                    : order?.poster_size === '12x18'
+                    ? '12 × 18″ (30 × 45 cm)'
+                    : order?.poster_size === '24x36'
+                    ? '24 × 36″ (60 × 90 cm)'
+                    : `${(order?.poster_size || '50x70').replace('x', ' × ')} cm`}
+                </p>
               </div>
 
               <div className="p-3 rounded-2xl bg-[#FAF8F5] border border-[#EAE5DC] space-y-0.5">

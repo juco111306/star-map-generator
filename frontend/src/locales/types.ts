@@ -318,6 +318,9 @@ export interface Translations {
     addressLabel: string;
     cityLabel: string;
     stateLabel: string;
+    stateRequired: string;
+    taxIncludedNotice: string;
+    usSalesTaxNotice: string;
     postalCodeLabel: string;
     countryLabel: string;
     countries: { code: string; name: string; shippingNote: string }[];

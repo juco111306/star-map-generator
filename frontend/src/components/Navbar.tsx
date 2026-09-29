@@ -5,6 +5,7 @@ import { Sparkles, Compass, Printer, ArrowRight, Globe, ChevronDown, Check } fro
 import { AppView } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { Locale } from '../locales';
+import { Currency } from '../utils/pricing';
 
 interface NavbarProps {
   currentView: AppView;
@@ -19,14 +20,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   orderCount = 0,
   onOpenTrackingModal,
 }) => {
-  const { locale, t, changeLocale } = useLanguage();
+  const { locale, t, changeLocale, currency, currencySymbol, setCurrency } = useLanguage();
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
+  const currencyDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
         setIsLangOpen(false);
+      }
+      if (currencyDropdownRef.current && !currencyDropdownRef.current.contains(event.target as Node)) {
+        setIsCurrencyOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -174,6 +180,65 @@ export const Navbar: React.FC<NavbarProps> = ({
                             }`}
                           >
                             {lang.label}
+                          </span>
+                        </div>
+                        {isActive && <Check className="w-4 h-4 text-[#A37055] shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Luxury Atelier Currency Switcher Dropdown */}
+          <div className="relative shrink-0" ref={currencyDropdownRef}>
+            <button
+              onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#EDE7DE]/80 hover:bg-[#E4DDCF] border border-[#DDD5C7] text-[#1C1917] text-xs font-semibold tracking-wide transition-all shadow-xs focus:outline-none focus:ring-1 focus:ring-[#A37055]"
+              aria-label="Select currency"
+              aria-expanded={isCurrencyOpen}
+            >
+              <span className="text-[11px] font-bold text-[#1C1917]">{currency}</span>
+              <span className="text-[11px] text-[#A37055] font-bold">({currencySymbol})</span>
+              <ChevronDown className={`w-3 h-3 text-[#78716C] transition-transform duration-200 ${isCurrencyOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isCurrencyOpen && (
+              <div className="absolute right-0 mt-2 w-44 py-1.5 bg-white rounded-2xl shadow-2xl border border-[#DDD5C7] z-[100] ring-1 ring-black/10 overflow-hidden">
+                <div className="px-3.5 py-1.5 text-[10px] uppercase font-bold text-[#8C827A] tracking-wider border-b border-[#F0EBE1] bg-[#FAF8F5]">
+                  {locale === 'de' ? 'Währung wählen' : locale === 'en' ? 'Select currency' : 'Kies valuta'}
+                </div>
+                <div className="py-1">
+                  {[
+                    { code: 'USD' as Currency, symbol: '$', label: 'USD ($)', full: 'US Dollar', flag: '🇺🇸' },
+                    { code: 'EUR' as Currency, symbol: '€', label: 'EUR (€)', full: 'Euro', flag: '🇪🇺' },
+                    { code: 'GBP' as Currency, symbol: '£', label: 'GBP (£)', full: 'British Pound', flag: '🇬🇧' },
+                  ].map((cur) => {
+                    const isActive = currency === cur.code;
+                    return (
+                      <button
+                        key={cur.code}
+                        type="button"
+                        onClick={() => {
+                          setCurrency(cur.code);
+                          setIsCurrencyOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs text-left transition-colors ${
+                          isActive
+                            ? 'bg-[#F5EFE6] text-[#1C1917] font-semibold'
+                            : 'text-[#44403C] hover:bg-[#FAF8F5] hover:text-[#1C1917]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-base leading-none">{cur.flag}</span>
+                          <span className="font-medium text-xs text-[#1C1917]">{cur.full}</span>
+                          <span
+                            className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                              isActive ? 'bg-[#1C1917] text-white' : 'bg-[#EAE4D8] text-[#57534E]'
+                            }`}
+                          >
+                            {cur.symbol}
                           </span>
                         </div>
                         {isActive && <Check className="w-4 h-4 text-[#A37055] shrink-0" />}

@@ -666,6 +666,65 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
               </p>
             )}
           </div>
+
+          {/* Gelato Fulfillment & Wholesale Tax Details */}
+          {!isDigital && (
+            <div className="mt-3 p-3.5 rounded-2xl bg-white border border-[#E8E4DC] text-xs space-y-2">
+              <div className="flex items-center justify-between text-[11px] text-[#78716C] border-b border-[#F0ECE1] pb-2">
+                <span className="font-semibold text-[#1C1917] flex items-center gap-1.5">
+                  <Printer className="w-3.5 h-3.5 text-[#A37055]" />
+                  <span>Gelato Print-on-Demand Details</span>
+                </span>
+                <span className="font-mono text-[10px] bg-[#FAF8F5] px-2 py-0.5 rounded border border-[#E8E4DC]">
+                  Ref: {order.gelato_order_id || 'Nog niet verzonden'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                <div className="bg-[#FAF8F5] p-2 rounded-xl border border-[#E8E4DC]">
+                  <span className="text-[10px] text-[#78716C] block font-medium">Bestemming / Staat</span>
+                  <strong className="text-[#1C1917]">
+                    {order.customer.country === 'United States' || order.customer.country === 'US' || order.customer.country === 'Verenigde Staten'
+                      ? `VS (${order.customer.state || 'Geen staat'})`
+                      : order.customer.country || 'NL'}
+                  </strong>
+                </div>
+
+                <div className="bg-[#FAF8F5] p-2 rounded-xl border border-[#E8E4DC]">
+                  <span className="text-[10px] text-[#78716C] block font-medium">Btw / Tax (Gelato)</span>
+                  <strong className={order.gelato_total_vat && order.gelato_total_vat > 0 ? "text-emerald-700" : "text-[#1C1917]"}>
+                    {order.gelato_total_vat !== undefined && order.gelato_total_vat !== null && order.gelato_total_vat > 0
+                      ? `${order.gelato_currency || 'EUR'} ${Number(order.gelato_total_vat).toFixed(2)}`
+                      : order.gelato_order_id
+                      ? `${order.gelato_currency || 'EUR'} 0.00 (Exempt/Inbegrepen)`
+                      : 'Nog niet berekend'}
+                  </strong>
+                </div>
+
+                <div className="bg-[#FAF8F5] p-2 rounded-xl border border-[#E8E4DC]">
+                  <span className="text-[10px] text-[#78716C] block font-medium">Inkoopprijs Totaal</span>
+                  <strong className="text-[#1C1917]">
+                    {order.gelato_total_cost
+                      ? `${order.gelato_currency || 'EUR'} ${Number(order.gelato_total_cost).toFixed(2)}`
+                      : '—'}
+                  </strong>
+                </div>
+
+                <div className="bg-[#FAF8F5] p-2 rounded-xl border border-[#E8E4DC]">
+                  <span className="text-[10px] text-[#78716C] block font-medium">Status</span>
+                  <span className="capitalize text-[#1C1917] font-medium">
+                    {order.gelato_status || 'In afwachting'}
+                  </span>
+                </div>
+              </div>
+
+              {order.gelato_tax_note && (
+                <p className="text-[10px] text-[#78716C] font-mono pl-1">
+                  Belastingnotitie: {order.gelato_tax_note}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right Actions: Download PDF for Producer */}

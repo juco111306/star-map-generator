@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const isUK = country === 'GB';
 
   const unit: 'in' | 'cm' = isNorthAmerica ? 'in' : 'cm';
-  const currency: 'USD' | 'GBP' | 'EUR' = country === 'US' ? 'USD' : country === 'GB' ? 'GBP' : 'EUR';
+  const currency: 'USD' | 'GBP' | 'EUR' = isNorthAmerica ? 'USD' : isUK ? 'GBP' : 'EUR';
   const suggestedLocale =
     country === 'DE' || country === 'AT' || country === 'CH'
       ? 'de'

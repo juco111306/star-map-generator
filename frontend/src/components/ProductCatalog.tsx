@@ -19,7 +19,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   onCustomizeStarMap,
   onSelectStyle,
 }) => {
-  const { locale, t } = useLanguage();
+  const { locale, t, currencySymbol } = useLanguage();
 
   const currentStyles = getLocalizedStyleDetails(locale);
 
@@ -358,8 +358,8 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         {meta.title}
                       </h3>
                       <div className="text-right shrink-0 ml-1">
-                        <span className="text-[10px] text-[#A8A29E] line-through mr-1">€29</span>
-                        <span className="text-xs font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} €19</span>
+                        <span className="text-[10px] text-[#A8A29E] line-through mr-1">{currencySymbol}29</span>
+                        <span className="text-xs font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} {currencySymbol}19</span>
                       </div>
                     </div>
                     <p className="text-[10.5px] font-semibold text-[#A37055] truncate">

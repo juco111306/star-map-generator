@@ -12,7 +12,7 @@ interface LandingHeroProps {
 }
 
 export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
-  const { locale, t } = useLanguage();
+  const { locale, t, formatPrice } = useLanguage();
 
   const handleScrollToStyles = () => {
     const el = document.getElementById('stijlen');
@@ -233,8 +233,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-[11px] text-[#A8A29E] line-through block">€29,00</span>
-                  <span className="font-serif text-sm font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} €19,00</span>
+                  <span className="text-[11px] text-[#A8A29E] line-through block">{formatPrice(29)}</span>
+                  <span className="font-serif text-sm font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} {formatPrice(19)}</span>
                 </div>
               </div>
             </div>

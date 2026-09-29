@@ -144,6 +144,10 @@ export interface OrderRecord {
   gelato_status?: string;
   gelato_submitted_at?: string;
   gelato_error?: string;
+  gelato_total_vat?: number;
+  gelato_total_cost?: number;
+  gelato_currency?: string;
+  gelato_tax_note?: string;
   timeline?: TimelineEvent[];
 }
 
