@@ -25,5 +25,4 @@ hip_main.dat
 backend/tests/output_pdfs/
 backend/tests/*.png
 backend/tests/*.pdf
-backend/data/orders/*.pdf
 *.log

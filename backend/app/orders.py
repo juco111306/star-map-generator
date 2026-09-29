@@ -198,7 +198,7 @@ def get_order_by_id(order_id: str) -> Optional[Dict[str, Any]]:
 
 
 def get_order_pdf_path(order_id: str) -> Optional[Path]:
-    """Return the absolute path to the stored 300 DPI PDF for this order."""
+    """Return the absolute path to the stored 300 DPI PDF for this order, auto-regenerating if missing."""
     _init_storage()
     clean_id = order_id.strip().upper()
     if not clean_id.startswith("STL-") and clean_id.isdigit():
@@ -207,7 +207,78 @@ def get_order_pdf_path(order_id: str) -> Optional[Path]:
     pdf_path = ORDERS_DIR / f"{clean_id}.pdf"
     if pdf_path.exists():
         return pdf_path
-    return None
+
+    # Auto-regenerate 300 DPI PDF on demand from order metadata
+    order = get_order_by_id(clean_id)
+    if not order:
+        return None
+
+    try:
+        date_str = order.get("date_text") or "2026-09-22"
+        try:
+            if "T" in date_str:
+                dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+            else:
+                dt = datetime(2026, 9, 22, 21, 0)
+        except Exception:
+            dt = datetime(2026, 9, 22, 21, 0)
+
+        config = {
+            "poster_size": order.get("poster_size", "50x70"),
+            "style_id": order.get("style_id", "midnight_classic"),
+            "mask_shape": "circle",
+            "date_time": dt,
+            "latitude": 52.3676,
+            "longitude": 4.9041,
+            "titleBlock": {
+                "text": order.get("title_text", "The Night We Met"),
+                "font": "Cinzel",
+                "size": 38,
+                "tracking": 3,
+                "uppercase": True,
+                "italic": False,
+                "enabled": True,
+            },
+            "namesBlock": {
+                "text": order.get("names_text", "Emma & Noah"),
+                "font": "Great Vibes",
+                "size": 51,
+                "tracking": 1,
+                "uppercase": False,
+                "italic": True,
+                "enabled": True,
+            },
+            "dateBlock": {
+                "text": order.get("date_text", "22 September 2026"),
+                "font": "Cinzel",
+                "size": 15,
+                "tracking": 2,
+                "uppercase": True,
+                "italic": False,
+                "enabled": True,
+            },
+            "locationBlock": {
+                "text": order.get("location_text", "Amsterdam, Nederland"),
+                "font": "Cinzel",
+                "size": 14,
+                "tracking": 2,
+                "uppercase": True,
+                "italic": False,
+                "enabled": True,
+            },
+            "show_celestial_grid": True,
+            "show_constellation_lines": True,
+            "show_milky_way": True,
+            "show_matted_border": False,
+            "divider_style": "diamond",
+            "frame_style": order.get("frame_style", "none"),
+        }
+        pdf_bytes = generate_star_map_pdf(config)
+        pdf_path.write_bytes(pdf_bytes)
+        return pdf_path
+    except Exception as e:
+        print(f"Error on-demand regenerating PDF for {clean_id}: {e}")
+        return None
 
 
 def get_orders_by_email(email: str) -> List[Dict[str, Any]]:

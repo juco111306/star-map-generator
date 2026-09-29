@@ -21,6 +21,7 @@ import {
 import { OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
 import { useLanguage } from '../context/LanguageContext';
+import { generateStarMapPdfBlob } from '../utils/pdfGenerator';
 
 const ADMIN_PIN = '1991';
 
@@ -417,6 +418,100 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSendingGelato, setIsSendingGelato] = useState(false);
   const [gelatoMessage, setGelatoMessage] = useState<string | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownloadPdf = async () => {
+    setIsDownloading(true);
+    try {
+      // 1. Try to fetch PDF from API
+      const res = await apiFetch(`/api/orders/${order.order_id}/pdf`);
+      if (res.ok) {
+        const blob = await res.blob();
+        if (blob.size > 1000) {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${order.order_id}_print_ready_300dpi.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('API PDF download failed, using client-side 300 DPI engine:', err);
+    }
+
+    // 2. High-precision vector PDF generator directly in browser
+    try {
+      const pdfBytes = await generateStarMapPdfBlob(
+        {
+          posterSize: order.poster_size as any,
+          styleId: order.style_id,
+          frameStyle: order.frame_style as any,
+          titleBlock: {
+            text: order.title_text || 'The Night We Met',
+            font: 'Cinzel',
+            size: 38,
+            tracking: 3,
+            uppercase: true,
+            italic: false,
+            enabled: true,
+          },
+          namesBlock: {
+            text: order.names_text || '',
+            font: 'Great Vibes',
+            size: 51,
+            tracking: 1,
+            uppercase: false,
+            italic: true,
+            enabled: !!order.names_text,
+          },
+          dateBlock: {
+            text: order.date_text || '',
+            font: 'Cinzel',
+            size: 15,
+            tracking: 2,
+            uppercase: true,
+            italic: false,
+            enabled: true,
+          },
+          locationBlock: {
+            text: order.location_text || '',
+            font: 'Cinzel',
+            size: 14,
+            tracking: 2,
+            uppercase: true,
+            italic: false,
+            enabled: true,
+          },
+          showCelestialGrid: true,
+          showConstellationLines: true,
+          showMilkyWay: true,
+          showMattedBorder: false,
+          dividerStyle: 'diamond',
+        },
+        order.order_id,
+        'nl'
+      );
+
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${order.order_id}_print_ready_300dpi.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error('Client PDF generation error:', err);
+      window.open(`/api/orders/${order.order_id}/pdf`, '_blank');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   useEffect(() => {
     setCurrentStatus(order.status || 'in_production');
@@ -558,14 +653,18 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
 
         {/* Right Actions: Download PDF for Producer */}
         <div className="w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col items-center gap-2.5 shrink-0">
-          <a
-            href={`/api/orders/${order.order_id}/pdf`}
-            download={`${order.order_id}_print_ready_300dpi.pdf`}
-            className="w-full px-5 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md flex items-center justify-center gap-2 transition"
+          <button
+            onClick={handleDownloadPdf}
+            disabled={isDownloading}
+            className="w-full px-5 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md flex items-center justify-center gap-2 transition disabled:opacity-60"
           >
-            <Download className="w-4 h-4" />
-            <span>Download 300 DPI PDF</span>
-          </a>
+            {isDownloading ? (
+              <RefreshCw className="w-4 h-4 animate-spin text-[#FAF8F5]" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            <span>{isDownloading ? 'Genereren 300 DPI PDF...' : 'Download 300 DPI PDF'}</span>
+          </button>
 
           <a
             href={`/api/orders/${order.order_id}/pdf`}
