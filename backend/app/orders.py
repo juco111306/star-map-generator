@@ -417,6 +417,27 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
 
     # 1. Compile 300 DPI Print-Ready PDF
     config = dict(req.map_config)
+    poster_size = config.get("poster_size") or config.get("posterSize") or "50x70"
+    style_id = config.get("style_id") or config.get("styleId") or "midnight_classic"
+    frame_style = config.get("frame_style") or config.get("frameStyle") or "none"
+    mask_shape = config.get("mask_shape") or config.get("maskShape") or "circle"
+    layout_variation = config.get("layout_variation") or config.get("layoutVariation") or "standard_stack"
+    divider_style = config.get("divider_style") or config.get("dividerStyle") or "diamond"
+
+    # Normalize both camelCase and snake_case keys in config
+    config["poster_size"] = poster_size
+    config["posterSize"] = poster_size
+    config["style_id"] = style_id
+    config["styleId"] = style_id
+    config["frame_style"] = frame_style
+    config["frameStyle"] = frame_style
+    config["mask_shape"] = mask_shape
+    config["maskShape"] = mask_shape
+    config["layout_variation"] = layout_variation
+    config["layoutVariation"] = layout_variation
+    config["divider_style"] = divider_style
+    config["dividerStyle"] = divider_style
+
     date_time_str = config.get("date_time") or f"{config.get('date', '2026-09-22')}T{config.get('time', '21:00')}:00Z"
     try:
         dt = datetime.fromisoformat(date_time_str.replace("Z", "+00:00"))
@@ -437,7 +458,6 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
     date_block = config.get("dateBlock") or {}
     location_block = config.get("locationBlock") or {}
 
-    frame_style = config.get("frame_style", config.get("frameStyle", "none"))
     is_digital = frame_style == "digital"
     carrier = "Digitale Levering per E-mail" if is_digital else "PostNL"
 
@@ -461,8 +481,8 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
         "created_at": created_at,
         "status": "in_production",
         "customer": req.customer.dict(),
-        "poster_size": config.get("poster_size", "18x24"),
-        "style_id": config.get("style_id", "midnight_classic"),
+        "poster_size": poster_size,
+        "style_id": style_id,
         "frame_style": frame_style,
         "title_text": title_block.get("text") or config.get("main_title", "The Night We Met"),
         "names_text": names_block.get("text") or config.get("subtitle", "Emma & Noah"),

@@ -575,12 +575,8 @@ def generate_star_map_pdf(params: Dict[str, Any]) -> bytes:
     register_fonts()
 
     # Poster dimensions (72 points per inch, 28.346 pt per cm)
-    poster_size = str(params.get("poster_size", "50x70"))
-    if poster_size == "20x30":
-        # 20 x 30 cm = 567 x 850 pt
-        page_width = 567.0
-        page_height = 850.0
-    elif poster_size == "30x40":
+    poster_size = str(params.get("poster_size") or params.get("posterSize") or "50x70")
+    if poster_size == "30x40":
         # 30 x 40 cm = 850 x 1134 pt
         page_width = 850.0
         page_height = 1134.0
@@ -592,6 +588,10 @@ def generate_star_map_pdf(params: Dict[str, Any]) -> bytes:
         # 50 x 70 cm = 1417 x 1984 pt
         page_width = 1417.0
         page_height = 1984.0
+    elif poster_size == "12x18":
+        # 12 x 18 inches = 864 x 1296 pt
+        page_width = 12.0 * 72.0
+        page_height = 18.0 * 72.0
     elif poster_size == "24x36":
         # 24 x 36 inches = 1728 x 2592 pt
         page_width = 24.0 * 72.0
@@ -604,7 +604,7 @@ def generate_star_map_pdf(params: Dict[str, Any]) -> bytes:
     scale = page_width / 1296.0
 
     # Resolve style configuration
-    style_id = params.get("style_id", "midnight_classic")
+    style_id = str(params.get("style_id") or params.get("styleId") or "midnight_classic")
     style = STYLE_CONFIGS.get(style_id, STYLE_CONFIGS["midnight_classic"])
 
     # Extract text blocks

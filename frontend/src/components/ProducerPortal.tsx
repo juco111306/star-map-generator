@@ -613,9 +613,26 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs text-[#57534E] pt-1">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-[#57534E] pt-1">
             <span className="bg-[#FAF8F5] px-2.5 py-1 rounded-lg border border-[#E8E4DC]">
-              Formaat: <strong className="text-[#1C1917]">{order.poster_size} cm</strong>
+              Formaat: <strong className="text-[#1C1917]">{
+                order.poster_size === '50x70'
+                  ? '50 × 70 cm'
+                  : order.poster_size === '40x50'
+                  ? '40 × 50 cm'
+                  : order.poster_size === '30x40'
+                  ? '30 × 40 cm'
+                  : order.poster_size === '18x24'
+                  ? '18 × 24″ (45 × 60 cm)'
+                  : order.poster_size === '24x36'
+                  ? '24 × 36″ (60 × 90 cm)'
+                  : order.poster_size === '12x18'
+                  ? '12 × 18″ (30 × 45 cm)'
+                  : `${(order.poster_size || '50x70').replace('x', ' × ')} cm`
+              }</strong>
+            </span>
+            <span className="bg-[#FAF8F5] px-2.5 py-1 rounded-lg border border-[#E8E4DC] capitalize">
+              Stijl: <strong className="text-[#1C1917]">{order.style_id ? order.style_id.replace(/_/g, ' ') : 'Midnight Classic'}</strong>
             </span>
             <span className="bg-[#FAF8F5] px-2.5 py-1 rounded-lg border border-[#E8E4DC] capitalize">
               Lijst: <strong className="text-[#1C1917]">{order.frame_style || 'Zonder lijst'}</strong>
