@@ -57,8 +57,43 @@ COUNTRY_CODE_MAP = {
     "at": "AT",
     "zwitserland": "CH",
     "switzerland": "CH",
+    "schweiz": "CH",
     "ch": "CH",
+    "ierland": "IE",
+    "ireland": "IE",
+    "ie": "IE",
+    "portugal": "PT",
+    "pt": "PT",
+    "denemarken": "DK",
+    "dänemark": "DK",
+    "denmark": "DK",
+    "dk": "DK",
+    "zweden": "SE",
+    "schweden": "SE",
+    "sweden": "SE",
+    "se": "SE",
+    "noorwegen": "NO",
+    "norwegen": "NO",
+    "norway": "NO",
+    "no": "NO",
+    "finland": "FI",
+    "finnland": "FI",
+    "fi": "FI",
+    "luxemburg": "LU",
+    "luxembourg": "LU",
+    "lu": "LU",
 }
+
+# Strict whitelist of countries where Gelato delivers to (Europe, UK, USA)
+ALLOWED_DELIVERY_COUNTRIES = {
+    "NL", "BE", "DE", "AT", "CH", "GB", "FR", "IE", "ES", "IT", "PT", "DK", "SE", "NO", "FI", "LU", "US"
+}
+
+
+def is_country_supported(country_input: Optional[str]) -> bool:
+    """Return True if country is in the European countries, UK, or USA delivery zone."""
+    code = normalize_country_code(country_input)
+    return code in ALLOWED_DELIVERY_COUNTRIES
 
 # Standard Dimension Conversions in Millimeters for Gelato Product UIDs
 SIZE_TO_MM = {
@@ -295,6 +330,16 @@ def submit_order_to_gelato(order: Dict[str, Any]) -> Dict[str, Any]:
             "success": True,
             "status": "skipped",
             "message": "Digitale bestelling vereist geen fysieke Gelato printverzending.",
+            "gelato_order_id": None,
+        }
+
+    customer = order.get("customer", {})
+    country_iso = normalize_country_code(customer.get("country"))
+    if country_iso not in ALLOWED_DELIVERY_COUNTRIES:
+        return {
+            "success": False,
+            "status": "unsupported_destination",
+            "error": f"Delivery to '{customer.get('country')}' ({country_iso}) is not supported. We only ship to European destinations, the UK, and the USA.",
             "gelato_order_id": None,
         }
 

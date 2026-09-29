@@ -83,6 +83,23 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       setError(locale === 'de' ? 'Bitte geben Sie Ihre vollständige Lieferadresse für unsere Versandpartner ein.' : locale === 'en' ? 'Please enter your complete shipping address for our delivery partners.' : 'Vul alstublieft uw volledige bezorgadres in voor onze bezorgpartners.');
       return;
     }
+    if (!isDigital) {
+      const isAllowed = t.orderModal.countries.some(
+        (c) =>
+          c.name.toLowerCase() === (customer.country || '').toLowerCase() ||
+          c.code.toLowerCase() === (customer.country || '').toLowerCase()
+      );
+      if (!isAllowed) {
+        setError(
+          locale === 'de'
+            ? 'Lieferungen sind derzeit nur nach Europa, Großbritannien und in die USA möglich. Zahlungen aus anderen Ländern werden nicht akzeptiert.'
+            : locale === 'en'
+            ? 'We currently only deliver to European destinations, the United Kingdom, and the United States. Orders from other countries cannot be accepted.'
+            : 'Bezorging is momenteel alleen mogelijk binnen Europese landen, het Verenigd Koninkrijk en de Verenigde Staten. Bestellingen naar overige bestemmingen worden niet geaccepteerd.'
+        );
+        return;
+      }
+    }
     if (!isDigital && isUS && !customer.state?.trim()) {
       setError(t.orderModal.stateRequired);
       return;
@@ -207,6 +224,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
         if (checkoutRes.ok) {
           checkoutData = await checkoutRes.json();
+        } else {
+          const errData = await checkoutRes.json().catch(() => ({}));
+          if (errData?.error) {
+            setError(errData.error);
+            setIsSubmitting(false);
+            return;
+          }
         }
       } catch (checkoutErr) {
         console.warn('Stripe checkout route not available or in test mode:', checkoutErr);

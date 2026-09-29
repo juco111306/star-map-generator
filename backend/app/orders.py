@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 from app.pdf_generator import generate_star_map_pdf
-from app.gelato import submit_order_to_gelato
+from app.gelato import submit_order_to_gelato, is_country_supported
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 ORDERS_DIR = DATA_DIR / "orders"
@@ -465,6 +465,11 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
 
     currency = (config.get("currency") or "EUR").upper()
     is_digital = frame_style == "digital"
+    if not is_digital and not is_country_supported(req.customer.country):
+        raise ValueError(
+            f"Delivery to '{req.customer.country}' is not supported. We only ship to European countries, the UK, and the USA."
+        )
+
     cust_country = (req.customer.country or "").lower()
     if is_digital:
         carrier = "Digitale Levering per E-mail"

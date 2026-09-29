@@ -10,17 +10,22 @@ export async function GET(request: NextRequest) {
     'NL'
   ).toUpperCase();
 
-  const isNorthAmerica = country === 'US' || country === 'CA';
+  const isUS = country === 'US';
   const isUK = country === 'GB';
 
-  const unit: 'in' | 'cm' = isNorthAmerica ? 'in' : 'cm';
-  const currency: 'USD' | 'GBP' | 'EUR' = isNorthAmerica ? 'USD' : isUK ? 'GBP' : 'EUR';
+  const unit: 'in' | 'cm' = isUS ? 'in' : 'cm';
+  const currency: 'USD' | 'GBP' | 'EUR' = isUS ? 'USD' : isUK ? 'GBP' : 'EUR';
   const suggestedLocale =
     country === 'DE' || country === 'AT' || country === 'CH'
       ? 'de'
       : country === 'NL' || country === 'BE'
       ? 'nl'
       : 'en';
+
+  const allowedDeliveryCountries = new Set([
+    'NL', 'BE', 'DE', 'AT', 'CH', 'GB', 'FR', 'IE', 'ES', 'IT', 'PT', 'DK', 'SE', 'NO', 'FI', 'LU', 'US'
+  ]);
+  const isDeliverable = allowedDeliveryCountries.has(country);
 
   return NextResponse.json(
     {
@@ -29,6 +34,7 @@ export async function GET(request: NextRequest) {
       isUK,
       currency,
       suggestedLocale,
+      isDeliverable,
     },
     {
       headers: {

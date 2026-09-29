@@ -8,10 +8,51 @@ const stripe = stripeKey
     })
   : null;
 
+function isSupportedDeliveryCountry(rawCountry?: string): boolean {
+  if (!rawCountry) return false;
+  const c = rawCountry.trim().toLowerCase();
+  if (['nederland', 'netherlands', 'the netherlands', 'holland', 'nl'].includes(c)) return true;
+  if (['belgië', 'belgie', 'belgium', 'be'].includes(c)) return true;
+  if (['duitsland', 'germany', 'deutschland', 'de'].includes(c)) return true;
+  if (['oostenrijk', 'austria', 'österreich', 'at'].includes(c)) return true;
+  if (['zwitserland', 'switzerland', 'schweiz', 'ch'].includes(c)) return true;
+  if (['verenigd koninkrijk', 'united kingdom', 'uk', 'gb'].includes(c)) return true;
+  if (['verenigde staten', 'united states', 'usa', 'us'].includes(c)) return true;
+  if (['frankrijk', 'france', 'fr'].includes(c)) return true;
+  if (['ierland', 'ireland', 'ie'].includes(c)) return true;
+  if (['spanje', 'spain', 'españa', 'es'].includes(c)) return true;
+  if (['italië', 'italie', 'italy', 'italia', 'it'].includes(c)) return true;
+  if (['portugal', 'pt'].includes(c)) return true;
+  if (['denemarken', 'dänemark', 'denmark', 'dk'].includes(c)) return true;
+  if (['zweden', 'schweden', 'sweden', 'se'].includes(c)) return true;
+  if (['noorwegen', 'norwegen', 'norway', 'no'].includes(c)) return true;
+  if (['finland', 'finnland', 'fi'].includes(c)) return true;
+  if (['luxemburg', 'luxembourg', 'lu'].includes(c)) return true;
+  return false;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { amount, email, shippingDetails, posterSize, frameStyle, orderId, locale, currency } = body;
+
+    const isDigital = frameStyle === "digital";
+    const country = shippingDetails?.country || "";
+
+    // Reject physical delivery to countries outside Europe, UK, and USA
+    if (!isDigital && !isSupportedDeliveryCountry(country)) {
+      return NextResponse.json(
+        {
+          error:
+            locale === 'de'
+              ? 'Lieferungen sind derzeit nur nach Europa, Großbritannien und in die USA möglich. Zahlungen aus anderen Ländern werden nicht akzeptiert.'
+              : locale === 'en'
+              ? 'We currently only deliver to European destinations, the United Kingdom, and the United States. Orders from other countries cannot be accepted.'
+              : 'Bezorging is momenteel alleen mogelijk binnen Europese landen, het Verenigd Koninkrijk en de Verenigde Staten. Bestellingen naar overige bestemmingen worden niet geaccepteerd.',
+        },
+        { status: 400 }
+      );
+    }
 
     if (!stripe) {
       console.warn("STRIPE_SECRET_KEY or STRIPE_RESTRICTED_KEY is not defined in environment variables.");
@@ -33,7 +74,6 @@ export async function POST(request: NextRequest) {
     const numericAmount = Number(amount) || 19;
     const amountInCents = numericAmount > 100 ? Math.round(numericAmount) : Math.round(numericAmount * 100);
 
-    const isDigital = frameStyle === "digital";
     const activeLocale = locale === 'de' ? 'de' : locale === 'en' ? 'en' : 'nl';
 
     const productNames: Record<string, string> = {

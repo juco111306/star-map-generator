@@ -170,6 +170,25 @@ def test_us_order_tax_and_payload():
     assert "US State Sales Tax (NY)" in financials["tax_note"]
 
 
+def test_unsupported_country_rejected():
+    sample_unsupported = {
+        "order_id": "STL-UNSUPPORTED",
+        "poster_size": "50x70",
+        "frame_style": "black",
+        "customer": {
+            "name": "Takeshi Kovacs",
+            "email": "takeshi@example.com",
+            "country": "Japan",
+            "address_line1": "1-1 Chiyoda",
+            "city": "Tokyo",
+            "postal_code": "100-8111",
+        },
+    }
+    res = submit_order_to_gelato(sample_unsupported)
+    assert res["success"] is False
+    assert res["status"] == "unsupported_destination"
+
+
 if __name__ == "__main__":
     test_normalize_country_code()
     test_normalize_state_code()
@@ -178,4 +197,5 @@ if __name__ == "__main__":
     test_digital_order_skipped()
     test_dispatch_order_to_gelato()
     test_us_order_tax_and_payload()
+    test_unsupported_country_rejected()
     print("All Gelato tests passed successfully!")
