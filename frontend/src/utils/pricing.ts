@@ -211,7 +211,6 @@ const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; original
     '12x18': { price: 19, originalPrice: 29 },
     '18x24': { price: 19, originalPrice: 29 },
     '24x36': { price: 19, originalPrice: 29 },
-    '20x30': { price: 19, originalPrice: 29 },
   },
   none: {
     '30x40': { price: 39, originalPrice: 49 },
@@ -220,7 +219,6 @@ const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; original
     '12x18': { price: 39, originalPrice: 49 },
     '18x24': { price: 49, originalPrice: 59 },
     '24x36': { price: 69, originalPrice: 89 },
-    '20x30': { price: 29, originalPrice: 39 },
   },
   black: {
     '30x40': { price: 74, originalPrice: 95 },
@@ -229,7 +227,6 @@ const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; original
     '12x18': { price: 69, originalPrice: 89 },
     '18x24': { price: 89, originalPrice: 115 },
     '24x36': { price: 139, originalPrice: 179 },
-    '20x30': { price: 59, originalPrice: 79 },
   },
   oak: {
     '30x40': { price: 74, originalPrice: 95 },
@@ -238,7 +235,6 @@ const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; original
     '12x18': { price: 69, originalPrice: 89 },
     '18x24': { price: 89, originalPrice: 115 },
     '24x36': { price: 139, originalPrice: 179 },
-    '20x30': { price: 59, originalPrice: 79 },
   },
   white: {
     '30x40': { price: 74, originalPrice: 95 },
@@ -247,7 +243,6 @@ const PRICING_TABLE: Record<FrameStyle, Record<string, { price: number; original
     '12x18': { price: 69, originalPrice: 89 },
     '18x24': { price: 89, originalPrice: 115 },
     '24x36': { price: 139, originalPrice: 179 },
-    '20x30': { price: 59, originalPrice: 79 },
   },
 };
 
@@ -258,7 +253,6 @@ const SIZE_LABELS_MAP: Record<string, string> = {
   '12x18': '12 × 18″ (30 × 45 cm)',
   '18x24': '18 × 24″ (45 × 60 cm)',
   '24x36': '24 × 36″ (60 × 90 cm)',
-  '20x30': '20 × 30 cm',
 };
 
 export function calculatePrice(

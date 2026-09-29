@@ -67,7 +67,7 @@ class GeneratePDFRequest(BaseModel):
     latitude: float = Field(40.7128, ge=-90.0, le=90.0)
     longitude: float = Field(-74.0060, ge=-180.0, le=180.0)
     date_time: str = Field(..., description="ISO 8601 datetime")
-    poster_size: str = Field("50x70", description="'20x30', '30x40', '40x50', '50x70', '18x24', '24x36'")
+    poster_size: str = Field("50x70", description="'30x40', '40x50', '50x70', '12x18', '18x24', '24x36'")
     style_id: str = Field("midnight_classic")
     mask_shape: Optional[str] = Field("circle")
     maskShape: Optional[str] = Field(None)
