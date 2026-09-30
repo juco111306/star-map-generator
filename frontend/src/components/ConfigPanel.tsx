@@ -313,8 +313,12 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   };
 
   return (
-    <div className="order-2 lg:order-1 flex-1 min-h-0 w-full lg:w-[490px] xl:w-[530px] shrink-0 h-auto lg:h-[calc(100vh-65px)] flex flex-col justify-between overflow-y-auto overscroll-contain bg-[#FAF8F5] border-r border-[#EAE5DC] p-3 sm:p-5 lg:p-6 text-[#1C1917]">
-      <div className="space-y-5">
+    <div
+      id="atelier-panel"
+      className="order-2 lg:order-1 w-full lg:w-[490px] xl:w-[530px] shrink-0 flex flex-col justify-between bg-[#FAF8F5] border-r border-[#EAE5DC] text-[#1C1917] lg:h-[calc(100vh-65px)]"
+    >
+      {/* Header: Breadcrumb & 1.-5. Stepper Tabs (Stationary, Solid, NOTHING behind it) */}
+      <div className="shrink-0 p-3 sm:p-5 lg:p-6 pb-2.5 sm:pb-3 bg-[#FAF8F5] border-b border-[#EAE5DC] z-10 space-y-3 sm:space-y-4">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-[11px] text-[#78716C]">
@@ -325,17 +329,29 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <span className="text-[#1C1917] font-medium">{t.studio.breadcrumbProduct}</span>
           </div>
 
-          <button
-            onClick={onBackToProducts}
-            className="text-xs text-[#A37055] hover:text-[#1C1917] font-medium transition-colors flex items-center gap-1"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>{t.studio.backToHome}</span>
-          </button>
+          <div className="flex items-center space-x-2">
+            {/* Mobile quick jump up to live poster */}
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="lg:hidden text-[11px] text-[#A37055] hover:text-[#1C1917] font-medium transition-colors flex items-center gap-1 bg-[#F0EBE1] hover:bg-[#E7DFD3] px-2.5 py-1 rounded-full border border-[#DDD5C7] shadow-2xs"
+            >
+              <Eye className="w-3 h-3 text-[#A37055]" />
+              <span>{locale === 'de' ? 'Poster ↑' : locale === 'en' ? 'Poster ↑' : 'Poster ↑'}</span>
+            </button>
+
+            <button
+              onClick={onBackToProducts}
+              className="text-xs text-[#A37055] hover:text-[#1C1917] font-medium transition-colors flex items-center gap-1"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>{t.studio.backToHome}</span>
+            </button>
+          </div>
         </div>
 
         {/* Studio 5-Step Stepper Tabs */}
-        <div className="sticky top-0 z-20 bg-[#FAF8F5] pt-1 pb-2 -mt-1 shadow-[0_4px_6px_-4px_rgba(0,0,0,0.04)] sm:shadow-none">
+        <div>
           <div className="grid grid-cols-5 p-1 sm:p-1.5 rounded-2xl bg-[#EDE7DE] border border-[#DDD5C7] gap-0.5 sm:gap-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
             {stepsList.map((step) => {
               const isCurrent = activeTab === step.id;
@@ -344,14 +360,14 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   key={step.id}
                   type="button"
                   onClick={() => setActiveTab(step.id)}
-                  className={`group relative py-2.5 px-1 rounded-xl transition-all duration-200 flex flex-col items-center justify-center text-center gap-1.5 min-h-[58px] ${
+                  className={`group relative py-2 sm:py-2.5 px-0.5 sm:px-1 rounded-xl transition-all duration-200 flex flex-col items-center justify-center text-center gap-1 sm:gap-1.5 min-h-[54px] sm:min-h-[58px] ${
                     isCurrent
                       ? 'bg-white text-[#1C1917] shadow-sm ring-1 ring-black/5 font-semibold'
                       : 'text-[#6B655F] hover:text-[#1C1917] hover:bg-white/60 font-medium'
                   }`}
                 >
                   <span
-                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10.5px] font-bold transition-all duration-200 ${
+                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] sm:text-[10.5px] font-bold transition-all duration-200 ${
                       isCurrent
                         ? 'bg-[#1C1917] text-[#FAF8F5] shadow-xs'
                         : 'bg-[#DDD5C7] text-[#57534E] group-hover:bg-[#D0C7B9] group-hover:text-[#1C1917]'
@@ -360,7 +376,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     {step.num}
                   </span>
                   <span
-                    className={`text-[10.5px] sm:text-[11px] leading-tight text-center tracking-tight truncate max-w-full px-0.5 ${
+                    className={`text-[9.5px] sm:text-[11px] leading-tight text-center tracking-tight truncate max-w-full px-0.5 ${
                       isCurrent ? 'font-semibold text-[#1C1917]' : 'font-medium text-[#6B655F]'
                     }`}
                   >
@@ -375,6 +391,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             })}
           </div>
         </div>
+      </div>
+
+      {/* Dedicated Separate Scroll Container for Options (2-3x longer on mobile: ~480-520px, flex-1 on desktop) */}
+      <div className="h-[480px] sm:h-[520px] lg:h-auto lg:flex-1 min-h-0 overflow-y-auto overscroll-contain p-3 sm:p-5 lg:p-6 space-y-4 bg-[#FAF8F5]">
 
         {/* ================= STEP 1: LOCATION & TIME ================= */}
         {activeTab === 'location' && (
@@ -1485,7 +1505,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         )}
 
         {/* Step Navigation Controls */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-2 pb-1">
           {currentStepIdx > 0 ? (
             <button
               type="button"
@@ -1510,8 +1530,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         </div>
       </div>
 
-      {/* Sticky Bottom Action Card */}
-      <div className="sticky bottom-0 z-20 pt-3 pb-2 -mb-1 border-t border-[#EAE5DC] space-y-2.5 sm:space-y-3 bg-[#FAF8F5] shadow-[0_-4px_6px_-4px_rgba(0,0,0,0.04)] sm:shadow-none">
+      {/* Non-scrolling Footer: Price & Primary Order Action Card */}
+      <div className="shrink-0 p-3 sm:p-5 lg:p-6 pt-3 pb-3.5 border-t border-[#EAE5DC] bg-[#FAF8F5] z-10 space-y-2.5 sm:space-y-3">
         <div className="flex items-center justify-between text-xs text-[#78716C] px-1 gap-2">
           <div className="flex items-center gap-1.5 truncate min-w-0 flex-1">
             <span className="font-semibold text-[#1C1917] truncate">{currentPriceDetails.typeLabel}</span>

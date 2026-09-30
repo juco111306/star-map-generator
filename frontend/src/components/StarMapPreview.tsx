@@ -17,6 +17,7 @@ import {
   Sparkles,
   Loader2,
   Frame,
+  Sliders,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -467,12 +468,12 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   }, [config.frameStyle]);
 
   return (
-    <div className="order-1 lg:order-2 w-full max-w-full shrink-0 h-[36vh] sm:h-[40vh] lg:h-[calc(100vh-65px)] lg:flex-1 flex flex-col items-center justify-center p-2 sm:p-3 lg:p-4 overflow-hidden bg-[#F2EFE9] border-b lg:border-b-0 border-[#E2DDD5] relative">
+    <div className="order-1 lg:order-2 w-full max-w-full shrink-0 h-[48vh] min-h-[380px] sm:min-h-[440px] max-h-[520px] lg:h-[calc(100vh-65px)] lg:max-h-none lg:flex-1 flex flex-col items-center justify-center p-3 sm:p-4 lg:p-4 overflow-hidden bg-[#F2EFE9] border-b lg:border-b-0 border-[#E2DDD5] relative">
       {/* Soft natural studio gallery light behind preview */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] max-w-[90vw] h-[600px] bg-gradient-to-b from-white/80 via-white/40 to-transparent rounded-full blur-[100px] pointer-events-none -z-10" />
 
       {/* Discreet Minimal Zoom & Fullscreen Controls in Corner */}
-      <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 z-20 flex items-center space-x-1 bg-white/80 backdrop-blur-md px-1.5 sm:px-2 py-1 rounded-xl border border-[#E2DDD5] text-xs shadow-xs">
+      <div className="absolute bottom-2.5 right-2.5 sm:bottom-4 sm:right-4 z-20 flex items-center space-x-1 bg-white/85 backdrop-blur-md px-1.5 sm:px-2 py-1 rounded-xl border border-[#E2DDD5] text-xs shadow-xs">
         <button
           onClick={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
           className="p-1 rounded text-[#78716C] hover:text-[#1C1917] transition hidden sm:inline-flex"
@@ -503,6 +504,19 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         </button>
       </div>
 
+      {/* Mobile quick scroll-down button to Atelier */}
+      <button
+        type="button"
+        onClick={() => {
+          const el = document.getElementById('atelier-panel');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}
+        className="lg:hidden absolute bottom-2.5 left-2.5 z-20 flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-[#DDD5C7] text-xs font-medium text-[#1C1917] shadow-xs active:scale-95 transition"
+      >
+        <Sliders className="w-3.5 h-3.5 text-[#A37055]" />
+        <span>{locale === 'de' ? 'Optionen anpassen ↓' : locale === 'en' ? 'Customize options ↓' : 'Aanpassen ↓'}</span>
+      </button>
+
       {/* Main Poster Preview Box */}
       <div
         className={`w-full h-full flex items-center justify-center transition-transform duration-200 ${
@@ -514,7 +528,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       >
         {/* Outer Frame Wrapper */}
         <div
-          className={`h-full max-h-[calc(36vh-20px)] sm:max-h-[calc(40vh-28px)] lg:max-h-[750px] lg:h-[calc(100vh-165px)] w-auto max-w-[90vw] sm:max-w-none ${aspectRatioClass} overflow-hidden relative transition-all duration-300 select-none ${frameContainerStyle}`}
+          className={`h-full max-h-[calc(48vh-20px)] min-h-[340px] sm:min-h-[400px] sm:max-h-[calc(55vh-28px)] lg:min-h-0 lg:max-h-[750px] lg:h-[calc(100vh-165px)] w-auto max-w-[88vw] sm:max-w-[420px] lg:max-w-none ${aspectRatioClass} overflow-hidden relative transition-all duration-300 select-none ${frameContainerStyle}`}
           style={{
             backgroundColor:
               config.frameStyle === 'none' || config.frameStyle === 'digital'
