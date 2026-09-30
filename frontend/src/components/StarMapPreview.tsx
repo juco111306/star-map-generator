@@ -454,15 +454,15 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   const frameContainerStyle = useMemo(() => {
     switch (config.frameStyle) {
       case 'black':
-        return 'p-0 bg-[#161514] rounded-none shadow-[0_25px_60px_-15px_rgba(0,0,0,0.45),0_10px_25px_-5px_rgba(0,0,0,0.25)] border-[6px] sm:border-[8px] border-[#1C1A18] ring-1 ring-black/50';
+        return 'p-[6px] sm:p-[8px] bg-[#161514] rounded-none shadow-[0_25px_60px_-15px_rgba(0,0,0,0.45),0_10px_25px_-5px_rgba(0,0,0,0.25)] ring-1 ring-black/50';
       case 'oak':
-        return 'p-0 bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] rounded-none shadow-[0_25px_60px_-12px_rgba(40,25,10,0.24),0_10px_22px_-5px_rgba(40,25,10,0.14)] border-[6px] sm:border-[8px] border-[#DFC9A6] ring-1 ring-[#C8B28E]/60';
+        return 'p-[6px] sm:p-[8px] bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] rounded-none shadow-[0_25px_60px_-12px_rgba(40,25,10,0.24),0_10px_22px_-5px_rgba(40,25,10,0.14)] ring-1 ring-[#C8B28E]/60';
       case 'white':
-        return 'p-0 bg-[#FFFFFF] rounded-none shadow-[0_25px_60px_-15px_rgba(28,25,23,0.25),0_10px_25px_-5px_rgba(28,25,23,0.12)] border-[6px] sm:border-[8px] border-[#FAF8F5] ring-1 ring-[#D8D4CC]';
+        return 'p-[6px] sm:p-[8px] bg-[#FFFFFF] rounded-none shadow-[0_25px_60px_-15px_rgba(28,25,23,0.25),0_10px_25px_-5px_rgba(28,25,23,0.12)] ring-1 ring-[#D8D4CC]';
       case 'digital':
       case 'none':
       default:
-        return 'p-0 rounded-none shadow-[0_20px_45px_-12px_rgba(28,25,23,0.18),0_8px_18px_-6px_rgba(28,25,23,0.08)] border border-white';
+        return 'p-0 rounded-none shadow-[0_20px_45px_-12px_rgba(28,25,23,0.18),0_8px_18px_-6px_rgba(28,25,23,0.08)] ring-1 ring-black/10';
     }
   }, [config.frameStyle]);
 
@@ -512,22 +512,42 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         }`}
         style={{ transform: isFullscreen ? undefined : `scale(${zoomLevel})` }}
       >
+        {/* Outer Frame Wrapper */}
         <div
           className={`w-full max-w-[340px] sm:max-w-[420px] lg:max-w-none lg:w-auto lg:h-[calc(100vh-165px)] lg:max-h-[750px] ${aspectRatioClass} overflow-hidden relative transition-all duration-300 select-none ${frameContainerStyle}`}
           style={{
-            backgroundColor: currentStyle.bgColor,
+            backgroundColor:
+              config.frameStyle === 'none' || config.frameStyle === 'digital'
+                ? currentStyle.bgColor
+                : undefined,
             userSelect: 'none',
             WebkitUserSelect: 'none',
           }}
           onContextMenu={(e) => e.preventDefault()}
           onDragStart={(e) => e.preventDefault()}
         >
-          {/* SVG Vector Star Map Rendering */}
-          <svg
-            viewBox={`0 0 ${vbWidth} ${vbHeight}`}
-            className="w-full h-full select-none pointer-events-none"
+          {/* Inner Poster Canvas flush with frame */}
+          <div
+            className={`w-full h-full relative overflow-hidden rounded-none ${
+              config.frameStyle !== 'none' && config.frameStyle !== 'digital'
+                ? 'shadow-[inset_0_1px_3px_rgba(0,0,0,0.25)]'
+                : ''
+            }`}
+            style={{
+              backgroundColor: currentStyle.bgColor,
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+            }}
             onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
           >
+            {/* SVG Vector Star Map Rendering */}
+            <svg
+              viewBox={`0 0 ${vbWidth} ${vbHeight}`}
+              className="w-full h-full select-none pointer-events-none block"
+              preserveAspectRatio="none"
+              onContextMenu={(e) => e.preventDefault()}
+            >
             <defs>
               {/* Circular Clip Mask */}
               <clipPath id="circle-clip-mask">
@@ -1193,5 +1213,6 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         </div>
       </div>
     </div>
+  </div>
   );
 };
