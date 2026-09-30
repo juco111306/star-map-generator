@@ -262,10 +262,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* Primary CTA */}
+          {/* Primary CTA (Hidden on mobile to keep first row clean and spacious, visible on tablet/desktop) */}
           <button
             onClick={() => onNavigate('customizer')}
-            className="flex items-center space-x-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm shrink-0"
+            className="hidden sm:flex items-center space-x-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm shrink-0"
           >
             <Compass className="w-3.5 h-3.5 text-[#E6C285]" />
             <span className="hidden sm:inline">{t.navbar.ctaButton}</span>
