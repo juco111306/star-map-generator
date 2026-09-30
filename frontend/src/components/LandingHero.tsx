@@ -37,9 +37,9 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate }) => {
     : '52.3676° N • 4.9041° E';
 
   return (
-    <section className="relative overflow-hidden pt-10 pb-16 lg:pt-14 lg:pb-24 bg-[#FAF8F5]">
+    <section className="relative overflow-hidden w-full max-w-[100vw] pt-10 pb-16 lg:pt-14 lg:pb-24 bg-[#FAF8F5]">
       {/* Soft natural ambient lighting */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-[#F2EDE2] rounded-full blur-[120px] -z-10 pointer-events-none opacity-80" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] max-w-[90vw] h-[450px] bg-[#F2EDE2] rounded-full blur-[120px] -z-10 pointer-events-none opacity-80" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">

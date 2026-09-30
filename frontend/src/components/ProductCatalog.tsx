@@ -321,8 +321,8 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           </p>
         </div>
 
-        {/* 4 Flagship Art Styles - 4 balanced columns on desktop (lg:grid-cols-4) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 4 Flagship Art Styles - Compact 2x2 grid on mobile, 4 balanced columns on desktop (lg:grid-cols-4) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {DESIGN_STYLES.map((style) => {
             const meta = currentStyles[style.id] || {
               title: style.name,
@@ -335,13 +335,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               <div
                 key={style.id}
                 onClick={() => handleCardClick(style.id)}
-                className="group bg-white rounded-3xl p-3.5 sm:p-4 border border-[#E2DDD5] shadow-[0_8px_25px_rgba(28,25,23,0.04)] hover:shadow-[0_18px_40px_rgba(28,25,23,0.12)] hover:border-[#C8BFB0] transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                className="group bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 border border-[#E2DDD5] shadow-[0_8px_25px_rgba(28,25,23,0.04)] hover:shadow-[0_18px_40px_rgba(28,25,23,0.12)] hover:border-[#C8BFB0] transition-all duration-300 cursor-pointer flex flex-col justify-between"
               >
-                <div className="space-y-3.5">
+                <div className="space-y-2 sm:space-y-3.5">
                   {/* Natural Wood Frame Mockup */}
-                  <div className="relative aspect-[300/420] rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[6px] sm:p-[7px] shadow-[0_10px_25px_-5px_rgba(40,25,10,0.18)] ring-1 ring-[#C8B28E]/60 transition-transform duration-500 group-hover:scale-[1.02]">
+                  <div className="relative aspect-[300/420] rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[3px] sm:p-[7px] shadow-[0_10px_25px_-5px_rgba(40,25,10,0.18)] ring-1 ring-[#C8B28E]/60 transition-transform duration-500 group-hover:scale-[1.02]">
                     {/* Badge */}
-                    <span className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-none text-[8.5px] font-bold tracking-wider uppercase bg-white/95 text-[#1C1917] shadow-xs border border-black/10">
+                    <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 px-1.5 py-0.5 sm:px-2 rounded-none text-[7px] sm:text-[8.5px] font-bold tracking-wider uppercase bg-white/95 text-[#1C1917] shadow-xs border border-black/10">
                       {meta.tag}
                     </span>
 
@@ -352,30 +352,30 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   </div>
 
                   {/* Title & Info */}
-                  <div className="space-y-1 pt-0.5 px-0.5">
-                    <div className="flex items-baseline justify-between">
-                      <h3 className="font-serif text-base font-bold text-[#1C1917] truncate">
+                  <div className="space-y-0.5 sm:space-y-1 pt-0.5 px-0.5 min-w-0">
+                    <div className="flex items-baseline justify-between gap-1">
+                      <h3 className="font-serif text-xs sm:text-base font-bold text-[#1C1917] truncate min-w-0">
                         {meta.title}
                       </h3>
-                      <div className="text-right shrink-0 ml-1">
-                        <span className="text-[10px] text-[#A8A29E] line-through mr-1">{currencySymbol}29</span>
-                        <span className="text-xs font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} {currencySymbol}19</span>
+                      <div className="text-right shrink-0 whitespace-nowrap ml-1">
+                        <span className="hidden sm:inline text-[10px] text-[#A8A29E] line-through mr-1">{currencySymbol}29</span>
+                        <span className="text-[11px] sm:text-xs font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} {currencySymbol}19</span>
                       </div>
                     </div>
-                    <p className="text-[10.5px] font-semibold text-[#A37055] truncate">
+                    <p className="text-[9.5px] sm:text-[10.5px] font-semibold text-[#A37055] truncate">
                       {meta.subtitle}
                     </p>
-                    <p className="text-[11px] text-[#78716C] font-light leading-snug line-clamp-2">
+                    <p className="hidden sm:block text-[11px] text-[#78716C] font-light leading-snug line-clamp-2">
                       {meta.desc}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Bottom CTA */}
-                <div className="pt-3.5 mt-3 border-t border-[#F2ECE1] flex items-center justify-between text-xs font-semibold text-[#1C1917] group-hover:text-[#A37055] transition-colors">
-                  <span>{t.catalog.digital.cta}</span>
-                  <div className="w-6 h-6 rounded-full bg-[#FAF8F5] group-hover:bg-[#1C1917] group-hover:text-white flex items-center justify-center transition-all shadow-2xs">
-                    <ArrowRight className="w-3 h-3" />
+                <div className="pt-2 sm:pt-3.5 mt-2 sm:mt-3 border-t border-[#F2ECE1] flex items-center justify-between text-[11px] sm:text-xs font-semibold text-[#1C1917] group-hover:text-[#A37055] transition-colors">
+                  <span className="truncate mr-1">{t.catalog.digital.cta}</span>
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#FAF8F5] group-hover:bg-[#1C1917] group-hover:text-white flex items-center justify-center transition-all shadow-2xs shrink-0">
+                    <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   </div>
                 </div>
               </div>

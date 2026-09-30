@@ -289,20 +289,20 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-[#FAF8F5] border border-[#E2DDD5] rounded-3xl shadow-2xl overflow-hidden my-8 text-[#1C1917]">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+      <div className="relative w-full max-w-2xl bg-[#FAF8F5] border border-[#E2DDD5] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden my-3 sm:my-8 text-[#1C1917]">
         {/* Top Header */}
-        <div className="px-6 py-4 bg-[#F5F2EB] border-b border-[#E8E4DC] flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#1C1917] shadow-sm">
-  <Printer className="w-4 h-4" />
-</div>
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 bg-[#F5F2EB] border-b border-[#E8E4DC] flex items-center justify-between">
+          <div className="flex items-center space-x-3 min-w-0 flex-1 mr-2">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#1C1917] shadow-sm shrink-0">
+              <Printer className="w-4 h-4" />
+            </div>
             
-            <div>
-              <h3 className="font-serif text-sm font-bold text-[#1C1917] tracking-wide">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-serif text-xs sm:text-sm font-bold text-[#1C1917] tracking-wide truncate">
                 {t.orderModal.modalTitle}
               </h3>
-              <p className="text-[11px] text-[#78716C]">
+              <p className="text-[10px] sm:text-[11px] text-[#78716C] truncate">
                 {t.orderModal.modalSubtitle}
               </p>
             </div>
@@ -310,7 +310,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#78716C] hover:text-[#1C1917] hover:bg-white transition"
+            className="p-1.5 rounded-full text-[#78716C] hover:text-[#1C1917] hover:bg-white transition shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -319,16 +319,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         {/* Content Body */}
         {completedOrder ? (
           /* Order Confirmation View */
-          <div className="p-8 space-y-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mx-auto shadow-sm">
-              <CheckCircle2 className="w-8 h-8" />
+          <div className="p-5 sm:p-8 space-y-5 sm:space-y-6 text-center">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mx-auto shadow-sm">
+              <CheckCircle2 className="w-7 h-7 sm:w-8 sm:h-8" />
             </div>
 
             <div className="space-y-1.5">
-              <span className="text-[11px] font-mono tracking-widest text-[#78716C] font-bold uppercase">
+              <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#78716C] font-bold uppercase">
                 {locale === 'de' ? 'BESTELLREFERENZ' : locale === 'en' ? 'ORDER REFERENCE' : 'BESTELREFERENTIE'}: {completedOrder.order_id}
               </span>
-              <h2 className="font-serif text-2xl font-bold text-[#1C1917]">
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1C1917]">
                 {t.paymentSuccess.orderConfirmedTitle}
               </h2>
               <p className="text-xs text-[#57534E] max-w-md mx-auto leading-relaxed">
@@ -341,52 +341,52 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </div>
 
             {/* Order Specification Summary Card */}
-            <div className="p-5 bg-white rounded-2xl border border-[#E8E4DC] text-left text-xs space-y-2.5 max-w-lg mx-auto shadow-sm">
-              <div className="flex justify-between pb-2 border-b border-[#F0ECE1]">
-                <span className="text-[#78716C]">
+            <div className="p-4 sm:p-5 bg-white rounded-2xl border border-[#E8E4DC] text-left text-xs space-y-2.5 max-w-lg mx-auto shadow-sm">
+              <div className="flex justify-between items-center pb-2 border-b border-[#F0ECE1] gap-2">
+                <span className="text-[#78716C] shrink-0">
                   {locale === 'de' ? 'Kunstwerk:' : locale === 'en' ? 'Artwork:' : 'Kunstwerk:'}
                 </span>
-                <span className="font-bold text-[#1C1917]">{t.catalog.title}</span>
+                <span className="font-bold text-[#1C1917] truncate text-right">{t.catalog.title}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#78716C]">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-[#78716C] shrink-0">
                   {locale === 'de' ? 'Gewidmet an:' : locale === 'en' ? 'Dedicated to:' : 'Opgedragen aan:'}
                 </span>
-                <span className="text-[#1C1917] font-serif font-bold">{completedOrder.names_text}</span>
+                <span className="text-[#1C1917] font-serif font-bold truncate text-right">{completedOrder.names_text}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#78716C]">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-[#78716C] shrink-0">
                   {locale === 'de' ? 'Besonderes Datum:' : locale === 'en' ? 'Special Date:' : 'Bijzondere Datum:'}
                 </span>
-                <span className="text-[#1C1917]">{completedOrder.date_text}</span>
+                <span className="text-[#1C1917] truncate text-right">{completedOrder.date_text}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#78716C]">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-[#78716C] shrink-0">
                   {locale === 'de' ? 'Format & Ausführung:' : locale === 'en' ? 'Size & Framing:' : 'Formaat & Uitvoering:'}
                 </span>
-                <span className="text-[#1C1917]">
+                <span className="text-[#1C1917] truncate text-right">
                   {completedOrder.frame_style === 'digital'
                     ? (locale === 'de' ? 'Digitales Kunstwerk' : locale === 'en' ? 'Digital File' : 'Digitaal Bestand')
                     : `${completedOrder.poster_size} cm`} • {frameLabels[completedOrder.frame_style] || 'Kunstdruk'}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-[#78716C]">{t.studio.totalLabel}</span>
-                <span className="text-[#1C1917] font-bold">{priceDetails.formattedPrice}</span>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-[#78716C] shrink-0">{t.studio.totalLabel}</span>
+                <span className="text-[#1C1917] font-bold shrink-0 whitespace-nowrap">{priceDetails.formattedPrice}</span>
               </div>
-              <div className="flex justify-between text-[11px] text-[#78716C]">
-                <span>{isUS ? 'Sales Tax (Gelato US):' : (locale === 'de' ? 'MwSt. (inkl.):' : locale === 'en' ? 'VAT (included):' : 'Btw (inbegrepen):')}</span>
-                <span className="text-emerald-700 font-medium">
+              <div className="flex justify-between items-center text-[11px] text-[#78716C] gap-2">
+                <span className="truncate">{isUS ? 'Sales Tax (Gelato US):' : (locale === 'de' ? 'MwSt. (inkl.):' : locale === 'en' ? 'VAT (included):' : 'Btw (inbegrepen):')}</span>
+                <span className="text-emerald-700 font-medium shrink-0 whitespace-nowrap">
                   {isUS ? 'Inbegrepen & Voldaan' : 'Inbegrepen'}
                 </span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-[#F0ECE1]">
-                <span className="text-[#78716C]">
+              <div className="flex justify-between items-center pt-2 border-t border-[#F0ECE1] gap-2">
+                <span className="text-[#78716C] shrink-0">
                   {completedOrder.frame_style === 'digital'
                     ? (locale === 'de' ? 'Gesendet an:' : locale === 'en' ? 'Delivered to:' : 'Verzonden naar:')
                     : (locale === 'de' ? 'Lieferung an:' : locale === 'en' ? 'Delivery to:' : 'Bezorging aan:')}
                 </span>
-                <span className="text-[#1C1917]">{completedOrder.customer.name} ({completedOrder.customer.email})</span>
+                <span className="text-[#1C1917] truncate text-right">{completedOrder.customer.name} ({completedOrder.customer.email})</span>
               </div>
             </div>
 
@@ -411,7 +411,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
         ) : (
           /* Order Form View */
-          <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
@@ -420,34 +420,34 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             )}
 
             {/* Keepsake Summary Banner */}
-            <div className="p-3.5 bg-[#F5F2EB]/70 rounded-2xl border border-[#E8E4DC] flex items-center justify-between text-xs">
-              <div className="flex items-center space-x-3">
-                <div className="w-11 h-14 rounded-lg overflow-hidden bg-white border border-[#E2DDD5] shrink-0 shadow-sm">
+            <div className="p-3 sm:p-3.5 bg-[#F5F2EB]/70 rounded-2xl border border-[#E8E4DC] flex items-center justify-between text-xs gap-2">
+              <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0 flex-1">
+                <div className="w-10 sm:w-11 h-12 sm:h-14 rounded-lg overflow-hidden bg-white border border-[#E2DDD5] shrink-0 shadow-sm">
                   <img
                     src="/textures/star_map_sample.png"
                     alt="Star Map"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div>
-                  <h4 className="font-serif font-bold text-[#1C1917] text-xs">
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-serif font-bold text-[#1C1917] text-xs truncate">
                     {t.catalog.title}
                   </h4>
-                  <p className="text-[11px] text-[#78716C] font-serif italic">
+                  <p className="text-[11px] text-[#78716C] font-serif italic truncate">
                     {config.namesBlock.text || (locale === 'de' ? 'Atelier-Meisterwerk' : locale === 'en' ? 'Artisan Keepsake' : 'Ambachtelijk Kunstwerk')}
                   </p>
-                  <p className="text-[10px] text-[#A8A29E]">
+                  <p className="text-[10px] text-[#A8A29E] truncate">
                     {config.frameStyle === 'digital' ? 'PDF (300 DPI)' : priceDetails.sizeLabel} • {frameLabels[config.frameStyle]}
                   </p>
                 </div>
               </div>
-              <div className="text-right">
-                <span className="text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium block mb-0.5">
+              <div className="text-right shrink-0 whitespace-nowrap pl-1">
+                <span className="text-[9.5px] sm:text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded font-medium block mb-0.5 whitespace-nowrap">
                   {config.frameStyle === 'digital'
                     ? (locale === 'de' ? 'Sofort digital (PDF)' : locale === 'en' ? 'Instant digital (PDF)' : 'Direct digitaal (PDF)')
                     : (locale === 'de' ? 'Lokal gerahmt' : locale === 'en' ? 'Locally framed' : 'Lokaal Ingelijst')}
                 </span>
-                <div className="flex items-center justify-end gap-1.5">
+                <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
                   <span className="text-[10px] text-[#A8A29E] line-through">{priceDetails.formattedOriginalPrice}</span>
                   <span className="text-xs font-bold text-[#1C1917]">{priceDetails.formattedPrice}</span>
                 </div>
@@ -660,16 +660,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </div>
 
             {/* Action Bar */}
-            <div className="pt-3 border-t border-[#E8E4DC] flex items-center justify-between">
-              <span className="text-[11px] text-[#78716C]">
+            <div className="pt-3 border-t border-[#E8E4DC] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <span className="text-[11px] text-[#78716C] text-center sm:text-left">
                 {isDigital ? t.orderModal.digitalDeliveryNotice : t.orderModal.physicalDeliveryNotice}
               </span>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-full text-xs font-medium text-[#78716C] hover:text-[#1C1917]"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-full text-xs font-medium text-[#78716C] hover:text-[#1C1917] text-center transition"
                 >
                   {t.orderModal.cancelButton}
                 </button>
@@ -677,7 +677,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition disabled:opacity-50 flex items-center gap-2"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
                 >
                   {isSubmitting ? (
                     <>

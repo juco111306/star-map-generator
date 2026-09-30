@@ -73,25 +73,25 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-1 sm:gap-2">
         {/* Brand Logo */}
         <button
           onClick={() => onNavigate('landing')}
-          className="flex items-center space-x-3 text-left group shrink-0"
+          className="flex items-center space-x-2 sm:space-x-3 text-left group shrink-0"
         >
-          <div className="w-9 h-9 rounded-xl bg-[#F0EBE1] border border-[#E2DDD5] flex items-center justify-center group-hover:border-[#A37055] transition-colors">
-            <Sparkles className="w-4 h-4 text-[#A37055]" />
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#F0EBE1] border border-[#E2DDD5] flex items-center justify-center group-hover:border-[#A37055] transition-colors">
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#A37055]" />
           </div>
           <div>
-            <div className="flex items-center space-x-1.5">
-              <span className="font-serif text-lg font-bold tracking-wider text-[#1C1917] group-hover:text-[#A37055] transition-colors">
+            <div className="flex items-center space-x-1 sm:space-x-1.5">
+              <span className="font-serif text-base sm:text-lg font-bold tracking-wider text-[#1C1917] group-hover:text-[#A37055] transition-colors">
                 STELLAIRE
               </span>
-              <span className="text-[10px] text-[#A37055] font-sans font-semibold tracking-widest uppercase">
+              <span className="text-[9px] sm:text-[10px] text-[#A37055] font-sans font-semibold tracking-widest uppercase">
                 ATELIER
               </span>
             </div>
-            <p className="text-[9.5px] uppercase tracking-widest text-[#78716C] font-medium">
+            <p className="text-[9px] sm:text-[9.5px] uppercase tracking-widest text-[#78716C] font-medium hidden sm:block">
               {t.common.brandTagline}
             </p>
           </div>
@@ -135,12 +135,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Right Action Buttons & Language Switcher */}
-        <div className="flex items-center space-x-2 shrink-0">
+        <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
           {/* Elegant Luxury Atelier Language Switcher Dropdown */}
           <div className="relative shrink-0" ref={langDropdownRef}>
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#EDE7DE]/80 hover:bg-[#E4DDCF] border border-[#DDD5C7] text-[#1C1917] text-xs font-semibold tracking-wide transition-all shadow-xs focus:outline-none focus:ring-1 focus:ring-[#A37055]"
+              className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-full bg-[#EDE7DE]/80 hover:bg-[#E4DDCF] border border-[#DDD5C7] text-[#1C1917] text-xs font-semibold tracking-wide transition-all shadow-xs focus:outline-none focus:ring-1 focus:ring-[#A37055]"
               aria-label="Select language"
               aria-expanded={isLangOpen}
             >
@@ -195,7 +195,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="relative shrink-0" ref={currencyDropdownRef}>
             <button
               onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#EDE7DE]/80 hover:bg-[#E4DDCF] border border-[#DDD5C7] text-[#1C1917] text-xs font-semibold tracking-wide transition-all shadow-xs focus:outline-none focus:ring-1 focus:ring-[#A37055]"
+              className="flex items-center gap-0.5 sm:gap-1 px-2 sm:px-2.5 py-1.5 rounded-full bg-[#EDE7DE]/80 hover:bg-[#E4DDCF] border border-[#DDD5C7] text-[#1C1917] text-xs font-semibold tracking-wide transition-all shadow-xs focus:outline-none focus:ring-1 focus:ring-[#A37055]"
               aria-label="Select currency"
               aria-expanded={isCurrencyOpen}
             >
@@ -250,22 +250,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Mobile Drukkerij Order Status Login Button */}
+          {/* Drukkerij Order Status Login Button (Visible from tablet sm and up) */}
           {onOpenTrackingModal && (
             <button
               onClick={onOpenTrackingModal}
-              className="lg:hidden px-2.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all border bg-[#FAF8F5] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917] hover:text-[#1C1917]"
+              className="hidden sm:flex lg:hidden px-2.5 py-1.5 rounded-full text-xs font-medium items-center gap-1.5 transition-all border bg-[#FAF8F5] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917] hover:text-[#1C1917]"
               title={t.navbar.printer}
             >
               <Printer className="w-3.5 h-3.5 text-[#A37055]" />
-              <span className="text-[11px] hidden sm:inline">{t.navbar.printer}</span>
+              <span className="text-[11px]">{t.navbar.printer}</span>
             </button>
           )}
 
           {/* Primary CTA */}
           <button
             onClick={() => onNavigate('customizer')}
-            className="flex items-center space-x-1.5 px-3.5 sm:px-4 py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm transform hover:-translate-y-0.5"
+            className="flex items-center space-x-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm shrink-0"
           >
             <Compass className="w-3.5 h-3.5 text-[#E6C285]" />
             <span className="hidden sm:inline">{t.navbar.ctaButton}</span>

@@ -367,7 +367,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-montserrat">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-montserrat w-full max-w-full overflow-x-hidden">
       <Suspense fallback={null}>
         <SearchParamsWatcher onViewChange={setCurrentView} />
       </Suspense>
@@ -388,7 +388,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
 
       {/* Main Content Router */}
       {currentView === 'landing' && (
-        <main className="flex-1">
+        <main className="flex-1 w-full max-w-full overflow-x-hidden">
           <LandingHero onNavigate={(v) => {
             setCurrentView(v);
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -428,7 +428,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       )}
 
       {currentView === 'products' && (
-        <main className="flex-1">
+        <main className="flex-1 w-full max-w-full overflow-x-hidden">
           <ProductCatalog onCustomizeStarMap={() => {
             setCurrentView('customizer');
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -455,7 +455,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       )}
 
       {currentView === 'customizer' && (
-        <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        <main className="flex-1 flex flex-col lg:flex-row overflow-x-hidden lg:overflow-hidden relative w-full max-w-full">
           {/* Left: Redesigned Step-Based Studio Panel */}
           <ConfigPanel
             config={config}
@@ -479,7 +479,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       )}
 
       {currentView === 'producer' && (
-        <main className="flex-1">
+        <main className="flex-1 w-full max-w-full overflow-x-hidden">
           <ProducerPortal onBackToStudio={() => setCurrentView('customizer')} />
           <Footer
             onNavigate={setCurrentView}

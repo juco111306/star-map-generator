@@ -467,9 +467,9 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   }, [config.frameStyle]);
 
   return (
-    <div className="order-1 lg:order-2 flex-1 flex flex-col items-center justify-start lg:sticky lg:top-[65px] h-auto lg:h-[calc(100vh-65px)] p-3 lg:p-4 overflow-y-auto lg:overflow-hidden bg-[#F2EFE9] relative">
+    <div className="order-1 lg:order-2 flex-1 flex flex-col items-center justify-start lg:sticky lg:top-[65px] h-auto lg:h-[calc(100vh-65px)] p-3 lg:p-4 overflow-x-hidden overflow-y-auto lg:overflow-hidden bg-[#F2EFE9] relative w-full max-w-full">
       {/* Soft natural studio gallery light behind preview */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-b from-white/80 via-white/40 to-transparent rounded-full blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] max-w-[90vw] h-[600px] bg-gradient-to-b from-white/80 via-white/40 to-transparent rounded-full blur-[100px] pointer-events-none -z-10" />
 
       {/* Discreet Minimal Zoom & Fullscreen Controls in Corner */}
       <div className="absolute bottom-4 right-4 z-20 hidden sm:flex items-center space-x-1 bg-white/80 backdrop-blur-md px-2 py-1 rounded-xl border border-[#E2DDD5] text-xs shadow-xs">

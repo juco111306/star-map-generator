@@ -185,12 +185,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="relative w-full max-w-3xl bg-[#FAF8F5] border border-[#E2DDD5] rounded-3xl shadow-2xl overflow-hidden my-8 text-[#1C1917]">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
+      <div className="relative w-full max-w-3xl bg-[#FAF8F5] border border-[#E2DDD5] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden my-3 sm:my-8 text-[#1C1917]">
         {/* Top Header */}
-        <div className="px-6 py-4 bg-[#F5F2EB] border-b border-[#E8E4DC] flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#1C1917] shadow-sm">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 bg-[#F5F2EB] border-b border-[#E8E4DC] flex items-center justify-between">
+          <div className="flex items-center space-x-3 min-w-0 flex-1 mr-2">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white border border-[#E2DDD5] flex items-center justify-center text-[#1C1917] shadow-sm shrink-0">
               <Printer className="w-4 h-4 text-[#A37055]" />
             </div>
             <div>

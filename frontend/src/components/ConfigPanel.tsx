@@ -304,7 +304,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   };
 
   return (
-    <div className="order-2 lg:order-1 w-full lg:w-[490px] xl:w-[530px] shrink-0 h-auto lg:h-[calc(100vh-65px)] flex flex-col justify-between overflow-y-auto bg-[#FAF8F5] border-r border-[#EAE5DC] p-5 lg:p-6 space-y-6 text-[#1C1917]">
+    <div className="order-2 lg:order-1 w-full lg:w-[490px] xl:w-[530px] shrink-0 h-auto lg:h-[calc(100vh-65px)] flex flex-col justify-between overflow-y-auto bg-[#FAF8F5] border-r border-[#EAE5DC] p-3.5 sm:p-5 lg:p-6 space-y-6 text-[#1C1917]">
       <div className="space-y-5">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center justify-between">
@@ -1418,8 +1418,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     >
                       {/* Top Row: Dimensions and Price firmly contained */}
                       <div className="flex items-center justify-between gap-1 mb-1">
-                        <span className="font-serif font-bold text-xs block">{fo.label}</span>
-                        <span className={`text-xs font-bold shrink-0 whitespace-nowrap ${isSelected ? 'text-[#FAF8F5]' : 'text-[#1C1917]'}`}>
+                        <span className="font-serif font-bold text-xs block truncate min-w-0 flex-1">{fo.label}</span>
+                        <span className={`text-xs font-bold shrink-0 whitespace-nowrap pl-1 ${isSelected ? 'text-[#FAF8F5]' : 'text-[#1C1917]'}`}>
                           {sizePrice.formattedPrice}
                         </span>
                       </div>
@@ -1495,13 +1495,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
       {/* Sticky Bottom Action Card */}
       <div className="pt-4 border-t border-[#EAE5DC] space-y-3 bg-[#FAF8F5]">
-        <div className="flex items-center justify-between text-xs text-[#78716C] px-1">
-          <div className="flex items-center gap-1.5 truncate mr-2">
+        <div className="flex items-center justify-between text-xs text-[#78716C] px-1 gap-2">
+          <div className="flex items-center gap-1.5 truncate min-w-0 flex-1">
             <span className="font-semibold text-[#1C1917] truncate">{currentPriceDetails.typeLabel}</span>
-            <span>•</span>
-            <span className="text-[#57534E]">{config.frameStyle === 'digital' ? 'PDF 300 DPI' : `${config.posterSize.replace('x', ' × ')} cm`}</span>
+            <span className="shrink-0">•</span>
+            <span className="text-[#57534E] truncate shrink-0">{config.frameStyle === 'digital' ? 'PDF 300 DPI' : `${config.posterSize.replace('x', ' × ')} cm`}</span>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
             <span className="text-[11px] text-[#A8A29E] line-through">{currentPriceDetails.formattedOriginalPrice}</span>
             <strong className="text-sm font-bold text-[#1C1917]">{currentPriceDetails.formattedPrice}</strong>
           </div>
@@ -1512,10 +1512,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <button
             type="button"
             onClick={onOpenOrderModal}
-            className="w-full py-3.5 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition transform hover:-translate-y-0.5"
+            className="w-full py-3.5 px-3 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition transform hover:-translate-y-0.5 truncate"
           >
-            <span>{t.studio.orderButton} ({currentPriceDetails.formattedPrice})</span>
-            <ChevronRight className="w-4 h-4" />
+            <span className="truncate">{t.studio.orderButton} ({currentPriceDetails.formattedPrice})</span>
+            <ChevronRight className="w-4 h-4 shrink-0" />
           </button>
         </div>
       </div>

@@ -286,7 +286,7 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         {DESIGN_STYLES.map((style) => {
           const isSelected = style.id === selectedStyleId;
           const meta = currentStyles[style.id] || {
@@ -300,18 +300,18 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               key={style.id}
               type="button"
               onClick={() => onSelectStyle(style.id)}
-              className={`group relative p-2.5 sm:p-3 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between ${
+              className={`group relative p-2 sm:p-3 rounded-xl sm:rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between ${
                 isSelected
                   ? 'border-[#1C1917] bg-[#FAF8F5] ring-2 ring-[#1C1917] shadow-md'
                   : 'border-[#E2DDD5] bg-[#FAF8F5]/60 hover:bg-white hover:border-[#1C1917] shadow-xs'
               }`}
             >
               {/* Natural Light Wood Framed Mini Poster */}
-              <div className="relative aspect-[300/420] w-full rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[4px] sm:p-[5px] shadow-[0_4px_14px_rgba(40,25,10,0.12)] ring-1 ring-[#C8B28E]/60 mb-2.5 overflow-hidden transition-transform duration-300 group-hover:scale-[1.015]">
+              <div className="relative aspect-[300/420] w-full rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[3px] sm:p-[5px] shadow-[0_4px_14px_rgba(40,25,10,0.12)] ring-1 ring-[#C8B28E]/60 mb-1.5 sm:mb-2.5 overflow-hidden transition-transform duration-300 group-hover:scale-[1.015]">
                 {/* Active checkmark badge */}
                 {isSelected && (
-                  <div className="absolute top-2 right-2 z-10 w-5 h-5 rounded-full bg-[#1C1917] text-white flex items-center justify-center shadow-md">
-                    <Check className="w-3 h-3 stroke-[3]" />
+                  <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-10 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#1C1917] text-white flex items-center justify-center shadow-md">
+                    <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
                   </div>
                 )}
 
@@ -322,47 +322,47 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
               </div>
 
               {/* Title & Subtitle */}
-              <div className="space-y-0.5 w-full">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-semibold text-[#1C1917]">
+              <div className="space-y-0.5 w-full min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <h4 className="text-[11px] sm:text-xs font-semibold text-[#1C1917] truncate">
                     {meta.title}
                   </h4>
                   {style.isWatercolor && (
-                    <span className="text-[9px] px-1.5 py-0.5 rounded font-medium bg-[#083B44]/10 text-[#083B44]">
+                    <span className="text-[8px] sm:text-[9px] px-1 py-0.5 rounded font-medium bg-[#083B44]/10 text-[#083B44] shrink-0">
                       Watercolor
                     </span>
                   )}
                 </div>
 
-                <p className="text-[10px] text-[#A37055] font-medium truncate">
+                <p className="text-[9px] sm:text-[10px] text-[#A37055] font-medium truncate">
                   {meta.subtitle}
                 </p>
 
-                <p className="text-[9.5px] text-[#78716C] line-clamp-2 leading-snug pt-0.5 font-light">
+                <p className="hidden sm:block text-[9.5px] text-[#78716C] line-clamp-2 leading-snug pt-0.5 font-light">
                   {meta.desc}
                 </p>
 
                 {/* Color Palette Preview Swatch Dots */}
-                <div className="flex items-center gap-1.5 pt-2">
-                  <span className="text-[8.5px] text-[#A8A29E] uppercase tracking-wider font-mono">Palette:</span>
+                <div className="flex items-center gap-1 sm:gap-1.5 pt-1 sm:pt-2">
+                  <span className="hidden sm:inline text-[8.5px] text-[#A8A29E] uppercase tracking-wider font-mono">Palette:</span>
                   <div className="flex items-center space-x-1">
                     <span
-                      className="w-2.5 h-2.5 rounded-full border border-black/15 shadow-2xs"
+                      className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border border-black/15 shadow-2xs"
                       style={{ backgroundColor: style.bgColor }}
                       title={`Achtergrond: ${style.bgColor}`}
                     />
                     <span
-                      className="w-2.5 h-2.5 rounded-full border border-black/15 shadow-2xs"
+                      className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border border-black/15 shadow-2xs"
                       style={{ backgroundColor: style.mapBgColor }}
                       title={`Hemel: ${style.mapBgColor}`}
                     />
                     <span
-                      className="w-2.5 h-2.5 rounded-full border border-black/15 shadow-2xs"
+                      className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border border-black/15 shadow-2xs"
                       style={{ backgroundColor: style.starColor }}
                       title={`Sterren: ${style.starColor}`}
                     />
                     <span
-                      className="w-2.5 h-2.5 rounded-full border border-black/15 shadow-2xs"
+                      className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full border border-black/15 shadow-2xs"
                       style={{ backgroundColor: style.borderColor.startsWith('rgba') ? style.textColor : style.borderColor }}
                       title="Accent"
                     />

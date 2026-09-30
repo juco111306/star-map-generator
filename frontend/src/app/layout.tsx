@@ -23,12 +23,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="nl">
+    <html lang="nl" className="overflow-x-hidden max-w-full w-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="bg-[#FAF8F5] text-[#1C1917] antialiased min-h-screen">
+      <body className="bg-[#FAF8F5] text-[#1C1917] antialiased min-h-screen overflow-x-hidden max-w-full w-full">
         <LanguageProvider>
           {children}
         </LanguageProvider>
