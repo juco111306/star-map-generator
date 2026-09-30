@@ -443,6 +443,14 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
     config["divider_style"] = divider_style
     config["dividerStyle"] = divider_style
 
+    # 1. Early Validation
+    is_digital = frame_style == "digital"
+    if not is_digital and not is_country_supported(req.customer.country):
+        raise ValueError(
+            f"Delivery to '{req.customer.country}' is not supported. We only ship to European countries, the UK, and the USA."
+        )
+
+    # 2. Compile 300 DPI Print-Ready PDF
     date_time_str = config.get("date_time") or f"{config.get('date', '2026-09-22')}T{config.get('time', '21:00')}:00Z"
     try:
         dt = datetime.fromisoformat(date_time_str.replace("Z", "+00:00"))
@@ -452,23 +460,18 @@ def create_order(req: OrderCreateRequest) -> Dict[str, Any]:
 
     pdf_bytes = generate_star_map_pdf(config)
 
-    # 2. Save PDF file to storage
+    # 3. Save PDF file to storage
     pdf_filename = f"{order_id}_print_ready_300dpi.pdf"
     pdf_path = ORDERS_DIR / f"{order_id}.pdf"
     pdf_path.write_bytes(pdf_bytes)
 
-    # 3. Extract order summary
+    # 4. Extract order summary
     title_block = config.get("titleBlock") or {}
     names_block = config.get("namesBlock") or {}
     date_block = config.get("dateBlock") or {}
     location_block = config.get("locationBlock") or {}
 
     currency = (config.get("currency") or "EUR").upper()
-    is_digital = frame_style == "digital"
-    if not is_digital and not is_country_supported(req.customer.country):
-        raise ValueError(
-            f"Delivery to '{req.customer.country}' is not supported. We only ship to European countries, the UK, and the USA."
-        )
 
     cust_country = (req.customer.country or "").lower()
     if is_digital:
