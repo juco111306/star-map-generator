@@ -289,8 +289,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden">
-      <div className="relative w-full max-w-2xl bg-[#FAF8F5] border border-[#E2DDD5] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden my-3 sm:my-8 text-[#1C1917]">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto overflow-x-hidden w-full max-w-full">
+      <div className="relative w-full max-w-2xl bg-[#FAF8F5] border border-[#E2DDD5] rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden my-3 sm:my-8 text-[#1C1917] max-w-[96vw]">
         {/* Top Header */}
         <div className="px-4 sm:px-6 py-3.5 sm:py-4 bg-[#F5F2EB] border-b border-[#E8E4DC] flex items-center justify-between">
           <div className="flex items-center space-x-3 min-w-0 flex-1 mr-2">
@@ -479,7 +479,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   {t.orderModal.customerInfoTitle}
                 </span>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
                     <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.nameLabel}</label>
                     <input
@@ -488,7 +488,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
                       placeholder={locale === 'de' ? 'z. B. Hannah Schmidt' : locale === 'en' ? 'e.g. Olivia Taylor' : 'bijv. Sophie van den Berg'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
@@ -499,7 +499,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
                       placeholder={locale === 'de' ? 'hannah@beispiel.de' : locale === 'en' ? 'olivia@example.com' : 'sophie@voorbeeld.nl'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
@@ -510,7 +510,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   {t.orderModal.customerInfoTitle}
                 </span>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
                     <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.nameLabel}</label>
                     <input
@@ -519,7 +519,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
                       placeholder={locale === 'de' ? 'z. B. Hannah Schmidt' : locale === 'en' ? 'e.g. Olivia Taylor' : 'bijv. Sophie van den Berg'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
@@ -530,7 +530,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
                       placeholder={locale === 'de' ? 'hannah@beispiel.de' : locale === 'en' ? 'olivia@example.com' : 'sophie@voorbeeld.nl'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
@@ -543,11 +543,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     value={customer.address_line1}
                     onChange={(e) => setCustomer({ ...customer, address_line1: e.target.value })}
                     placeholder={locale === 'de' ? 'z. B. Friedrichstraße 45' : locale === 'en' ? 'e.g. 10 Downing Street' : 'bijv. Keizersgracht 142'}
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                   <div>
                     <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.cityLabel}</label>
                     <input
@@ -556,7 +556,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.city}
                       onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
                       placeholder={locale === 'de' ? 'Berlin' : locale === 'en' ? 'London' : 'Amsterdam'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
@@ -569,7 +569,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.state}
                       onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
                       placeholder={isUS ? 'z. B. NY / CA / TX' : (locale === 'de' ? 'Bayern' : locale === 'en' ? 'Greater London' : 'Noord-Holland')}
-                      className={`w-full bg-white border rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm ${
+                      className={`w-full bg-white border rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm ${
                         isUS && !customer.state?.trim() ? 'border-amber-300' : 'border-[#E2DDD5]'
                       }`}
                     />
@@ -582,7 +582,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.postal_code}
                       onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
                       placeholder={locale === 'de' ? '10117' : locale === 'en' ? 'SW1A 2AA' : '1015 CJ'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
@@ -592,7 +592,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   <select
                     value={customer.country}
                     onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   >
                     {t.orderModal.countries.map((c) => (
                       <option key={c.code} value={c.name}>
@@ -611,7 +611,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   {t.orderModal.giftSectionTitle}
                 </span>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <div>
                     <label className="text-[11px] text-[#57534E] font-medium block mb-1">
                       {t.orderModal.giftNoteLabel}
@@ -621,7 +621,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.gift_note}
                       onChange={(e) => setCustomer({ ...customer, gift_note: e.target.value })}
                       placeholder={t.orderModal.giftNotePlaceholder}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                     />
                   </div>
                   <div>
@@ -633,7 +633,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       value={customer.producer_notes}
                       onChange={(e) => setCustomer({ ...customer, producer_notes: e.target.value })}
                       placeholder={t.orderModal.producerNotePlaceholder}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                     />
                   </div>
                 </div>

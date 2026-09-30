@@ -67,10 +67,18 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   const { locale, t, formatDate, currency, setCurrency } = useLanguage();
   const [activeTab, setActiveTab] = useState<StudioTab>('location');
   const [searchQuery, setSearchQuery] = useState(config.locationName);
+  const [hasUserTypedLocation, setHasUserTypedLocation] = useState(false);
   const [geocodeResults, setGeocodeResults] = useState<GeocodeResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isCustomizingTypography, setIsCustomizingTypography] = useState(false);
+
+  // Sync searchQuery when external config.locationName changes (e.g. occasion presets)
+  useEffect(() => {
+    if (!hasUserTypedLocation) {
+      setSearchQuery(config.locationName);
+    }
+  }, [config.locationName, hasUserTypedLocation]);
 
   const regionalPopularLocations = React.useMemo(() => {
     if (locale === 'de') {
@@ -97,9 +105,9 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   }, [locale]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Debounced geocoding search
+  // Debounced geocoding search - only runs when user actively types
   useEffect(() => {
-    if (!searchQuery || searchQuery.trim().length < 2) {
+    if (!hasUserTypedLocation || !searchQuery || searchQuery.trim().length < 2) {
       setGeocodeResults([]);
       return;
     }
@@ -123,7 +131,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, hasUserTypedLocation]);
 
   // Click outside listener
   useEffect(() => {
@@ -137,6 +145,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   }, []);
 
   const handleSelectLocation = (loc: { name: string; lat: number; lon: number; display_name?: string }) => {
+    setHasUserTypedLocation(false);
     setSearchQuery(loc.name);
     setShowDropdown(false);
 
@@ -304,7 +313,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   };
 
   return (
-    <div className="order-2 lg:order-1 w-full lg:w-[490px] xl:w-[530px] shrink-0 h-auto lg:h-[calc(100vh-65px)] flex flex-col justify-between overflow-y-auto bg-[#FAF8F5] border-r border-[#EAE5DC] p-3.5 sm:p-5 lg:p-6 space-y-6 text-[#1C1917]">
+    <div className="order-2 lg:order-1 flex-1 min-h-0 w-full lg:w-[490px] xl:w-[530px] shrink-0 h-auto lg:h-[calc(100vh-65px)] flex flex-col justify-between overflow-y-auto overscroll-contain bg-[#FAF8F5] border-r border-[#EAE5DC] p-3 sm:p-5 lg:p-6 text-[#1C1917]">
       <div className="space-y-5">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center justify-between">
@@ -326,8 +335,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         </div>
 
         {/* Studio 5-Step Stepper Tabs */}
-        <div>
-          <div className="grid grid-cols-5 p-1.5 rounded-2xl bg-[#EDE7DE] border border-[#DDD5C7] gap-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
+        <div className="sticky top-0 z-20 bg-[#FAF8F5] pt-1 pb-2 -mt-1 shadow-[0_4px_6px_-4px_rgba(0,0,0,0.04)] sm:shadow-none">
+          <div className="grid grid-cols-5 p-1 sm:p-1.5 rounded-2xl bg-[#EDE7DE] border border-[#DDD5C7] gap-0.5 sm:gap-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
             {stepsList.map((step) => {
               const isCurrent = activeTab === step.id;
               return (
@@ -388,10 +397,18 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                      setHasUserTypedLocation(true);
+                      setSearchQuery(e.target.value);
+                    }}
+                    onFocus={() => {
+                      if (hasUserTypedLocation && geocodeResults.length > 0) {
+                        setShowDropdown(true);
+                      }
+                    }}
                     onKeyDown={handleKeyDownSearch}
                     placeholder={t.studio.locationSearchPlaceholder}
-                    className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-10 pr-10 py-2.5 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] transition"
+                    className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-10 pr-10 py-2.5 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] transition"
                   />
                   {isSearching && (
                     <RefreshCw className="w-3.5 h-3.5 text-[#A37055] animate-spin absolute right-3.5" />
@@ -1494,7 +1511,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       </div>
 
       {/* Sticky Bottom Action Card */}
-      <div className="pt-4 border-t border-[#EAE5DC] space-y-3 bg-[#FAF8F5]">
+      <div className="sticky bottom-0 z-20 pt-3 pb-2 -mb-1 border-t border-[#EAE5DC] space-y-2.5 sm:space-y-3 bg-[#FAF8F5] shadow-[0_-4px_6px_-4px_rgba(0,0,0,0.04)] sm:shadow-none">
         <div className="flex items-center justify-between text-xs text-[#78716C] px-1 gap-2">
           <div className="flex items-center gap-1.5 truncate min-w-0 flex-1">
             <span className="font-semibold text-[#1C1917] truncate">{currentPriceDetails.typeLabel}</span>

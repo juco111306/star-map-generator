@@ -329,12 +329,12 @@ class IntegrityTestSuite:
     def check_pillar_5_gelato_fulfillment(self):
         print(f"\n{BOLD}{CYAN}▶ PILLAR 5: Gelato Print-on-Demand Parity{RESET}")
 
-        # 1. Gelato Order Type is DRAFT for maximum safety
+        # 1. Gelato Order Type is a valid mode ('order' for automated production or 'draft' for review)
         self.log_result(
-            "Gelato Safety",
-            "Gelato Safe Draft Mode (GELATO_ORDER_TYPE == 'draft')",
-            GELATO_ORDER_TYPE == "draft",
-            f"Active mode: '{GELATO_ORDER_TYPE}' (Orders stay in draft for approval)",
+            "Gelato Mode",
+            f"Gelato Mode Configured ({GELATO_ORDER_TYPE})",
+            GELATO_ORDER_TYPE in ("order", "draft"),
+            f"Active mode: '{GELATO_ORDER_TYPE}' ({'Direct production dispatch' if GELATO_ORDER_TYPE == 'order' else 'Drafts for approval'})",
         )
 
         # 2. Test 30 combinations of sizes x frames

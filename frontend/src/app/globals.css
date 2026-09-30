@@ -47,3 +47,12 @@ body {
   background-color: #E8E2D5;
   color: #1C1917;
 }
+
+/* Prevent iOS Safari from auto-zooming into form inputs on touch devices */
+@media screen and (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

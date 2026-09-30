@@ -465,7 +465,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       )}
 
       {currentView === 'customizer' && (
-        <main className="flex-1 flex flex-col lg:flex-row overflow-x-hidden lg:overflow-hidden relative w-full max-w-full">
+        <main className="flex-1 flex flex-col lg:flex-row h-[calc(100dvh-65px)] overflow-hidden relative w-full max-w-full">
           {/* Left: Redesigned Step-Based Studio Panel */}
           <ConfigPanel
             config={config}
