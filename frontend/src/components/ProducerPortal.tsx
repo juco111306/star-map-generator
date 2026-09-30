@@ -752,21 +752,44 @@ const ProducerOrderCard: React.FC<ProducerOrderCardProps> = ({
             <span>Openen in Browser</span>
           </a>
 
-          {/* Gelato Print-on-Demand Action Button */}
+          {/* Gelato Print-on-Demand Action Section */}
           {!isDigital && (
-            <button
-              onClick={handleSendToGelato}
-              disabled={isSendingGelato}
-              className="w-full px-4 py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition shadow-sm disabled:opacity-50"
-              title="Stuur 300 DPI PDF en klant bezorgadres direct door naar Gelato"
-            >
-              {isSendingGelato ? (
-                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <Send className="w-3.5 h-3.5" />
-              )}
-              <span>{order.gelato_order_id ? 'Opnieuw naar Gelato' : 'Verzend naar Gelato'}</span>
-            </button>
+            order.gelato_order_id ? (
+              <div className="w-full p-2.5 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl text-left space-y-1 shadow-xs">
+                <div className="flex items-center gap-1.5 text-emerald-800 text-[11px] font-semibold">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>Aangemeld bij Gelato</span>
+                </div>
+                <p className="text-[10px] text-emerald-700 leading-snug">
+                  {order.gelato_status === 'draft' || !order.gelato_status
+                    ? 'Staat als Concept in Gelato. Keur de order goed in je Gelato Dashboard om het printen te starten.'
+                    : `Gelato status: ${order.gelato_status}`}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleSendToGelato}
+                  disabled={isSendingGelato}
+                  className="text-[10px] text-[#78716C] hover:text-[#1C1917] underline pt-0.5 inline-block transition disabled:opacity-50"
+                  title="Alleen gebruiken als je de order opnieuw wilt aanbieden aan Gelato"
+                >
+                  {isSendingGelato ? 'Opnieuw verzenden...' : 'Handmatig opnieuw aanbieden aan Gelato'}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleSendToGelato}
+                disabled={isSendingGelato}
+                className="w-full px-4 py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition shadow-sm disabled:opacity-50"
+                title="Stuur 300 DPI PDF en klant bezorgadres direct door naar Gelato"
+              >
+                {isSendingGelato ? (
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Send className="w-3.5 h-3.5" />
+                )}
+                <span>Handmatig naar Gelato Sturen</span>
+              </button>
+            )
           )}
 
           {gelatoMessage && (

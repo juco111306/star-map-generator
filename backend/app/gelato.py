@@ -16,7 +16,7 @@ GELATO_API_KEY = os.getenv("GELATO_API_KEY", "")
 GELATO_BASE_URL = os.getenv("GELATO_BASE_URL", "https://order.gelatoapis.com/v4")
 # "draft" creates a safe order in your Gelato dashboard for inspection without charging.
 # "order" creates a live production order immediately.
-GELATO_ORDER_TYPE = os.getenv("GELATO_ORDER_TYPE", "order")
+GELATO_ORDER_TYPE = os.getenv("GELATO_ORDER_TYPE", "draft")
 PUBLIC_APP_URL = os.getenv("PUBLIC_APP_URL", os.getenv("APP_BASE_URL", "https://stellaire.nl"))
 
 # ISO 3166-1 alpha-2 Country Mapping
