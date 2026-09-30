@@ -23,7 +23,7 @@ import { apiFetch } from '../utils/api';
 import { useLanguage } from '../context/LanguageContext';
 import { generateStarMapPdfBlob } from '../utils/pdfGenerator';
 
-const ADMIN_PIN = '1991';
+const ADMIN_PIN = process.env.NEXT_PUBLIC_ADMIN_PIN || '1991';
 
 interface ProducerPortalProps {
   onBackToStudio: () => void;
@@ -136,7 +136,6 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
       desc: 'Dit beheerdersportaal is strikt beveiligd voor het atelier en de drukkerij. Voer het beheerderswachtwoord / pincode in om toegang te krijgen tot de productiewachtrij.',
       label: 'Atelier Wachtwoord / Pincode',
       placeholder: '••••',
-      pinHint: 'Standaard pincode: 1991',
       button: 'Ontgrendel Wachtrij →',
       error: 'Onjuiste pincode. Probeer het opnieuw.',
       back: 'Terug naar Atelier & Winkel',
@@ -149,7 +148,6 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
       desc: 'This admin portal is restricted to atelier staff and the master print workshop. Please enter the administrator password / PIN code to access the production queue.',
       label: 'Admin Password / PIN Code',
       placeholder: '••••',
-      pinHint: 'Default PIN: 1991',
       button: 'Unlock Production Queue →',
       error: 'Incorrect PIN code. Please try again.',
       back: 'Back to Atelier & Store',
@@ -162,7 +160,6 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
       desc: 'Dieses Verwaltungsportal ist ausschließlich für das Atelier und die Druckerei geschützt. Bitte geben Sie das Passwort / die PIN ein, um auf die Produktionswarteschlange zuzugreifen.',
       label: 'Atelier-Passwort / PIN',
       placeholder: '••••',
-      pinHint: 'Standard-PIN: 1991',
       button: 'Warteschlange entsperren →',
       error: 'Falsche PIN. Bitte versuchen Sie es erneut.',
       back: 'Zurück zum Atelier & Shop',
@@ -213,9 +210,6 @@ export const ProducerPortal: React.FC<ProducerPortalProps> = ({ onBackToStudio }
                     : 'border-[#E2DDD5] text-[#1C1917] focus:border-[#1C1917]'
                 }`}
               />
-              <p className="text-[11px] text-[#A8A29E] text-center mt-1.5 font-mono">
-                {tLock.pinHint}
-              </p>
               {pinError && (
                 <p className="text-xs text-red-600 mt-2 font-medium text-center">
                   {tLock.error}
