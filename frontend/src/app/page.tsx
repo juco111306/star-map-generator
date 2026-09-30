@@ -389,10 +389,20 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       {/* Main Content Router */}
       {currentView === 'landing' && (
         <main className="flex-1 w-full max-w-full overflow-x-hidden">
-          <LandingHero onNavigate={(v) => {
-            setCurrentView(v);
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-          }} />
+          <LandingHero
+            onNavigate={(v) => {
+              setCurrentView(v);
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+            onStartWithPreset={(preset) => {
+              setConfig((prev) => ({
+                ...prev,
+                ...preset,
+              }));
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+          />
           <ProductCatalog
             onCustomizeStarMap={() => {
               setCurrentView('customizer');
