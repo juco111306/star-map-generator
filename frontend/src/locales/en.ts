@@ -18,7 +18,7 @@ export const en: Translations = {
     or: 'or',
   },
   navbar: {
-    bannerText: 'Free shipping across Europe & UK',
+    bannerText: 'Free shipping in Europe, UK & US • Worldwide 300 DPI Digital PDF',
     bannerSub: '100% Artisan Quality Guarantee',
     howItWorks: 'How it works',
     styles: 'Art styles',
@@ -92,17 +92,17 @@ export const en: Translations = {
       },
     },
     digital: {
-      title: 'Digital High-Resolution PDF',
-      subtitle: 'Instant download in ultra-sharp 300 DPI vector format',
-      badge: 'Instant Access',
+      title: '300 DPI Digital Vector PDF (Worldwide)',
+      subtitle: 'Instant delivery via email • Print & frame locally in your city',
+      badge: 'Worldwide • Instant',
       description:
-        'Perfect for printing at a local fine-art studio or sending as an immediate, heartfelt gift.',
+        'Ideal for international customers worldwide or last-minute celebrations. Receive a museum-resolution 300 DPI vector file calibrated for standard frames (30×40, 50×70, 60×90 cm / 18×24″). Print locally at any photo studio and custom-frame to your taste!',
       pricePrefix: 'From',
       features: [
-        'Crisp vector typography & lines at 300 DPI resolution',
-        'Available immediately upon checkout & sent via email',
-        'Scalable for all standard frames up to 70×100 cm',
-        'Calibrated color profile for professional fine-art printers',
+        'Crisp vector typography & stars at 300 DPI resolution',
+        'Available immediately upon checkout & sent directly via email',
+        'Scalable for all standard frames up to 70×100 cm and 24×36″',
+        'Worldwide availability: print locally in your city and save on shipping times',
       ],
       cta: 'Customize Digital',
     },
@@ -463,6 +463,7 @@ export const en: Translations = {
       { code: 'NO', name: 'Norway', shippingNote: 'Tracked via Posten / DHL' },
       { code: 'FI', name: 'Finland', shippingNote: 'Tracked via Posti / DHL' },
       { code: 'LU', name: 'Luxembourg', shippingNote: 'Tracked via POST Luxembourg / DHL' },
+      { code: 'OTHER', name: 'Other Countries / Rest of the World (Digital PDF Only)', shippingNote: 'Instant Worldwide Delivery via Email' },
     ],
     giftSectionTitle: '2. Complimentary Gift Note & Workshop Notes',
     giftNoteLabel: 'Complimentary Wax-Sealed Gift Card',
@@ -477,6 +478,15 @@ export const en: Translations = {
     proceedToPayment: 'Secure Checkout',
     digitalDeliveryNotice: 'Instant digital delivery',
     physicalDeliveryNotice: 'Artisan workshop production • Trusted partners (DHL, Royal Mail, PostNL)',
+    worldwideDeliveryBadge: 'Worldwide Delivery • Instant Email',
+    worldwideDeliveryNotice:
+      'Available worldwide! Delivered directly to your email inbox in museum-grade 300 DPI vector format within moments.',
+    physicalShippingRegionNotice:
+      'Physical framed posters are currently shipped exclusively within Europe, the United Kingdom, and the United States.',
+    switchToDigitalButton: 'Switch to Worldwide 300 DPI Digital PDF',
+    digitalPushTitle: 'Outside our physical shipping zone? Get the 300 DPI Digital PDF!',
+    digitalPushDesc:
+      'Live outside Europe, the UK, or the US? Order our 300 DPI Digital PDF! You receive an ultra-sharp, scalable vector file immediately after checkout. Print locally at any fine-art studio or print shop in your city and choose your own custom frame — zero shipping delays, zero customs fees.',
     paymentMethodsTitle: 'Accepted payment methods:',
     paymentBadges: ['Visa / Mastercard', 'Apple Pay', 'Google Pay', 'Klarna', 'PayPal'],
   },

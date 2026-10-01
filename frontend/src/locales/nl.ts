@@ -18,7 +18,7 @@ export const nl: Translations = {
     or: 'of',
   },
   navbar: {
-    bannerText: 'Gratis verzending in Nederland & België',
+    bannerText: 'Gratis verzending in Europa, VK & VS • Wereldwijde 300 DPI Digitale PDF',
     bannerSub: '100% Ambachtelijke Kwaliteitsgarantie',
     howItWorks: 'Hoe het werkt',
     styles: 'Kunststijlen',
@@ -92,17 +92,17 @@ export const nl: Translations = {
       },
     },
     digital: {
-      title: 'Digitaal Vector PDF Bestand',
-      subtitle: 'Directe download in ultra-hoge resolutie (300 DPI)',
-      badge: 'Direct Beschikbaar',
+      title: '300 DPI Digitaal Vector PDF (Wereldwijd)',
+      subtitle: 'Directe levering via e-mail • Print & lijst lokaal in uw stad',
+      badge: 'Wereldwijd • Direct',
       description:
-        'Ideaal om zelf te laten drukken bij een lokale drukkerij of direct als betekenisvol geschenk te versturen.',
+        'Ideaal voor internationale klanten wereldwijd of last-minute cadeaus. Ontvang een haarscherp 300 DPI vectorbestand gekalibreerd voor standaardlijsten (30×40, 50×70, 60×90 cm). Print eenvoudig bij een lokale fotostudio en kies zelf uw lijst!',
       pricePrefix: 'Vanaf',
       features: [
-        'Scherpe vectorgrafieken op 300 DPI drukresolutie',
-        'Direct na afronding downloadbaar',
-        'Geschikt voor alle standaardformaten tot 70×100 cm',
-        'Kleurprofiel geoptimaliseerd voor fine-art printers',
+        'Haarscherpe vector typografie & sterren op 300 DPI resolutie',
+        'Direct na afronding downloadbaar en per e-mail verstuurd',
+        'Schaalbaar voor alle standaardlijsten tot 70×100 cm en 24×36″',
+        'Wereldwijd beschikbaar: print lokaal in uw stad zonder verzendtijd',
       ],
       cta: 'Personaliseer Digitaal',
     },
@@ -463,6 +463,7 @@ export const nl: Translations = {
       { code: 'NO', name: 'Noorwegen', shippingNote: 'Tracked via Posten / DHL' },
       { code: 'FI', name: 'Finland', shippingNote: 'Tracked via Posti / DHL' },
       { code: 'LU', name: 'Luxemburg', shippingNote: 'Tracked via POST Luxembourg / DHL' },
+      { code: 'OTHER', name: 'Overige Landen / Rest van de Wereld (Alleen Digitale PDF)', shippingNote: 'Directe Wereldwijde Levering per E-mail' },
     ],
     giftSectionTitle: '2. Cadeaukaartje & Aanwijzingen voor de Drukker',
     giftNoteLabel: 'Kosteloos Cadeaukaartje (Met Waszegel)',
@@ -477,6 +478,15 @@ export const nl: Translations = {
     proceedToPayment: 'Veilig Betalen',
     digitalDeliveryNotice: 'Digitale instant levering',
     physicalDeliveryNotice: 'Productie via meester-atelier • Vertrouwde partners (zoals PostNL, Bpost)',
+    worldwideDeliveryBadge: 'Wereldwijde Levering • Direct per E-mail',
+    worldwideDeliveryNotice:
+      'Wereldwijd beschikbaar! Direct na betaling verzonden naar uw e-mailadres in museumwaardig 300 DPI vectorformaat.',
+    physicalShippingRegionNotice:
+      'Fysieke ingelijste posters worden momenteel uitsluitend verzonden binnen Europa, het Verenigd Koninkrijk en de Verenigde Staten.',
+    switchToDigitalButton: 'Kies Wereldwijde 300 DPI Digitale PDF',
+    digitalPushTitle: 'Buiten onze bezorgzone voor fysieke prints? Kies de Digitale PDF!',
+    digitalPushDesc:
+      'Woont u buiten Europa, het VK of de VS? Kies voor onze 300 DPI Digitale PDF! U ontvangt direct na betaling een haarscherp, schaalbaar vectorbestand. Print lokaal bij een fotostudio of lijstenmakerij in uw eigen stad en kies een lijst naar smaak — zonder douanekosten of vertragingen.',
     paymentMethodsTitle: 'Beschikbare betaalmethoden:',
     paymentBadges: ['iDEAL', 'Bancontact', 'Klarna', 'Visa / Mastercard', 'Apple Pay'],
   },

@@ -24,7 +24,7 @@ import {
   Printer,
   ChevronRight,
   ChevronLeft,
-  ArrowLeft,
+  Globe,
   Circle,
   Heart,
 } from 'lucide-react';
@@ -317,39 +317,8 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       id="atelier-panel"
       className="order-2 lg:order-1 w-full lg:w-[490px] xl:w-[530px] shrink-0 flex flex-col justify-between bg-[#FAF8F5] border-r border-[#EAE5DC] text-[#1C1917] lg:h-[calc(100vh-65px)]"
     >
-      {/* Header: Breadcrumb & 1.-5. Stepper Tabs (Stationary, Solid, NOTHING behind it) */}
-      <div className="shrink-0 p-3 sm:p-5 lg:p-6 pb-2.5 sm:pb-3 bg-[#FAF8F5] border-b border-[#EAE5DC] z-10 space-y-3 sm:space-y-4">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-[11px] text-[#78716C]">
-            <button onClick={onBackToProducts} className="hover:text-[#1C1917] transition-colors">
-              {t.studio.breadcrumbHome}
-            </button>
-            <span>/</span>
-            <span className="text-[#1C1917] font-medium">{t.studio.breadcrumbProduct}</span>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            {/* Mobile quick jump up to live poster */}
-            <button
-              type="button"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="lg:hidden text-[11px] text-[#A37055] hover:text-[#1C1917] font-medium transition-colors flex items-center gap-1 bg-[#F0EBE1] hover:bg-[#E7DFD3] px-2.5 py-1 rounded-full border border-[#DDD5C7] shadow-2xs"
-            >
-              <Eye className="w-3 h-3 text-[#A37055]" />
-              <span>{locale === 'de' ? 'Poster ↑' : locale === 'en' ? 'Poster ↑' : 'Poster ↑'}</span>
-            </button>
-
-            <button
-              onClick={onBackToProducts}
-              className="text-xs text-[#A37055] hover:text-[#1C1917] font-medium transition-colors flex items-center gap-1"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>{t.studio.backToHome}</span>
-            </button>
-          </div>
-        </div>
-
+      {/* Header: 1.-5. Stepper Tabs (Stationary, Solid, NOTHING behind it) */}
+      <div className="shrink-0 p-2.5 sm:p-4 lg:p-5 bg-[#FAF8F5] border-b border-[#EAE5DC] z-10">
         {/* Studio 5-Step Stepper Tabs */}
         <div>
           <div className="grid grid-cols-5 p-1 sm:p-1.5 rounded-2xl bg-[#EDE7DE] border border-[#DDD5C7] gap-0.5 sm:gap-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
@@ -1293,6 +1262,27 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   ? 'Printed and carefully framed by our master partner with years of framing expertise on 200 gsm Classic Matte paper, or choose an instant print-ready digital vector PDF.'
                   : 'Geprint en met zorg ingelijst door onze partner met jarenlange ervaring en prachtige kwaliteitslijsten op 200 gsm Classic Matte papier, of kies voor een direct print-klaar digitaal PDF bestand.'}
               </p>
+
+              {/* Delivery Scope Information Banner */}
+              <div className="p-3 bg-[#F5F2EB] rounded-xl border border-[#E8E4DC] text-xs space-y-1">
+                <div className="flex items-center gap-1.5 font-medium text-[#1C1917]">
+                  <Globe className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                  <span>
+                    {locale === 'de'
+                      ? 'Weltweiter PDF-Versand • Physische Rahmen: Europa, UK & USA'
+                      : locale === 'en'
+                      ? 'Worldwide Digital PDF • Physical Framing: Europe, UK & US'
+                      : 'Wereldwijde Digitale PDF • Fysieke Lijsten: Europa, VK & VS'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#78716C] leading-relaxed">
+                  {locale === 'de'
+                    ? 'Kunden weltweit erhalten sofort nach Kauf die hochauflösende 300 DPI Vektordatei per E-Mail zum lokalen Drucken & Einrahmen vor Ort.'
+                    : locale === 'en'
+                    ? 'Customers worldwide receive an instant 300 DPI vector PDF via email, ready for local printing and custom framing in your city.'
+                    : 'Klanten wereldwijd ontvangen direct na aankoop de hoge resolutie 300 DPI vector PDF per e-mail voor lokaal afdrukken en inlijsten.'}
+                </p>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {frameOptions.map((f) => {

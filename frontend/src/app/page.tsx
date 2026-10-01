@@ -505,6 +505,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
         config={config}
         onOrderSuccess={handleOrderSuccess}
         onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
+        onSwitchToDigital={() => setConfig((prev) => ({ ...prev, frameStyle: 'digital' }))}
       />
 
       {/* Customer Order Tracking & History Dashboard Modal */}

@@ -16,6 +16,7 @@ import {
   AlertCircle,
   X,
   ShieldCheck,
+  Globe,
 } from 'lucide-react';
 import { CustomerDetails, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
@@ -34,6 +35,7 @@ interface OrderModalProps {
   config: MapConfig;
   onOrderSuccess: (order: OrderRecord) => void;
   onOpenReturnPolicy?: () => void;
+  onSwitchToDigital?: () => void;
 }
 
 export const OrderModal: React.FC<OrderModalProps> = ({
@@ -42,6 +44,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   config,
   onOrderSuccess,
   onOpenReturnPolicy,
+  onSwitchToDigital,
 }) => {
   const { locale, t, currency, isUK } = useLanguage();
   const [customer, setCustomer] = useState<CustomerDetails>({
@@ -71,6 +74,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
     (customer.country || '').toLowerCase().includes('verenigde staten') ||
     (customer.country || '').toLowerCase().includes('vereinigte staaten') ||
     (customer.country || '').toUpperCase() === 'US';
+  const isNonEUUS =
+    (customer.country || '').includes('Other') ||
+    (customer.country || '').includes('Overige') ||
+    (customer.country || '').includes('Andere') ||
+    (customer.country || '').toUpperCase() === 'OTHER';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,18 +92,20 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       return;
     }
     if (!isDigital) {
-      const isAllowed = t.orderModal.countries.some(
-        (c) =>
-          c.name.toLowerCase() === (customer.country || '').toLowerCase() ||
-          c.code.toLowerCase() === (customer.country || '').toLowerCase()
-      );
+      const isAllowed = t.orderModal.countries
+        .filter((c) => c.code !== 'OTHER')
+        .some(
+          (c) =>
+            c.name.toLowerCase() === (customer.country || '').toLowerCase() ||
+            c.code.toLowerCase() === (customer.country || '').toLowerCase()
+        );
       if (!isAllowed) {
         setError(
           locale === 'de'
-            ? 'Lieferungen sind derzeit nur nach Europa, Großbritannien und in die USA möglich. Zahlungen aus anderen Ländern werden nicht akzeptiert.'
+            ? 'Physische Rahmen werden derzeit nur nach Europa, Großbritannien und in die USA versendet. Bitte wählen Sie unsere 300 DPI digitale PDF für weltweiten Sofortversand!'
             : locale === 'en'
-            ? 'We currently only deliver to European destinations, the United Kingdom, and the United States. Orders from other countries cannot be accepted.'
-            : 'Bezorging is momenteel alleen mogelijk binnen Europese landen, het Verenigd Koninkrijk en de Verenigde Staten. Bestellingen naar overige bestemmingen worden niet geaccepteerd.'
+            ? 'Physical shipments are currently only available within Europe, the United Kingdom, and the United States. Please switch to our Worldwide 300 DPI Digital PDF for instant delivery!'
+            : 'Fysieke lijsten worden momenteel alleen verzonden binnen Europa, het Verenigd Koninkrijk en de Verenigde Staten. Kies onze wereldwijde 300 DPI digitale PDF voor directe levering!'
         );
         return;
       }
@@ -468,11 +478,16 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Customer & Shipping / Delivery Fields */}
             {isDigital ? (
               <div className="space-y-3">
-                <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl text-xs text-sky-900 flex items-center gap-2">
-                  <Download className="w-4 h-4 text-sky-600 shrink-0" />
-                  <span>
-                    <strong>{locale === 'de' ? 'Digitale Edition:' : locale === 'en' ? 'Digital Edition:' : 'Digitale Editie:'}</strong> {t.orderModal.digitalNotice}
-                  </span>
+                <div className="p-3 bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-xl text-xs text-sky-950 flex items-start gap-2.5 shadow-2xs">
+                  <Globe className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <div className="font-semibold text-sky-900 flex items-center gap-1.5">
+                      <span>{t.orderModal.worldwideDeliveryBadge}</span>
+                    </div>
+                    <p className="text-[11px] text-sky-800 leading-relaxed">
+                      {t.orderModal.worldwideDeliveryNotice}
+                    </p>
+                  </div>
                 </div>
 
                 <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider block">
@@ -591,7 +606,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   <label className="text-[11px] text-[#57534E] font-medium block mb-1">{t.orderModal.countryLabel}</label>
                   <select
                     value={customer.country}
-                    onChange={(e) => setCustomer({ ...customer, country: e.target.value })}
+                    onChange={(e) => {
+                      setCustomer({ ...customer, country: e.target.value });
+                      setError(null);
+                    }}
                     className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] shadow-sm"
                   >
                     {t.orderModal.countries.map((c) => (
@@ -600,6 +618,46 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       </option>
                     ))}
                   </select>
+                </div>
+
+                {/* Worldwide Digital PDF Push / Regional Shipping Notice */}
+                <div
+                  className={`p-3 rounded-xl border text-xs space-y-2 transition-all ${
+                    isNonEUUS
+                      ? 'bg-amber-50/90 border-amber-300 text-amber-950 shadow-xs ring-1 ring-amber-300'
+                      : 'bg-[#F0F7FF] border-[#BFDBFE] text-[#1E3A8A]'
+                  }`}
+                >
+                  <div className="flex items-start gap-2.5">
+                    <Globe className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex items-center justify-between gap-1 flex-wrap">
+                        <strong className="text-[11.5px] font-semibold text-[#1E3A8A]">
+                          {t.orderModal.digitalPushTitle}
+                        </strong>
+                        <span className="text-[9.5px] font-medium px-2 py-0.5 rounded-full bg-white border border-sky-200 text-sky-800 shrink-0">
+                          300 DPI • Instant
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#334155] leading-relaxed">
+                        {t.orderModal.digitalPushDesc}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onSwitchToDigital) {
+                        onSwitchToDigital();
+                        setError(null);
+                      }
+                    }}
+                    className="w-full py-2 px-3 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>{t.orderModal.switchToDigitalButton}</span>
+                  </button>
                 </div>
               </div>
             )}

@@ -336,6 +336,12 @@ export interface Translations {
     proceedToPayment: string;
     digitalDeliveryNotice: string;
     physicalDeliveryNotice: string;
+    worldwideDeliveryBadge: string;
+    worldwideDeliveryNotice: string;
+    physicalShippingRegionNotice: string;
+    switchToDigitalButton: string;
+    digitalPushTitle: string;
+    digitalPushDesc: string;
     paymentMethodsTitle: string;
     paymentBadges: string[];
   };

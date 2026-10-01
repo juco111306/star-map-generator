@@ -18,7 +18,7 @@ export const de: Translations = {
     or: 'oder',
   },
   navbar: {
-    bannerText: 'Kostenloser Versand in Deutschland & Österreich',
+    bannerText: 'Kostenloser Versand in Europa, UK & USA • Weltweite 300 DPI Digitale PDF',
     bannerSub: '100% Handwerkliche Qualitätsgarantie',
     howItWorks: 'Wie es funktioniert',
     styles: 'Kunststile',
@@ -92,17 +92,17 @@ export const de: Translations = {
       },
     },
     digital: {
-      title: 'Digitale Vektor-PDF-Datei',
-      subtitle: 'Sofortiger Download in Ultra-High-Definition (300 DPI)',
-      badge: 'Sofort Verfügbar',
+      title: '300 DPI Digitale Vektor-PDF (Weltweit)',
+      subtitle: 'Sofortige E-Mail-Lieferung • Lokal in Ihrer Stadt drucken & rahmen',
+      badge: 'Weltweit • Sofort',
       description:
-        'Ideal für den Selbstdruck bei einer lokalen Druckerei oder als kurzfristiges, bedeutungsvolles Geschenk.',
+        'Ideal für internationale Kunden weltweit oder last-minute Geschenke. Erhalten Sie eine hochauflösende 300 DPI Vektordatei, abgestimmt auf alle Standardrahmen (30×40, 50×70, 60×90 cm). Drucken Sie lokal bei jedem Fotostudio und wählen Sie Ihren Wunschrahmen vor Ort!',
       pricePrefix: 'Ab',
       features: [
-        'Gestochen scharfe Vektorgrafiken mit 300 DPI Druckauflösung',
+        'Gestochen scharfe Vektorgrafiken & Sterne mit 300 DPI Auflösung',
         'Direkt nach Abschluss downloadbar und per E-Mail gesendet',
-        'Skalierbar für alle Standardgrößen bis zu 70×100 cm',
-        'Farbprofil für Kunstdrucker optimiert',
+        'Skalierbar für alle Standardgrößen bis zu 70×100 cm und 24×36″',
+        'Weltweit verfügbar: lokal drucken ohne Versandkosten oder Wartezeiten',
       ],
       cta: 'Digital Gestalten',
     },
@@ -463,6 +463,7 @@ export const de: Translations = {
       { code: 'NO', name: 'Norwegen', shippingNote: 'Versichert mit Posten / DHL' },
       { code: 'FI', name: 'Finnland', shippingNote: 'Versichert mit Posti / DHL' },
       { code: 'LU', name: 'Luxemburg', shippingNote: 'Versichert mit POST Luxembourg / DHL' },
+      { code: 'OTHER', name: 'Andere Länder / Rest der Welt (Nur digitale PDF)', shippingNote: 'Sofortige weltweite E-Mail-Lieferung' },
     ],
     giftSectionTitle: '2. Kostenlose Grußkarte & Druckanweisungen',
     giftNoteLabel: 'Kostenlose Grußkarte (mit Lacksiegel)',
@@ -477,6 +478,15 @@ export const de: Translations = {
     proceedToPayment: 'Sicher Bezahlen',
     digitalDeliveryNotice: 'Sofortige digitale Bereitstellung',
     physicalDeliveryNotice: 'Fertigung im Meisteratelier • Vertrauenswürdige Partner (DHL, DPD)',
+    worldwideDeliveryBadge: 'Weltweite Lieferung • Sofort per E-Mail',
+    worldwideDeliveryNotice:
+      'Weltweit verfügbar! Direkt nach Abschluss in musealer 300 DPI Vektorauflösung an Ihr E-Mail-Postfach gesendet.',
+    physicalShippingRegionNotice:
+      'Physisch gerahmte Poster werden derzeit ausschließlich innerhalb Europas, des Vereinigten Königreichs und der USA geliefert.',
+    switchToDigitalButton: 'Weltweite 300 DPI Digitale PDF Wählen',
+    digitalPushTitle: 'Außerhalb unserer physischen Lieferzone? Wählen Sie die Digitale PDF!',
+    digitalPushDesc:
+      'Wohnen Sie außerhalb von Europa, UK oder den USA? Wählen Sie unsere 300 DPI Digitale PDF! Sie erhalten direkt nach dem Kauf eine gestochen scharfe Vektordatei. Drucken Sie lokal in jedem Fotostudio oder bei einer Druckerei in Ihrer Stadt und wählen Sie Ihren Wunschrahmen vor Ort – ganz ohne Zoll oder Versandzeiten.',
     paymentMethodsTitle: 'Verfügbare Zahlungsarten:',
     paymentBadges: ['Sofort / Klarna', 'Giropay / SEPA', 'Visa / Mastercard', 'Apple Pay', 'PayPal'],
   },

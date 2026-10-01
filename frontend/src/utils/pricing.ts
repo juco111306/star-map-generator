@@ -124,16 +124,16 @@ export const getLocalizedImperialSizes = (locale: string = 'en'): PosterSizeOpti
 export const getLocalizedFrameOptions = (locale: string = 'nl') => [
   {
     id: 'digital' as FrameStyle,
-    label: locale === 'de' ? 'Digitale Datei' : locale === 'en' ? 'Digital File' : 'Digitaal Bestand',
+    label: locale === 'de' ? '300 DPI Digitale Datei (Weltweit)' : locale === 'en' ? '300 DPI Digital Vector (Worldwide)' : '300 DPI Digitaal Bestand (Wereldwijd)',
     category: 'digital' as const,
-    sub: locale === 'de' ? '300 DPI Vektor-PDF' : locale === 'en' ? '300 DPI Vector PDF' : '300 DPI Vector PDF',
+    sub: locale === 'de' ? '300 DPI Vektor-PDF • Weltweiter Sofortversand' : locale === 'en' ? '300 DPI Vector PDF • Instant Worldwide' : '300 DPI Vector PDF • Wereldwijd Direct',
     desc:
       locale === 'de'
-        ? 'Sofort per E-Mail in Ultra-High-Definition zum Selbstdrucken oder für lokale Druckereien.'
+        ? 'Weltweiter Sofortversand per E-Mail in 300 DPI. Ideal für den lokalen Druck & Einrahmung in Ihrer Stadt ohne Versandkosten.'
         : locale === 'en'
-        ? 'Instant email delivery in ultra-high resolution to print yourself or at a local print shop.'
-        : 'Direct per e-mail ontvangen in ultrahoge resolutie om zelf te printen of lokaal te laten drukken.',
-    badge: locale === 'de' ? 'Bester Preis • Sofort' : locale === 'en' ? 'Best Value • Instant' : 'Laagste Prijs • Direct',
+        ? 'Worldwide instant delivery via email at 300 DPI. Print locally & custom-frame in your own city with zero shipping delays.'
+        : 'Wereldwijde directe levering per e-mail in 300 DPI. Print lokaal en kies uw eigen lijst in uw stad zonder verzendkosten.',
+    badge: locale === 'de' ? 'Weltweit • Sofort' : locale === 'en' ? 'Worldwide • Instant' : 'Wereldwijd • Direct',
     borderStyle: 'border-dashed border-sky-400',
     bgStyle: 'bg-sky-50',
     innerBg: 'bg-[#0E1526]',
