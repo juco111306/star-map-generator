@@ -98,6 +98,13 @@ export interface MapConfig {
   dividerStyle: DividerStyle;
   dividerSize?: number;
   frameStyle: FrameStyle;
+  placeholders?: {
+    title?: string;
+    names?: string;
+    date?: string;
+    location?: string;
+    coords?: string;
+  };
 }
 
 export type AppView = 'landing' | 'products' | 'customizer' | 'producer' | 'about';

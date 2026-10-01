@@ -135,13 +135,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
       // 2. Resolve typography text defaults if kept unmodified
       const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
-      const resolvedTitle = config.titleBlock?.text?.trim() || activeDef.title;
-      const resolvedNames = config.namesBlock?.text?.trim() || activeDef.names;
-      const resolvedDate = config.dateBlock?.text?.trim() || activeDef.dateStr;
+      const resolvedTitle = config.titleBlock?.text?.trim() || config.placeholders?.title || activeDef.title;
+      const resolvedNames = config.namesBlock?.text?.trim() || config.placeholders?.names || activeDef.names;
+      const resolvedDate = config.dateBlock?.text?.trim() || config.placeholders?.date || activeDef.dateStr;
       const resolvedLocation =
         config.locationBlock?.text?.trim() ||
+        config.placeholders?.location ||
         (config.locationName ? config.locationName.toUpperCase() : activeDef.locationName.toUpperCase());
-      const resolvedCoords = config.coordsBlock?.text?.trim() || activeDef.coords;
+      const resolvedCoords = config.coordsBlock?.text?.trim() || config.placeholders?.coords || activeDef.coords;
 
       const resolvedConfig: MapConfig = {
         ...config,

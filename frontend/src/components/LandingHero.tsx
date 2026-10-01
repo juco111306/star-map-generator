@@ -137,7 +137,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
         longitude: activeOccasion.lng,
         date: activeOccasion.dateIso,
         titleBlock: {
-          text: activeOccasion.title,
+          text: '',
           font: 'Cinzel',
           size: 38,
           tracking: 3,
@@ -146,7 +146,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
           enabled: true,
         },
         namesBlock: {
-          text: activeOccasion.names,
+          text: '',
           font: 'Great Vibes',
           size: 51,
           tracking: 1,
@@ -155,7 +155,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
           enabled: true,
         },
         dateBlock: {
-          text: activeOccasion.date,
+          text: '',
           font: 'Montserrat',
           size: 27,
           tracking: 2.5,
@@ -164,7 +164,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
           enabled: true,
         },
         locationBlock: {
-          text: activeOccasion.location.toUpperCase(),
+          text: '',
           font: 'Montserrat',
           size: 21,
           tracking: 2,
@@ -173,13 +173,20 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
           enabled: true,
         },
         coordsBlock: {
-          text: activeOccasion.coords,
+          text: '',
           font: 'Montserrat',
           size: 21,
           tracking: 1.8,
           uppercase: true,
           italic: false,
           enabled: true,
+        },
+        placeholders: {
+          title: activeOccasion.title,
+          names: activeOccasion.names,
+          date: activeOccasion.date,
+          location: activeOccasion.location.toUpperCase(),
+          coords: activeOccasion.coords,
         },
       });
     } else {

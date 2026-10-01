@@ -40,13 +40,14 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
 
   // Active locale defaults for placeholder fallback
   const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
-  const effectiveTitle = config.titleBlock?.text?.trim() || activeDef.title;
-  const effectiveNames = config.namesBlock?.text?.trim() || activeDef.names;
-  const effectiveDate = config.dateBlock?.text?.trim() || activeDef.dateStr;
+  const effectiveTitle = config.titleBlock?.text?.trim() || config.placeholders?.title || activeDef.title;
+  const effectiveNames = config.namesBlock?.text?.trim() || config.placeholders?.names || activeDef.names;
+  const effectiveDate = config.dateBlock?.text?.trim() || config.placeholders?.date || activeDef.dateStr;
   const effectiveLocation =
     config.locationBlock?.text?.trim() ||
+    config.placeholders?.location ||
     (config.locationName ? config.locationName.toUpperCase() : activeDef.locationName.toUpperCase());
-  const effectiveCoords = config.coordsBlock?.text?.trim() || activeDef.coords;
+  const effectiveCoords = config.coordsBlock?.text?.trim() || config.placeholders?.coords || activeDef.coords;
 
   // Match current style
   const currentStyle = useMemo(() => {

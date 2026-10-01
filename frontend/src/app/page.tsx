@@ -113,9 +113,9 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
     date: '2026-09-22',
     time: '21:00',
 
-    // Fully customizable text blocks
+    // Fully customizable text blocks (empty by default for instant zero-backspace typing)
     titleBlock: {
-      text: activeDef.title,
+      text: '',
       font: 'Cinzel',
       size: 38,
       tracking: 3,
@@ -124,7 +124,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       enabled: true,
     },
     namesBlock: {
-      text: activeDef.names,
+      text: '',
       font: 'Great Vibes',
       size: 51,
       tracking: 1,
@@ -142,7 +142,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       enabled: false,
     },
     dateBlock: {
-      text: activeDef.dateStr,
+      text: '',
       font: 'Montserrat',
       size: 27,
       tracking: 2.5,
@@ -151,7 +151,7 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       enabled: true,
     },
     locationBlock: {
-      text: activeDef.locationName.toUpperCase(),
+      text: '',
       font: 'Montserrat',
       size: 21,
       tracking: 2,
@@ -160,13 +160,20 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       enabled: true,
     },
     coordsBlock: {
-      text: activeDef.coords,
+      text: '',
       font: 'Montserrat',
       size: 21,
       tracking: 1.8,
       uppercase: true,
       italic: false,
       enabled: true,
+    },
+    placeholders: {
+      title: activeDef.title,
+      names: activeDef.names,
+      date: activeDef.dateStr,
+      location: activeDef.locationName.toUpperCase(),
+      coords: activeDef.coords,
     },
 
     // Visual & Celestial Toggles
@@ -208,23 +215,30 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
           longitude: isDefaultLoc ? nextDef.lng : prevConfig.longitude,
           titleBlock: {
             ...prevConfig.titleBlock,
-            text: isDefaultTitle ? nextDef.title : prevConfig.titleBlock.text,
+            text: isDefaultTitle ? '' : prevConfig.titleBlock.text,
           },
           namesBlock: {
             ...prevConfig.namesBlock,
-            text: isDefaultNames ? nextDef.names : prevConfig.namesBlock.text,
+            text: isDefaultNames ? '' : prevConfig.namesBlock.text,
           },
           dateBlock: {
             ...prevConfig.dateBlock,
-            text: isDefaultDate ? nextDef.dateStr : prevConfig.dateBlock.text,
+            text: isDefaultDate ? '' : prevConfig.dateBlock.text,
           },
           locationBlock: {
             ...prevConfig.locationBlock,
-            text: isDefaultLoc ? nextDef.locationName.toUpperCase() : prevConfig.locationBlock.text,
+            text: isDefaultLoc ? '' : prevConfig.locationBlock.text,
           },
           coordsBlock: {
             ...prevConfig.coordsBlock,
-            text: isDefaultLoc ? nextDef.coords : prevConfig.coordsBlock.text,
+            text: isDefaultLoc ? '' : prevConfig.coordsBlock.text,
+          },
+          placeholders: {
+            title: isDefaultTitle ? nextDef.title : prevConfig.placeholders?.title || nextDef.title,
+            names: isDefaultNames ? nextDef.names : prevConfig.placeholders?.names || nextDef.names,
+            date: isDefaultDate ? nextDef.dateStr : prevConfig.placeholders?.date || nextDef.dateStr,
+            location: isDefaultLoc ? nextDef.locationName.toUpperCase() : prevConfig.placeholders?.location || nextDef.locationName.toUpperCase(),
+            coords: isDefaultLoc ? nextDef.coords : prevConfig.placeholders?.coords || nextDef.coords,
           },
         };
       });

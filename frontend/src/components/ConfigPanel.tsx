@@ -56,6 +56,136 @@ interface ConfigPanelProps {
 
 export type StudioTab = 'location' | 'text' | 'font' | 'design' | 'format';
 
+// Comprehensive registry of all default occasion and sample strings across languages
+const ALL_KNOWN_TITLES = new Set([
+  'de sterrenhemel boven',
+  'de nacht waarin we elkaar vonden',
+  'onze huwelijksdag',
+  'welkom op de wereld',
+  'onder dezelfde sterren',
+  'de dag dat wij begonnen',
+  'onze eerste kus',
+  'de dag dat jij geboren werd',
+  'onze trouwdag',
+  'de nacht dat onze wereld veranderde',
+  'waar onze reis begon',
+  'geschreven in de sterren',
+  'the night we met',
+  'our wedding day',
+  'welcome to the world',
+  'under the same stars',
+  'the sky when we met',
+  'the day you were born',
+  'our first kiss',
+  'where our story began',
+  'written in the stars',
+  'the night our stars aligned',
+  'der nachthimmel über',
+  'die nacht, in der wir uns trafen',
+  'unser hochzeitstag',
+  'willkommen auf der welt',
+  'unter den gleichen sternen',
+  'der himmel als wir uns trafen',
+  'der tag an dem du geboren wurdest',
+  'unser erster kuss',
+  'wo unsere geschichte begann',
+  'in den sternen geschrieben',
+  'der moment in dem wir eins wurden',
+]);
+
+const ALL_KNOWN_NAMES = new Set([
+  'emma & lucas',
+  'sophie & thomas',
+  'emma & liam',
+  'sophie & daan',
+  'hannah & maximilian',
+  'olivia & james',
+  'laura & felix',
+  'charlotte & william',
+  'liam alexander',
+  'noah alexander',
+  'oliver james',
+  'mila & thomas',
+  'mia & jonas',
+  'amelia & george',
+]);
+
+const ALL_KNOWN_DATES = new Set([
+  '21 juni 2024',
+  'june 21, 2024',
+  '21. juni 2024',
+  '22 september 2024',
+  'september 22, 2024',
+  '22. september 2024',
+  '18 augustus 2023',
+  'august 18, 2023',
+  '18. august 2023',
+  '14 mei 2025',
+  'may 14, 2025',
+  '14. mai 2025',
+  '04 oktober 2020',
+  'october 04, 2020',
+  '04. oktober 2020',
+  '03 oktober 2021',
+]);
+
+const ALL_KNOWN_LOCATIONS = new Set([
+  'amsterdam, nederland',
+  'london, united kingdom',
+  'berlin, deutschland',
+  'utrecht, nederland',
+  'rotterdam, nederland',
+  'antwerpen, belgië',
+  'den haag, nederland',
+  'münchen, deutschland',
+  'hamburg, deutschland',
+  'köln, deutschland',
+  'wien, österreich',
+  'zürich, schweiz',
+  'new york, united states',
+  'paris, france',
+  'dublin, ireland',
+  'edinburgh, united kingdom',
+  'gent, belgië',
+  'eindhoven, nederland',
+  'brussel, belgië',
+  'amsterdam',
+  'utrecht',
+  'rotterdam',
+  'den haag',
+  'berlin',
+  'london',
+  'münchen',
+  'hamburg',
+  'köln',
+  'wien',
+  'zürich',
+  'new york',
+  'paris',
+  'dublin',
+  'edinburgh',
+]);
+
+const ALL_KNOWN_COORDS = new Set([
+  '52.3676° n • 4.9041° e',
+  '51.5074° n • 0.1278° w',
+  '52.5200° n • 13.4050° e',
+  '52.5200° n • 13.4050° o',
+  '52.0907° n • 5.1214° e',
+  '55.9533° n • 3.1883° w',
+  '48.1351° n • 11.5820° o',
+  '48.1351° n • 11.5820° e',
+  '53.5511° n • 9.9937° o',
+  '53.5511° n • 9.9937° e',
+  '53.3498° n • 6.2603° w',
+  '51.9244° n • 4.4777° e',
+  '48.2082° n • 16.3738° o',
+  '48.2082° n • 16.3738° e',
+  '40.7128° n • 74.0060° w',
+  '51.2194° n • 4.4025° e',
+  '52.0705° n • 4.3007° e',
+]);
+
 export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   config,
   onChange,
@@ -75,29 +205,46 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isCustomizingTypography, setIsCustomizingTypography] = useState(false);
 
-  // Active locale defaults for placeholder guides
+  // Active locale defaults and occasion placeholders
   const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
-  const allTitles = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.title.toLowerCase()), []);
-  const allNames = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.names.toLowerCase()), []);
-  const allDates = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.dateStr.toLowerCase()), []);
-  const allLocs = React.useMemo(
-    () =>
-      Object.values(LOCALE_DEFAULTS).flatMap((d) => [
-        d.locationName.toLowerCase(),
-        d.locationName.toUpperCase().toLowerCase(),
-      ]),
-    []
-  );
-  const allCoords = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.coords.toLowerCase()), []);
+  const activeTitlePlaceholder = config.placeholders?.title || activeDef.title;
+  const activeNamesPlaceholder = config.placeholders?.names || activeDef.names;
+  const activeDatePlaceholder = config.placeholders?.date || activeDef.dateStr;
+  const activeLocationPlaceholder =
+    config.placeholders?.location ||
+    (config.locationName ? config.locationName.toUpperCase() : activeDef.locationName.toUpperCase());
+  const activeCoordsPlaceholder = config.placeholders?.coords || activeDef.coords;
 
-  const isDefaultTitle = !config.titleBlock?.text || allTitles.includes(config.titleBlock.text.trim().toLowerCase());
-  const isDefaultNames = !config.namesBlock?.text || allNames.includes(config.namesBlock.text.trim().toLowerCase());
-  const isDefaultDate = !config.dateBlock?.text || allDates.includes(config.dateBlock.text.trim().toLowerCase());
+  const isDefaultTitle =
+    !config.titleBlock?.text ||
+    !config.titleBlock.text.trim() ||
+    config.titleBlock.text.trim().toLowerCase() === activeTitlePlaceholder.trim().toLowerCase() ||
+    ALL_KNOWN_TITLES.has(config.titleBlock.text.trim().toLowerCase());
+
+  const isDefaultNames =
+    !config.namesBlock?.text ||
+    !config.namesBlock.text.trim() ||
+    config.namesBlock.text.trim().toLowerCase() === activeNamesPlaceholder.trim().toLowerCase() ||
+    ALL_KNOWN_NAMES.has(config.namesBlock.text.trim().toLowerCase());
+
+  const isDefaultDate =
+    !config.dateBlock?.text ||
+    !config.dateBlock.text.trim() ||
+    config.dateBlock.text.trim().toLowerCase() === activeDatePlaceholder.trim().toLowerCase() ||
+    ALL_KNOWN_DATES.has(config.dateBlock.text.trim().toLowerCase());
+
   const isDefaultLocation =
     !config.locationBlock?.text ||
-    allLocs.includes(config.locationBlock.text.trim().toLowerCase()) ||
-    (config.locationName && config.locationBlock.text.trim().toUpperCase() === config.locationName.trim().toUpperCase());
-  const isDefaultCoords = !config.coordsBlock?.text || allCoords.includes(config.coordsBlock.text.trim().toLowerCase());
+    !config.locationBlock.text.trim() ||
+    config.locationBlock.text.trim().toLowerCase() === activeLocationPlaceholder.trim().toLowerCase() ||
+    (config.locationName && config.locationBlock.text.trim().toLowerCase() === config.locationName.trim().toLowerCase()) ||
+    ALL_KNOWN_LOCATIONS.has(config.locationBlock.text.trim().toLowerCase());
+
+  const isDefaultCoords =
+    !config.coordsBlock?.text ||
+    !config.coordsBlock.text.trim() ||
+    config.coordsBlock.text.trim().toLowerCase() === activeCoordsPlaceholder.trim().toLowerCase() ||
+    ALL_KNOWN_COORDS.has(config.coordsBlock.text.trim().toLowerCase());
 
   // Clear searchQuery when external config.locationName changes so new location shows in placeholder
   useEffect(() => {
@@ -184,11 +331,16 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       longitude: loc.lon,
       locationBlock: {
         ...config.locationBlock,
-        text: loc.name.toUpperCase(),
+        text: isDefaultLocation ? '' : config.locationBlock.text,
       },
       coordsBlock: {
         ...config.coordsBlock,
-        text: `${latStr} • ${lonStr}`,
+        text: isDefaultCoords ? '' : config.coordsBlock.text,
+      },
+      placeholders: {
+        ...config.placeholders,
+        location: loc.name.toUpperCase(),
+        coords: `${latStr} • ${lonStr}`,
       },
     });
   };
@@ -504,12 +656,17 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     onChange={(e) => {
                       const newDate = e.target.value;
                       const formattedDate = formatDate(newDate);
+                      const formattedStr = formattedDate ? formattedDate.toUpperCase() : newDate;
 
                       onChange({
                         date: newDate,
                         dateBlock: {
                           ...config.dateBlock,
-                          text: formattedDate ? formattedDate.toUpperCase() : newDate,
+                          text: isDefaultDate ? '' : config.dateBlock.text,
+                        },
+                        placeholders: {
+                          ...config.placeholders,
+                          date: formattedStr,
                         },
                       });
                     }}
@@ -729,7 +886,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     setTimeout(() => e.target.select(), 40);
                   }}
                   onClick={(e) => e.currentTarget.select()}
-                  placeholder={activeDef.title}
+                  placeholder={activeTitlePlaceholder}
                   className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
                 />
                 {!isDefaultTitle && config.titleBlock.text && (
@@ -755,7 +912,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     const currentTitle = config.titleBlock.text.trim();
                     const isSelected =
                       currentTitle.toLowerCase() === suggestion.toLowerCase() ||
-                      (!currentTitle && activeDef.title.toLowerCase() === suggestion.toLowerCase());
+                      (!currentTitle && activeTitlePlaceholder.toLowerCase() === suggestion.toLowerCase());
                     return (
                       <button
                         key={suggestion}
@@ -764,7 +921,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           const formatted = config.titleBlock.uppercase
                             ? suggestion.toUpperCase()
                             : suggestion;
-                          updateBlock('titleBlock', { text: formatted });
+                          onChange({
+                            titleBlock: { ...config.titleBlock, text: '' },
+                            placeholders: { ...config.placeholders, title: formatted },
+                          });
                         }}
                         className={`text-[10.5px] px-2.5 py-1 rounded-full border transition-all text-left ${
                           isSelected
@@ -808,7 +968,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       setTimeout(() => e.target.select(), 40);
                     }}
                     onClick={(e) => e.currentTarget.select()}
-                    placeholder={activeDef.names}
+                    placeholder={activeNamesPlaceholder}
                     className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
                   />
                   {!isDefaultNames && config.namesBlock.text && (
@@ -846,7 +1006,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     setTimeout(() => e.target.select(), 40);
                   }}
                   onClick={(e) => e.currentTarget.select()}
-                  placeholder={activeDef.dateStr}
+                  placeholder={activeDatePlaceholder}
                   className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
                 />
                 {!isDefaultDate && config.dateBlock.text && (
@@ -880,7 +1040,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         setTimeout(() => e.target.select(), 40);
                       }}
                       onClick={(e) => e.currentTarget.select()}
-                      placeholder={config.locationName ? config.locationName.toUpperCase() : activeDef.locationName.toUpperCase()}
+                      placeholder={activeLocationPlaceholder}
                       className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
                     />
                     {!isDefaultLocation && config.locationBlock.text && (
@@ -907,7 +1067,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         setTimeout(() => e.target.select(), 40);
                       }}
                       onClick={(e) => e.currentTarget.select()}
-                      placeholder={activeDef.coords}
+                      placeholder={activeCoordsPlaceholder}
                       className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
                     />
                     {!isDefaultCoords && config.coordsBlock.text && (
