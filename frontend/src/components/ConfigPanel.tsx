@@ -27,9 +27,11 @@ import {
   Globe,
   Circle,
   Heart,
+  X,
 } from 'lucide-react';
 import { GOOGLE_FONTS, POPULAR_LOCATIONS } from '../constants/styles';
 import { TYPOGRAPHY_PRESETS } from '../constants/presets';
+import { LOCALE_DEFAULTS } from '../constants/defaults';
 import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, PosterSize, TextBlockConfig } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { apiFetch } from '../utils/api';
@@ -66,17 +68,41 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 }) => {
   const { locale, t, formatDate, currency, setCurrency } = useLanguage();
   const [activeTab, setActiveTab] = useState<StudioTab>('location');
-  const [searchQuery, setSearchQuery] = useState(config.locationName);
+  const [searchQuery, setSearchQuery] = useState('');
   const [hasUserTypedLocation, setHasUserTypedLocation] = useState(false);
   const [geocodeResults, setGeocodeResults] = useState<GeocodeResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isCustomizingTypography, setIsCustomizingTypography] = useState(false);
 
-  // Sync searchQuery when external config.locationName changes (e.g. occasion presets)
+  // Active locale defaults for placeholder guides
+  const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
+  const allTitles = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.title.toLowerCase()), []);
+  const allNames = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.names.toLowerCase()), []);
+  const allDates = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.dateStr.toLowerCase()), []);
+  const allLocs = React.useMemo(
+    () =>
+      Object.values(LOCALE_DEFAULTS).flatMap((d) => [
+        d.locationName.toLowerCase(),
+        d.locationName.toUpperCase().toLowerCase(),
+      ]),
+    []
+  );
+  const allCoords = React.useMemo(() => Object.values(LOCALE_DEFAULTS).map((d) => d.coords.toLowerCase()), []);
+
+  const isDefaultTitle = !config.titleBlock?.text || allTitles.includes(config.titleBlock.text.trim().toLowerCase());
+  const isDefaultNames = !config.namesBlock?.text || allNames.includes(config.namesBlock.text.trim().toLowerCase());
+  const isDefaultDate = !config.dateBlock?.text || allDates.includes(config.dateBlock.text.trim().toLowerCase());
+  const isDefaultLocation =
+    !config.locationBlock?.text ||
+    allLocs.includes(config.locationBlock.text.trim().toLowerCase()) ||
+    (config.locationName && config.locationBlock.text.trim().toUpperCase() === config.locationName.trim().toUpperCase());
+  const isDefaultCoords = !config.coordsBlock?.text || allCoords.includes(config.coordsBlock.text.trim().toLowerCase());
+
+  // Clear searchQuery when external config.locationName changes so new location shows in placeholder
   useEffect(() => {
     if (!hasUserTypedLocation) {
-      setSearchQuery(config.locationName);
+      setSearchQuery('');
     }
   }, [config.locationName, hasUserTypedLocation]);
 
@@ -146,7 +172,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
   const handleSelectLocation = (loc: { name: string; lat: number; lon: number; display_name?: string }) => {
     setHasUserTypedLocation(false);
-    setSearchQuery(loc.name);
+    setSearchQuery('');
     setShowDropdown(false);
 
     const latStr = `${Math.abs(loc.lat).toFixed(4)}° ${loc.lat >= 0 ? t.studio.cardinalPoints.n : t.studio.cardinalPoints.s}`;
@@ -390,18 +416,34 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       setHasUserTypedLocation(true);
                       setSearchQuery(e.target.value);
                     }}
-                    onFocus={() => {
+                    onFocus={(e) => {
+                      e.target.select();
+                      setTimeout(() => e.target.select(), 40);
                       if (hasUserTypedLocation && geocodeResults.length > 0) {
                         setShowDropdown(true);
                       }
                     }}
+                    onClick={(e) => e.currentTarget.select()}
                     onKeyDown={handleKeyDownSearch}
-                    placeholder={t.studio.locationSearchPlaceholder}
-                    className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-10 pr-10 py-2.5 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] transition"
+                    placeholder={config.locationName || t.studio.locationSearchPlaceholder}
+                    className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-10 pr-10 py-2.5 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] transition"
                   />
-                  {isSearching && (
+                  {isSearching ? (
                     <RefreshCw className="w-3.5 h-3.5 text-[#A37055] animate-spin absolute right-3.5" />
-                  )}
+                  ) : searchQuery ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery('');
+                        setGeocodeResults([]);
+                        setShowDropdown(false);
+                      }}
+                      className="absolute right-3 p-1 text-[#A8A29E] hover:text-[#1C1917] transition"
+                      title="Clear search"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  ) : null}
                 </div>
 
                 {/* Autocomplete Dropdown */}
@@ -677,13 +719,30 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 </span>
                 <span className="text-[10px] text-[#A37055]">{locale === 'de' ? 'Primär' : locale === 'en' ? 'Primary' : 'Primair'}</span>
               </div>
-              <input
-                type="text"
-                value={config.titleBlock.text}
-                onChange={(e) => updateBlock('titleBlock', { text: e.target.value })}
-                placeholder={locale === 'de' ? 'z.B. DIE NACHT, IN DER WIR UNS TRAFEN' : locale === 'en' ? 'e.g. THE NIGHT WE MET' : 'bijv. DE NACHT WAARIN WE ELKAAR VONDEN'}
-                className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
-              />
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  value={isDefaultTitle ? '' : config.titleBlock.text}
+                  onChange={(e) => updateBlock('titleBlock', { text: e.target.value })}
+                  onFocus={(e) => {
+                    e.target.select();
+                    setTimeout(() => e.target.select(), 40);
+                  }}
+                  onClick={(e) => e.currentTarget.select()}
+                  placeholder={activeDef.title}
+                  className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
+                />
+                {!isDefaultTitle && config.titleBlock.text && (
+                  <button
+                    type="button"
+                    onClick={() => updateBlock('titleBlock', { text: '' })}
+                    className="absolute right-2.5 p-1 text-[#A8A29E] hover:text-[#1C1917] transition"
+                    title="Clear title"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
 
               {/* Suggestions */}
               <div className="space-y-1.5 pt-1">
@@ -693,8 +752,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {t.studio.titleSuggestions.map((suggestion) => {
+                    const currentTitle = config.titleBlock.text.trim();
                     const isSelected =
-                      config.titleBlock.text.trim().toLowerCase() === suggestion.toLowerCase();
+                      currentTitle.toLowerCase() === suggestion.toLowerCase() ||
+                      (!currentTitle && activeDef.title.toLowerCase() === suggestion.toLowerCase());
                     return (
                       <button
                         key={suggestion}
@@ -737,13 +798,30 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </div>
 
               {config.namesBlock.enabled ? (
-                <input
-                  type="text"
-                  value={config.namesBlock.text}
-                  onChange={(e) => updateBlock('namesBlock', { text: e.target.value })}
-                  placeholder={t.studio.namesPlaceholder}
-                  className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    value={isDefaultNames ? '' : config.namesBlock.text}
+                    onChange={(e) => updateBlock('namesBlock', { text: e.target.value })}
+                    onFocus={(e) => {
+                      e.target.select();
+                      setTimeout(() => e.target.select(), 40);
+                    }}
+                    onClick={(e) => e.currentTarget.select()}
+                    placeholder={activeDef.names}
+                    className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
+                  />
+                  {!isDefaultNames && config.namesBlock.text && (
+                    <button
+                      type="button"
+                      onClick={() => updateBlock('namesBlock', { text: '' })}
+                      className="absolute right-2.5 p-1 text-[#A8A29E] hover:text-[#1C1917] transition"
+                      title="Clear names"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               ) : (
                 <p className="text-[11px] text-[#78716C] italic font-light">
                   {locale === 'de' ? 'Namen sind deaktiviert. Aktivieren Sie das Kontrollkästchen für eine elegante Kalligraphie-Inschrift.' : locale === 'en' ? 'Names are disabled. Check the box for an elegant calligraphy inscription.' : 'Namen zijn uitgeschakeld. Vink het vakje aan voor een elegante kalligrafie-inscriptie.'}
@@ -758,13 +836,30 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   3. {t.studio.dateBlockLabel}
                 </span>
               </div>
-              <input
-                type="text"
-                value={config.dateBlock.text}
-                onChange={(e) => updateBlock('dateBlock', { text: e.target.value })}
-                placeholder={locale === 'de' ? 'z.B. 22. SEPTEMBER 2026' : locale === 'en' ? 'e.g. SEPTEMBER 22, 2026' : 'bijv. 22 SEPTEMBER 2026'}
-                className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
-              />
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  value={isDefaultDate ? '' : config.dateBlock.text}
+                  onChange={(e) => updateBlock('dateBlock', { text: e.target.value })}
+                  onFocus={(e) => {
+                    e.target.select();
+                    setTimeout(() => e.target.select(), 40);
+                  }}
+                  onClick={(e) => e.currentTarget.select()}
+                  placeholder={activeDef.dateStr}
+                  className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
+                />
+                {!isDefaultDate && config.dateBlock.text && (
+                  <button
+                    type="button"
+                    onClick={() => updateBlock('dateBlock', { text: '' })}
+                    className="absolute right-2.5 p-1 text-[#A8A29E] hover:text-[#1C1917] transition"
+                    title="Clear date"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* 4. Location & GPS Coordinates */}
@@ -775,21 +870,57 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Stadt / Ort' : locale === 'en' ? 'City / Location' : 'Stad / Locatie'}</label>
-                  <input
-                    type="text"
-                    value={config.locationBlock.text}
-                    onChange={(e) => updateBlock('locationBlock', { text: e.target.value })}
-                    className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
-                  />
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      value={isDefaultLocation ? '' : config.locationBlock.text}
+                      onChange={(e) => updateBlock('locationBlock', { text: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
+                      placeholder={config.locationName ? config.locationName.toUpperCase() : activeDef.locationName.toUpperCase()}
+                      className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
+                    />
+                    {!isDefaultLocation && config.locationBlock.text && (
+                      <button
+                        type="button"
+                        onClick={() => updateBlock('locationBlock', { text: '' })}
+                        className="absolute right-2 p-1 text-[#A8A29E] hover:text-[#1C1917] transition"
+                        title="Clear location"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="text-[10px] text-[#78716C] block mb-1">{locale === 'de' ? 'Koordinaten' : locale === 'en' ? 'Coordinates' : 'Coördinaten'}</label>
-                  <input
-                    type="text"
-                    value={config.coordsBlock.text}
-                    onChange={(e) => updateBlock('coordsBlock', { text: e.target.value })}
-                    className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917]"
-                  />
+                  <div className="relative flex items-center">
+                    <input
+                      type="text"
+                      value={isDefaultCoords ? '' : config.coordsBlock.text}
+                      onChange={(e) => updateBlock('coordsBlock', { text: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
+                      placeholder={activeDef.coords}
+                      className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl pl-3 pr-8 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917]"
+                    />
+                    {!isDefaultCoords && config.coordsBlock.text && (
+                      <button
+                        type="button"
+                        onClick={() => updateBlock('coordsBlock', { text: '' })}
+                        className="absolute right-2 p-1 text-[#A8A29E] hover:text-[#1C1917] transition"
+                        title="Clear coordinates"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

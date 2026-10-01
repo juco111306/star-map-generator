@@ -26,6 +26,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./CheckoutPage";
 import convertToSubcurrency from "../utils/convertToSubcurrency";
 import { useLanguage } from '../context/LanguageContext';
+import { LOCALE_DEFAULTS } from '../constants/defaults';
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || '';
 const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
@@ -132,7 +133,41 @@ export const OrderModal: React.FC<OrderModalProps> = ({
       // 1. Calculate price from pricing engine
       const amount = priceDetails.price;
 
-      // 2. Register order and compile 300 DPI print-ready PDF in the backend
+      // 2. Resolve typography text defaults if kept unmodified
+      const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
+      const resolvedTitle = config.titleBlock?.text?.trim() || activeDef.title;
+      const resolvedNames = config.namesBlock?.text?.trim() || activeDef.names;
+      const resolvedDate = config.dateBlock?.text?.trim() || activeDef.dateStr;
+      const resolvedLocation =
+        config.locationBlock?.text?.trim() ||
+        (config.locationName ? config.locationName.toUpperCase() : activeDef.locationName.toUpperCase());
+      const resolvedCoords = config.coordsBlock?.text?.trim() || activeDef.coords;
+
+      const resolvedConfig: MapConfig = {
+        ...config,
+        titleBlock: {
+          ...config.titleBlock,
+          text: resolvedTitle,
+        },
+        namesBlock: {
+          ...config.namesBlock,
+          text: resolvedNames,
+        },
+        dateBlock: {
+          ...config.dateBlock,
+          text: resolvedDate,
+        },
+        locationBlock: {
+          ...config.locationBlock,
+          text: resolvedLocation,
+        },
+        coordsBlock: {
+          ...config.coordsBlock,
+          text: resolvedCoords,
+        },
+      };
+
+      // 3. Register order and compile 300 DPI print-ready PDF in the backend
       let registeredOrder: OrderRecord | null = null;
       try {
         const orderRes = await apiFetch('/api/orders', {
@@ -141,7 +176,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           body: JSON.stringify({
             customer: payloadCustomer,
             map_config: {
-              ...config,
+              ...resolvedConfig,
               poster_size: config.posterSize,
               posterSize: config.posterSize,
               style_id: config.styleId,
@@ -184,11 +219,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         poster_size: config.posterSize,
         style_id: config.styleId,
         frame_style: config.frameStyle,
-        title_text: config.titleBlock?.text || '',
-        names_text: config.namesBlock?.text || '',
-        date_text: config.dateBlock?.text || '',
-        location_text: config.locationBlock?.text || '',
-        coords_text: config.coordsBlock?.text || '',
+        title_text: resolvedTitle,
+        names_text: resolvedNames,
+        date_text: resolvedDate,
+        location_text: resolvedLocation,
+        coords_text: resolvedCoords,
         pdf_filename: `${orderId}_print_ready_300dpi.pdf`,
         carrier: isDigital
           ? t.orderModal.digitalDeliveryNotice
@@ -203,7 +238,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           : 'PostNL',
         currency: currency,
         formatted_price: priceDetails.formattedPrice,
-        map_config: config,
+        map_config: resolvedConfig,
       };
 
       try {
@@ -502,8 +537,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={locale === 'de' ? 'z. B. Hannah Schmidt' : locale === 'en' ? 'e.g. Olivia Taylor' : 'bijv. Sophie van den Berg'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
@@ -513,8 +553,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={locale === 'de' ? 'hannah@beispiel.de' : locale === 'en' ? 'olivia@example.com' : 'sophie@voorbeeld.nl'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
@@ -533,8 +578,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.name}
                       onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={locale === 'de' ? 'z. B. Hannah Schmidt' : locale === 'en' ? 'e.g. Olivia Taylor' : 'bijv. Sophie van den Berg'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
@@ -544,8 +594,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.email}
                       onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={locale === 'de' ? 'hannah@beispiel.de' : locale === 'en' ? 'olivia@example.com' : 'sophie@voorbeeld.nl'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
@@ -557,8 +612,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                     required
                     value={customer.address_line1}
                     onChange={(e) => setCustomer({ ...customer, address_line1: e.target.value })}
+                    onFocus={(e) => {
+                      e.target.select();
+                      setTimeout(() => e.target.select(), 40);
+                    }}
+                    onClick={(e) => e.currentTarget.select()}
                     placeholder={locale === 'de' ? 'z. B. Friedrichstraße 45' : locale === 'en' ? 'e.g. 10 Downing Street' : 'bijv. Keizersgracht 142'}
-                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                    className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                   />
                 </div>
 
@@ -570,8 +630,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.city}
                       onChange={(e) => setCustomer({ ...customer, city: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={locale === 'de' ? 'Berlin' : locale === 'en' ? 'London' : 'Amsterdam'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                   <div>
@@ -583,8 +648,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required={isUS}
                       value={customer.state}
                       onChange={(e) => setCustomer({ ...customer, state: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={isUS ? 'z. B. NY / CA / TX' : (locale === 'de' ? 'Bayern' : locale === 'en' ? 'Greater London' : 'Noord-Holland')}
-                      className={`w-full bg-white border rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm ${
+                      className={`w-full bg-white border rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm ${
                         isUS && !customer.state?.trim() ? 'border-amber-300' : 'border-[#E2DDD5]'
                       }`}
                     />
@@ -596,8 +666,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       required
                       value={customer.postal_code}
                       onChange={(e) => setCustomer({ ...customer, postal_code: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={locale === 'de' ? '10117' : locale === 'en' ? 'SW1A 2AA' : '1015 CJ'}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-2 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
@@ -678,8 +753,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       rows={2}
                       value={customer.gift_note}
                       onChange={(e) => setCustomer({ ...customer, gift_note: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={t.orderModal.giftNotePlaceholder}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                     />
                   </div>
                   <div>
@@ -690,8 +770,13 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                       rows={2}
                       value={customer.producer_notes}
                       onChange={(e) => setCustomer({ ...customer, producer_notes: e.target.value })}
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
                       placeholder={t.orderModal.producerNotePlaceholder}
-                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-[16px] sm:text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
+                      className="w-full bg-white border border-[#E2DDD5] rounded-xl px-3 py-1.5 text-[16px] sm:text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] resize-none shadow-sm"
                     />
                   </div>
                 </div>

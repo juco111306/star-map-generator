@@ -18,8 +18,8 @@ import {
   Loader2,
   Frame,
   Sliders,
-} from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { LOCALE_DEFAULTS } from '../constants/defaults';
 
 interface StarMapPreviewProps {
   config: MapConfig;
@@ -37,6 +37,16 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
   const { locale, cardinalPoints } = useLanguage();
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Active locale defaults for placeholder fallback
+  const activeDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
+  const effectiveTitle = config.titleBlock?.text?.trim() || activeDef.title;
+  const effectiveNames = config.namesBlock?.text?.trim() || activeDef.names;
+  const effectiveDate = config.dateBlock?.text?.trim() || activeDef.dateStr;
+  const effectiveLocation =
+    config.locationBlock?.text?.trim() ||
+    (config.locationName ? config.locationName.toUpperCase() : activeDef.locationName.toUpperCase());
+  const effectiveCoords = config.coordsBlock?.text?.trim() || activeDef.coords;
 
   // Match current style
   const currentStyle = useMemo(() => {
@@ -260,7 +270,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
 
       // Secondary details below celestial sphere with locked constant clearance from circle bottom
       let currentY = cy + radius + 52 * scaleFactor;
-      if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
+      if (config.namesBlock?.enabled && effectiveNames) {
         const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
         const namesAscender = effNamesSize * 0.72;
         positions.namesY = currentY + namesAscender;
@@ -272,12 +282,12 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         const dividerHalfHeight = 4.5 * divScale;
 
         positions.dividerY = currentY + 12 * scaleFactor + dividerHalfHeight;
-        const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
+        const dateSize = (config.dateBlock?.enabled && effectiveDate) ? config.dateBlock.size : 27;
         const effDateSize = dateSize * 0.85 * scaleFactor;
         const dateAscender = effDateSize * 0.72;
         positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
         currentY = positions.dateY + (effDateSize * 0.28 + 20) * scaleFactor;
-      } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
+      } else if (config.dateBlock?.enabled && effectiveDate) {
         const dateSize = config.dateBlock.size;
         const effDateSize = dateSize * 0.85 * scaleFactor;
         const dateAscender = effDateSize * 0.72;
@@ -285,10 +295,10 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         currentY = positions.dateY + (effDateSize * 0.28 + 20) * scaleFactor;
       }
       if (
-        (config.locationBlock?.enabled && config.locationBlock.text.trim()) ||
-        (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
+        (config.locationBlock?.enabled && effectiveLocation) ||
+        (config.coordsBlock?.enabled && effectiveCoords)
       ) {
-        const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
+        const coordSize = (config.coordsBlock?.enabled && effectiveCoords) ? config.coordsBlock.size : 21;
         const effCoordSize = coordSize * 0.85 * scaleFactor;
         positions.locY = currentY + (effCoordSize * 0.72);
       }
@@ -303,12 +313,12 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       // Title top locked with constant clearance below moons
       const titleTop = moonsBottom + 32 * scaleFactor;
       let afterTitleY = titleTop;
-      if (config.titleBlock?.enabled && config.titleBlock.text.trim()) {
+      if (config.titleBlock?.enabled && effectiveTitle) {
         positions.titleY = titleTop + titleAscender;
         afterTitleY = positions.titleY + (effTitleSize * 0.28 + 24) * scaleFactor;
       }
 
-      if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
+      if (config.namesBlock?.enabled && effectiveNames) {
         const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
         const namesAscender = effNamesSize * 0.72;
         positions.namesY = afterTitleY + namesAscender;
@@ -318,7 +328,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       const divBaseSize = config.dividerSize || 34;
       const divScale = (divBaseSize / 18) * scaleFactor;
       const dividerHalfHeight = config.dividerStyle !== 'none' ? (4.5 * divScale) : 0;
-      const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
+      const dateSize = (config.dateBlock?.enabled && effectiveDate) ? config.dateBlock.size : 27;
       const effDateSize = dateSize * 0.85 * scaleFactor;
       const dateAscender = effDateSize * 0.72;
 
@@ -329,16 +339,16 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       if (config.dividerStyle !== 'none') {
         positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
         currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
-      } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
+      } else if (config.dateBlock?.enabled && effectiveDate) {
         positions.dateY = positions.dividerY + 14 * scaleFactor + dateAscender;
         currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
       }
 
       if (
-        (config.locationBlock?.enabled && config.locationBlock.text.trim()) ||
-        (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
+        (config.locationBlock?.enabled && effectiveLocation) ||
+        (config.coordsBlock?.enabled && effectiveCoords)
       ) {
-        const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
+        const coordSize = (config.coordsBlock?.enabled && effectiveCoords) ? config.coordsBlock.size : 21;
         const effCoordSize = coordSize * 0.85 * scaleFactor;
         positions.locY = currentY + (effCoordSize * 0.72);
       }
@@ -348,7 +358,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
     if (isCurvedLayout) {
       // Primary title is curved above circle; details flow below circle with constant clearance
       let currentY = cy + radius + 52 * scaleFactor;
-      if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
+      if (config.namesBlock?.enabled && effectiveNames) {
         const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
         const namesAscender = effNamesSize * 0.72;
         positions.namesY = currentY + namesAscender;
@@ -360,12 +370,12 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         const dividerHalfHeight = 4.5 * divScale;
 
         positions.dividerY = currentY + 10 * scaleFactor + dividerHalfHeight;
-        const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
+        const dateSize = (config.dateBlock?.enabled && effectiveDate) ? config.dateBlock.size : 27;
         const effDateSize = dateSize * 0.85 * scaleFactor;
         const dateAscender = effDateSize * 0.72;
         positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
         currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
-      } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
+      } else if (config.dateBlock?.enabled && effectiveDate) {
         const dateSize = config.dateBlock.size;
         const effDateSize = dateSize * 0.85 * scaleFactor;
         const dateAscender = effDateSize * 0.72;
@@ -373,10 +383,10 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
         currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
       }
       if (
-        (config.locationBlock?.enabled && config.locationBlock.text.trim()) ||
-        (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
+        (config.locationBlock?.enabled && effectiveLocation) ||
+        (config.coordsBlock?.enabled && effectiveCoords)
       ) {
-        const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
+        const coordSize = (config.coordsBlock?.enabled && effectiveCoords) ? config.coordsBlock.size : 21;
         const effCoordSize = coordSize * 0.85 * scaleFactor;
         positions.locY = currentY + (effCoordSize * 0.72);
       }
@@ -388,12 +398,12 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
     const titleTop = cy + radius + 50 * scaleFactor;
     let currentY = titleTop;
 
-    if (config.titleBlock?.enabled && config.titleBlock.text.trim()) {
+    if (config.titleBlock?.enabled && effectiveTitle) {
       positions.titleY = titleTop + titleAscender;
       currentY = positions.titleY + (effTitleSize * 0.28 + 26) * scaleFactor;
     }
 
-    if (config.namesBlock?.enabled && config.namesBlock.text.trim()) {
+    if (config.namesBlock?.enabled && effectiveNames) {
       const effNamesSize = (config.namesBlock.size || 51) * 0.85 * scaleFactor;
       const namesAscender = effNamesSize * 0.72;
       positions.namesY = currentY + namesAscender;
@@ -406,12 +416,12 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
       const dividerHalfHeight = 4.5 * divScale;
 
       positions.dividerY = currentY + 12 * scaleFactor + dividerHalfHeight;
-      const dateSize = (config.dateBlock?.enabled && config.dateBlock.text.trim()) ? config.dateBlock.size : 27;
+      const dateSize = (config.dateBlock?.enabled && effectiveDate) ? config.dateBlock.size : 27;
       const effDateSize = dateSize * 0.85 * scaleFactor;
       const dateAscender = effDateSize * 0.72;
       positions.dateY = positions.dividerY + dividerHalfHeight + 16 * scaleFactor + dateAscender;
       currentY = positions.dateY + (effDateSize * 0.28 + 18) * scaleFactor;
-    } else if (config.dateBlock?.enabled && config.dateBlock.text.trim()) {
+    } else if (config.dateBlock?.enabled && effectiveDate) {
       const dateSize = config.dateBlock.size;
       const effDateSize = dateSize * 0.85 * scaleFactor;
       const dateAscender = effDateSize * 0.72;
@@ -420,36 +430,50 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
     }
 
     if (
-      (config.locationBlock?.enabled && config.locationBlock.text.trim()) ||
-      (config.coordsBlock?.enabled && config.coordsBlock.text.trim())
+      (config.locationBlock?.enabled && effectiveLocation) ||
+      (config.coordsBlock?.enabled && effectiveCoords)
     ) {
-      const coordSize = (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) ? config.coordsBlock.size : 21;
+      const coordSize = (config.coordsBlock?.enabled && effectiveCoords) ? config.coordsBlock.size : 21;
       const effCoordSize = coordSize * 0.85 * scaleFactor;
       positions.locY = currentY + (effCoordSize * 0.72);
     }
 
     return positions;
-  }, [cy, radius, size, isCurvedLayout, isTopTitleLayout, isMoonPhasesLayout, config, scaleFactor]);
+  }, [
+    cy,
+    radius,
+    size,
+    isCurvedLayout,
+    isTopTitleLayout,
+    isMoonPhasesLayout,
+    config,
+    scaleFactor,
+    effectiveTitle,
+    effectiveNames,
+    effectiveDate,
+    effectiveLocation,
+    effectiveCoords,
+  ]);
 
   // Combined Location & Coordinates
   const combinedLocationText = useMemo(() => {
     const parts: string[] = [];
-    if (config.locationBlock?.enabled && config.locationBlock.text.trim()) {
+    if (config.locationBlock?.enabled && effectiveLocation) {
       parts.push(
         config.locationBlock.uppercase
-          ? config.locationBlock.text.toUpperCase()
-          : config.locationBlock.text
+          ? effectiveLocation.toUpperCase()
+          : effectiveLocation
       );
     }
-    if (config.coordsBlock?.enabled && config.coordsBlock.text.trim()) {
+    if (config.coordsBlock?.enabled && effectiveCoords) {
       parts.push(
         config.coordsBlock.uppercase
-          ? config.coordsBlock.text.toUpperCase()
-          : config.coordsBlock.text
+          ? effectiveCoords.toUpperCase()
+          : effectiveCoords
       );
     }
     return parts.join(' • ');
-  }, [config.locationBlock, config.coordsBlock]);
+  }, [config.locationBlock, config.coordsBlock, effectiveLocation, effectiveCoords]);
 
   // Frame styling wrapper with natural studio light shadows (Gelato Classic Matte Wooden Frames)
   const frameContainerStyle = useMemo(() => {
@@ -949,7 +973,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
             {isCurvedLayout ? (
               /* Curved Main Title Layout */
               <>
-                {config.titleBlock?.enabled && config.titleBlock.text && (
+                {config.titleBlock?.enabled && effectiveTitle && (
                   <text
                     fill={currentStyle.textColor}
                     fontSize={config.titleBlock.size * 0.74 * scaleFactor}
@@ -963,14 +987,14 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                       textAnchor="middle"
                     >
                       {config.titleBlock.uppercase
-                        ? config.titleBlock.text.toUpperCase()
-                        : config.titleBlock.text}
+                        ? effectiveTitle.toUpperCase()
+                        : effectiveTitle}
                     </textPath>
                   </text>
                 )}
 
                 {/* Names / Subtitle */}
-                {config.namesBlock?.enabled && config.namesBlock.text && (
+                {config.namesBlock?.enabled && effectiveNames && (
                   <text
                     x={cx}
                     y={typographyLayout.namesY}
@@ -983,8 +1007,8 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                     fontFamily={`'${config.namesBlock.font}', cursive, serif`}
                   >
                     {config.namesBlock.uppercase
-                      ? config.namesBlock.text.toUpperCase()
-                      : config.namesBlock.text}
+                      ? effectiveNames.toUpperCase()
+                      : effectiveNames}
                   </text>
                 )}
               </>
@@ -992,7 +1016,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
               /* Standard Typography Layout */
               <>
                 {/* 1. Main Title */}
-                {config.titleBlock?.enabled && config.titleBlock.text && (
+                {config.titleBlock?.enabled && effectiveTitle && (
                   <text
                     x={cx}
                     y={typographyLayout.titleY}
@@ -1004,13 +1028,13 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                     fontFamily={`'${config.titleBlock.font}', serif`}
                   >
                     {config.titleBlock.uppercase
-                      ? config.titleBlock.text.toUpperCase()
-                      : config.titleBlock.text}
+                      ? effectiveTitle.toUpperCase()
+                      : effectiveTitle}
                   </text>
                 )}
 
                 {/* 2. Names / Couple Calligraphy */}
-                {config.namesBlock?.enabled && config.namesBlock.text && (
+                {config.namesBlock?.enabled && effectiveNames && (
                   <text
                     x={cx}
                     y={typographyLayout.namesY}
@@ -1024,8 +1048,8 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                   >
                     {(() => {
                       let t = config.namesBlock.uppercase
-                        ? config.namesBlock.text.toUpperCase()
-                        : config.namesBlock.text;
+                        ? effectiveNames.toUpperCase()
+                        : effectiveNames;
                       if (config.namesBlock.font === 'Great Vibes' && t.includes(' & ')) {
                         return t.replace(' & ', '   &   ');
                       }
@@ -1175,7 +1199,7 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
             })()}
 
             {/* 5. Significant Date */}
-            {config.dateBlock?.enabled && config.dateBlock.text && typographyLayout.dateY > 0 && (
+            {config.dateBlock?.enabled && effectiveDate && typographyLayout.dateY > 0 && (
               <text
                 x={cx}
                 y={typographyLayout.dateY}
@@ -1187,8 +1211,8 @@ export const StarMapPreview: React.FC<StarMapPreviewProps> = ({
                 fontFamily={`'${config.dateBlock.font}', sans-serif`}
               >
                 {config.dateBlock.uppercase
-                  ? config.dateBlock.text.toUpperCase()
-                  : config.dateBlock.text}
+                  ? effectiveDate.toUpperCase()
+                  : effectiveDate}
               </text>
             )}
 

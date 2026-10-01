@@ -260,7 +260,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                       placeholder={t.tracking.orderNumberPlaceholder}
                       value={orderId}
                       onChange={(e) => setOrderId(e.target.value)}
-                      className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] uppercase tracking-wider font-mono shadow-sm"
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
+                      className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] uppercase tracking-wider font-mono shadow-sm"
                     />
                   </div>
                   <div>
@@ -273,7 +278,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                       placeholder={t.tracking.emailPlaceholder}
                       value={trackEmail}
                       onChange={(e) => setTrackEmail(e.target.value)}
-                      className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
+                      className="w-full bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                   </div>
                 </div>
@@ -523,7 +533,12 @@ export const CustomerTrackingModal: React.FC<CustomerTrackingModalProps> = ({
                       placeholder={locale === 'de' ? 'z. B. hannah@beispiel.de' : locale === 'en' ? 'e.g. olivia@example.com' : 'bijv. sophie@voorbeeld.nl'}
                       value={historyEmail}
                       onChange={(e) => setHistoryEmail(e.target.value)}
-                      className="flex-1 bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder-[#A8A29E] focus:outline-none focus:border-[#1C1917] shadow-sm"
+                      onFocus={(e) => {
+                        e.target.select();
+                        setTimeout(() => e.target.select(), 40);
+                      }}
+                      onClick={(e) => e.currentTarget.select()}
+                      className="flex-1 bg-[#FAF8F5] border border-[#E2DDD5] rounded-xl px-3 py-2 text-xs text-[#1C1917] placeholder:text-[#9C948A] placeholder:font-light placeholder:italic focus:outline-none focus:border-[#1C1917] shadow-sm"
                     />
                     <button
                       type="submit"
