@@ -48,7 +48,13 @@ const INITIAL_CELESTIAL_DATA: CelestialData = {
   total_visible_lines: SAMPLE_CONSTELLATION_LINES.length,
 };
 
-import { LOCALE_DEFAULTS } from '../constants/defaults';
+import {
+  LOCALE_DEFAULTS,
+  ALL_KNOWN_TITLES,
+  ALL_KNOWN_NAMES,
+  ALL_KNOWN_LOCATIONS,
+  ALL_KNOWN_DATES,
+} from '../constants/defaults';
 
 function SearchParamsWatcher({ onViewChange }: { onViewChange: (view: AppView) => void }) {
   const searchParams = useSearchParams();
@@ -203,10 +209,26 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
         const allLocs = Object.values(LOCALE_DEFAULTS).map((d) => d.locationName);
         const allDates = Object.values(LOCALE_DEFAULTS).map((d) => d.dateStr);
 
-        const isDefaultTitle = !prevConfig.titleBlock.text || allTitles.includes(prevConfig.titleBlock.text);
-        const isDefaultNames = !prevConfig.namesBlock.text || allNames.includes(prevConfig.namesBlock.text);
-        const isDefaultLoc = !prevConfig.locationName || allLocs.includes(prevConfig.locationName);
-        const isDefaultDate = !prevConfig.dateBlock.text || allDates.includes(prevConfig.dateBlock.text);
+        const isDefaultTitle =
+          !prevConfig.titleBlock.text ||
+          !prevConfig.titleBlock.text.trim() ||
+          allTitles.includes(prevConfig.titleBlock.text) ||
+          ALL_KNOWN_TITLES.has(prevConfig.titleBlock.text.trim().toLowerCase());
+        const isDefaultNames =
+          !prevConfig.namesBlock.text ||
+          !prevConfig.namesBlock.text.trim() ||
+          allNames.includes(prevConfig.namesBlock.text) ||
+          ALL_KNOWN_NAMES.has(prevConfig.namesBlock.text.trim().toLowerCase());
+        const isDefaultLoc =
+          !prevConfig.locationName ||
+          !prevConfig.locationName.trim() ||
+          allLocs.includes(prevConfig.locationName) ||
+          ALL_KNOWN_LOCATIONS.has(prevConfig.locationName.trim().toLowerCase());
+        const isDefaultDate =
+          !prevConfig.dateBlock.text ||
+          !prevConfig.dateBlock.text.trim() ||
+          allDates.includes(prevConfig.dateBlock.text) ||
+          ALL_KNOWN_DATES.has(prevConfig.dateBlock.text.trim().toLowerCase());
 
         return {
           ...prevConfig,

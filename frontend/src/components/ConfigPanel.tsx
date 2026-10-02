@@ -31,7 +31,14 @@ import {
 } from 'lucide-react';
 import { GOOGLE_FONTS, POPULAR_LOCATIONS } from '../constants/styles';
 import { TYPOGRAPHY_PRESETS } from '../constants/presets';
-import { LOCALE_DEFAULTS } from '../constants/defaults';
+import {
+  LOCALE_DEFAULTS,
+  ALL_KNOWN_TITLES,
+  ALL_KNOWN_NAMES,
+  ALL_KNOWN_DATES,
+  ALL_KNOWN_LOCATIONS,
+  ALL_KNOWN_COORDS,
+} from '../constants/defaults';
 import { DividerStyle, FrameStyle, GeocodeResult, LayoutVariation, MapConfig, PosterSize, TextBlockConfig } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { apiFetch } from '../utils/api';
@@ -55,136 +62,6 @@ interface ConfigPanelProps {
 }
 
 export type StudioTab = 'location' | 'text' | 'font' | 'design' | 'format';
-
-// Comprehensive registry of all default occasion and sample strings across languages
-const ALL_KNOWN_TITLES = new Set([
-  'de sterrenhemel boven',
-  'de nacht waarin we elkaar vonden',
-  'onze huwelijksdag',
-  'welkom op de wereld',
-  'onder dezelfde sterren',
-  'de dag dat wij begonnen',
-  'onze eerste kus',
-  'de dag dat jij geboren werd',
-  'onze trouwdag',
-  'de nacht dat onze wereld veranderde',
-  'waar onze reis begon',
-  'geschreven in de sterren',
-  'the night we met',
-  'our wedding day',
-  'welcome to the world',
-  'under the same stars',
-  'the sky when we met',
-  'the day you were born',
-  'our first kiss',
-  'where our story began',
-  'written in the stars',
-  'the night our stars aligned',
-  'der nachthimmel über',
-  'die nacht, in der wir uns trafen',
-  'unser hochzeitstag',
-  'willkommen auf der welt',
-  'unter den gleichen sternen',
-  'der himmel als wir uns trafen',
-  'der tag an dem du geboren wurdest',
-  'unser erster kuss',
-  'wo unsere geschichte begann',
-  'in den sternen geschrieben',
-  'der moment in dem wir eins wurden',
-]);
-
-const ALL_KNOWN_NAMES = new Set([
-  'emma & lucas',
-  'sophie & thomas',
-  'emma & liam',
-  'sophie & daan',
-  'hannah & maximilian',
-  'olivia & james',
-  'laura & felix',
-  'charlotte & william',
-  'liam alexander',
-  'noah alexander',
-  'oliver james',
-  'mila & thomas',
-  'mia & jonas',
-  'amelia & george',
-]);
-
-const ALL_KNOWN_DATES = new Set([
-  '21 juni 2024',
-  'june 21, 2024',
-  '21. juni 2024',
-  '22 september 2024',
-  'september 22, 2024',
-  '22. september 2024',
-  '18 augustus 2023',
-  'august 18, 2023',
-  '18. august 2023',
-  '14 mei 2025',
-  'may 14, 2025',
-  '14. mai 2025',
-  '04 oktober 2020',
-  'october 04, 2020',
-  '04. oktober 2020',
-  '03 oktober 2021',
-]);
-
-const ALL_KNOWN_LOCATIONS = new Set([
-  'amsterdam, nederland',
-  'london, united kingdom',
-  'berlin, deutschland',
-  'utrecht, nederland',
-  'rotterdam, nederland',
-  'antwerpen, belgië',
-  'den haag, nederland',
-  'münchen, deutschland',
-  'hamburg, deutschland',
-  'köln, deutschland',
-  'wien, österreich',
-  'zürich, schweiz',
-  'new york, united states',
-  'paris, france',
-  'dublin, ireland',
-  'edinburgh, united kingdom',
-  'gent, belgië',
-  'eindhoven, nederland',
-  'brussel, belgië',
-  'amsterdam',
-  'utrecht',
-  'rotterdam',
-  'den haag',
-  'berlin',
-  'london',
-  'münchen',
-  'hamburg',
-  'köln',
-  'wien',
-  'zürich',
-  'new york',
-  'paris',
-  'dublin',
-  'edinburgh',
-]);
-
-const ALL_KNOWN_COORDS = new Set([
-  '52.3676° n • 4.9041° e',
-  '51.5074° n • 0.1278° w',
-  '52.5200° n • 13.4050° e',
-  '52.5200° n • 13.4050° o',
-  '52.0907° n • 5.1214° e',
-  '55.9533° n • 3.1883° w',
-  '48.1351° n • 11.5820° o',
-  '48.1351° n • 11.5820° e',
-  '53.5511° n • 9.9937° o',
-  '53.5511° n • 9.9937° e',
-  '53.3498° n • 6.2603° w',
-  '51.9244° n • 4.4777° e',
-  '48.2082° n • 16.3738° o',
-  '48.2082° n • 16.3738° e',
-  '40.7128° n • 74.0060° w',
-  '51.2194° n • 4.4025° e',
-  '52.0705° n • 4.3007° e',
-]);
 
 export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   config,

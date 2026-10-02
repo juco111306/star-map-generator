@@ -18,6 +18,7 @@ import {
   Loader2,
   Frame,
   Sliders,
+} from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { LOCALE_DEFAULTS } from '../constants/defaults';
 
