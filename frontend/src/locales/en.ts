@@ -153,7 +153,7 @@ export const en: Translations = {
     serviceTitle: 'Dedicated Customer Care',
     serviceDesc: 'Our atelier team actively monitors every order to ensure flawless presentation.',
     contactLabel: 'Questions?',
-    email: 'service@stellaire-atelier.nl',
+    email: 'info@stellaireshop.com',
   },
   howItWorks: {
     badge: 'Thoughtful & Effortless',
@@ -254,7 +254,7 @@ export const en: Translations = {
       },
       {
         q: 'What happens if my order arrives damaged?',
-        a: 'If a framed piece or print arrives damaged in transit (such as broken glass, dented corners, or cracked wood), our atelier takes full responsibility under our 100% Quality Guarantee. Simply report the issue within 30 days of delivery with photos of the item and packaging to service@stellaire-atelier.nl, and we will dispatch a complimentary priority replacement immediately.',
+        a: 'If a framed piece or print arrives damaged in transit (such as broken glass, dented corners, or cracked wood), our atelier takes full responsibility under our 100% Quality Guarantee. Simply report the issue within 30 days of delivery with photos of the item and packaging to info@stellaireshop.com, and we will dispatch a complimentary priority replacement immediately.',
       },
       {
         q: 'Do you accept returns for personalized star maps?',
@@ -288,7 +288,7 @@ export const en: Translations = {
     col3Title: 'Customer Care & Atelier',
     col3Desc:
       'Have an inquiry or wish to apply our design guarantee? Our atelier responds within 24 hours on business days.',
-    email: 'service@stellaire-atelier.nl',
+    email: 'info@stellaireshop.com',
     copyright: 'Stellaire Atelier. All rights reserved.',
     returnPolicyShort: 'Return Policy',
     faqShort: 'FAQ',
@@ -317,7 +317,7 @@ export const en: Translations = {
     claimPhotosText2: '2. Clear photos of the packaging (BOTH the interior protective padding and the outer shipping box).',
     claimHowToTitle: 'Email Customer Support',
     claimHowToText:
-      'Send your photos along with your order number to service@stellaire-atelier.nl. Our team reviews submissions within 24 hours and initiates your replacement immediately.',
+      'Send your photos along with your order number to info@stellaireshop.com. Our team reviews submissions within 24 hours and initiates your replacement immediately.',
     closeButton: 'Understood, Close Window',
   },
   tracking: {

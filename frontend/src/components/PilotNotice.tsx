@@ -84,7 +84,12 @@ export const PilotNotice: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2 shrink-0">
                 <span className="text-[#78716C]">{p.contactLabel}</span>
-                <span className="font-medium text-[#1C1917] underline decoration-[#A37055]">{p.email}</span>
+                <a
+                  href={`mailto:${p.email}`}
+                  className="font-medium text-[#1C1917] underline decoration-[#A37055] hover:text-[#A37055] transition-colors"
+                >
+                  {p.email}
+                </a>
               </div>
             </div>
           </div>

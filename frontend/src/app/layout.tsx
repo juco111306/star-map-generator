@@ -100,7 +100,7 @@ const jsonLdData = {
       logo: 'https://stellaire-atelier.nl/icon-512.png',
       contactPoint: {
         '@type': 'ContactPoint',
-        email: 'service@stellaire-atelier.nl',
+        email: 'info@stellaireshop.com',
         contactType: 'Customer Support',
         availableLanguage: ['Dutch', 'English', 'German'],
       },

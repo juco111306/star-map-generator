@@ -38,8 +38,8 @@ export async function sendOrderConfirmationEmail(
   const brevoApiKey = process.env.BREVO_API_KEY;
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
 
-  const defaultFrom = process.env.EMAIL_FROM || 'Stellaire Atelier <bestellingen@stellaire-atelier.nl>';
-  const replyTo = process.env.EMAIL_REPLY_TO || 'service@stellaire-atelier.nl';
+  const defaultFrom = process.env.EMAIL_FROM || 'Stellaire Atelier <info@stellaireshop.com>';
+  const replyTo = process.env.EMAIL_REPLY_TO || 'info@stellaireshop.com';
 
   // 1. Resend (Primary choice for Next.js / Vercel with high Primary Inbox deliverability)
   if (resendApiKey) {
@@ -213,7 +213,7 @@ export async function sendOrderConfirmationEmail(
   console.log(`   Subject: ${emailContent.subject}`);
   console.log(`   Order: ${params.orderId} | Edition: ${params.frameStyle}`);
   if (params.frameStyle === 'digital') {
-    console.log(`   Digital Download Link: ${params.origin || 'https://stellaire-atelier.nl'}/api/orders/${params.orderId}/pdf`);
+    console.log(`   Digital Download Link: ${params.origin || 'https://stellaireshop.com'}/api/orders/${params.orderId}/pdf`);
   } else {
     console.log(`   Carrier: ${params.carrier || 'PostNL'} | Tracking: ${params.trackingNumber || 'Pending'}`);
   }

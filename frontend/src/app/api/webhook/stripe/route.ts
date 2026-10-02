@@ -94,7 +94,7 @@ export async function POST(req: Request) {
               };
             }
 
-            const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://stellaire-atelier.nl';
+            const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://stellaireshop.com';
             await sendOrderConfirmationEmail({
               orderId,
               customerEmail,

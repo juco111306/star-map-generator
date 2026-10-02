@@ -20,7 +20,7 @@ export async function POST(
       // Body may be empty if triggered as a simple POST
     }
 
-    const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'stellaire-atelier.nl';
+    const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'stellaireshop.com';
     const protocol = request.headers.get('x-forwarded-proto') || (host.includes('localhost') ? 'http' : 'https');
     const origin = `${protocol}://${host}`;
 

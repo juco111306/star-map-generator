@@ -273,7 +273,7 @@ def build_gelato_order_payload(order: Dict[str, Any]) -> Dict[str, Any]:
         "city": customer.get("city") or "Amsterdam",
         "postCode": raw_postcode,
         "country": country_iso,
-        "email": customer.get("email") or "klant@stellaire.nl",
+        "email": customer.get("email") or "info@stellaireshop.com",
         "phone": customer.get("phone") or "",
     }
 

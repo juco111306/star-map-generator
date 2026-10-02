@@ -53,11 +53,12 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
     carrier = 'PostNL',
     trackingNumber = '',
     locale = 'nl',
-    origin = 'https://stellaire-atelier.nl',
+    origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://stellaireshop.com',
   } = params;
 
   const isDigital = frameStyle === 'digital';
   const cleanBase = origin.replace(/\/$/, '');
+  const displayHost = cleanBase.replace(/^https?:\/\//, '');
   const downloadUrl = `${cleanBase}/api/orders/${orderId}/pdf`;
   const trackingUrl = `${cleanBase}/${locale}/payment-success?order_id=${orderId}`;
 
@@ -101,7 +102,7 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       guaranteeTitle: '100% Kwaliteitsgarantie',
       guaranteeText:
         'Elke print wordt vóór verzending gecontroleerd. Mocht er tijdens het transport onverhoopt iets beschadigen, dan sturen wij kosteloos een nieuwe print.',
-      questionsText: 'Vragen over je bestelling? Ons atelier helpt je graag via service@stellaire-atelier.nl.',
+      questionsText: 'Vragen over je bestelling? Ons atelier helpt je graag via info@stellaireshop.com.',
       footerNotice: `U ontvangt deze e-mail als aankoopbevestiging van uw bestelling bij Stellaire Atelier.`,
     },
     en: {
@@ -140,7 +141,7 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       guaranteeTitle: '100% Quality & Safe Arrival Guarantee',
       guaranteeText:
         'Every print is individually inspected. If your piece arrives damaged during transit, we provide an immediate complimentary replacement.',
-      questionsText: 'Questions regarding your order? Our concierge is available at service@stellaire-atelier.nl.',
+      questionsText: 'Questions regarding your order? Our concierge is available at info@stellaireshop.com.',
       footerNotice: `You received this email as an official order confirmation from Stellaire Atelier.`,
     },
     de: {
@@ -179,7 +180,7 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       guaranteeTitle: '100% Qualitätsgarantie',
       guaranteeText:
         'Jeder Druck wird vor dem Versand geprüft. Bei Transportschäden liefern wir sofort kostenlosen Ersatz.',
-      questionsText: 'Fragen zu Ihrer Bestellung? Unser Atelier hilft Ihnen gerne unter service@stellaire-atelier.nl.',
+      questionsText: 'Fragen zu Ihrer Bestellung? Unser Atelier hilft Ihnen gerne unter info@stellaireshop.com.',
       footerNotice: `Sie erhalten diese E-Mail als Kaufbestätigung für Ihre Bestellung bei Stellaire Atelier.`,
     },
   }[locale];
@@ -247,11 +248,11 @@ ${content.questionsText}
 
 Met vriendelijke groet,
 Het Stellaire Atelier Team
-https://stellaire-atelier.nl
+${cleanBase}
 
 ---
 ${content.footerNotice}
-Stellaire Atelier • service@stellaire-atelier.nl
+Stellaire Atelier • info@stellaireshop.com
 `.trim();
 
   // HTML Email Version (Tables, Inline Styles, Clean Apple/Gmail Rendering)
@@ -475,7 +476,7 @@ Stellaire Atelier • service@stellaire-atelier.nl
               <div style="font-size: 11px; color: #A8A29E; line-height: 16px;">
                 ${content.footerNotice}<br>
                 Stellaire Atelier • Ambachtelijke Astronomische Kunst<br>
-                <a href="${cleanBase}" style="color: #A37055; text-decoration: none;">stellaire-atelier.nl</a> • <a href="mailto:service@stellaire-atelier.nl" style="color: #A37055; text-decoration: none;">service@stellaire-atelier.nl</a>
+                <a href="${cleanBase}" style="color: #A37055; text-decoration: none;">${displayHost}</a> • <a href="mailto:info@stellaireshop.com" style="color: #A37055; text-decoration: none;">info@stellaireshop.com</a>
               </div>
             </td>
           </tr>
