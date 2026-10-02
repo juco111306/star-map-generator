@@ -34,7 +34,22 @@ function isSupportedDeliveryCountry(rawCountry?: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { amount, email, shippingDetails, posterSize, frameStyle, orderId, locale, currency } = body;
+    const {
+      amount,
+      email,
+      shippingDetails,
+      posterSize,
+      frameStyle,
+      orderId,
+      locale,
+      currency,
+      styleId,
+      titleText,
+      namesText,
+      dateText,
+      locationText,
+      carrier,
+    } = body;
 
     const isDigital = frameStyle === "digital";
     const country = shippingDetails?.country || "";
@@ -131,6 +146,12 @@ export async function POST(request: NextRequest) {
         shippingAddress: JSON.stringify(shippingDetails || {}),
         posterSize: posterSize || "",
         frameStyle: frameStyle || "",
+        styleId: styleId || "",
+        titleText: (titleText || "").slice(0, 450),
+        namesText: (namesText || "").slice(0, 450),
+        dateText: (dateText || "").slice(0, 450),
+        locationText: (locationText || "").slice(0, 450),
+        carrier: carrier || "",
         locale: activeLocale,
         currency: stripeCurrency,
       },

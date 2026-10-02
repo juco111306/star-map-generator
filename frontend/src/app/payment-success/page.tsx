@@ -21,6 +21,8 @@ import {
   Home as HomeIcon,
   Loader2,
   FileCheck,
+  Mail,
+  RefreshCw,
 } from 'lucide-react';
 import { OrderRecord, MapConfig } from '@/types';
 import { apiFetch } from '@/utils/api';
@@ -40,6 +42,52 @@ function PaymentSuccessContent() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
+  const [emailResent, setEmailResent] = useState(false);
+
+  const triggerSendEmail = async (targetOrder?: OrderRecord | any, force = false) => {
+    const activeOrder = targetOrder || order;
+    const targetOrderId = activeOrder?.order_id || orderId;
+    const customerEmail = activeOrder?.customer?.email;
+
+    if (!targetOrderId || !customerEmail) return;
+
+    try {
+      setEmailStatus('sending');
+      const res = await fetch(`/api/orders/${targetOrderId}/send-confirmation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: targetOrderId,
+          customerEmail,
+          customerName: activeOrder?.customer?.name,
+          frameStyle: activeOrder?.frame_style || 'digital',
+          posterSize: activeOrder?.poster_size || '50x70',
+          titleText: activeOrder?.title_text,
+          namesText: activeOrder?.names_text,
+          dateText: activeOrder?.date_text,
+          locationText: activeOrder?.location_text,
+          carrier: activeOrder?.carrier,
+          shippingAddress: activeOrder?.customer,
+          locale,
+          forceResend: force,
+        }),
+      });
+
+      if (res.ok) {
+        setEmailStatus('sent');
+        if (force) {
+          setEmailResent(true);
+          setTimeout(() => setEmailResent(false), 4000);
+        }
+      } else {
+        setEmailStatus('failed');
+      }
+    } catch (err) {
+      console.warn('Confirmation email dispatch warning:', err);
+      setEmailStatus('failed');
+    }
+  };
 
   useEffect(() => {
     // Fire celebratory confetti on page load
@@ -61,6 +109,9 @@ function PaymentSuccessContent() {
         if (localSavedOrder.map_config) {
           setOrderConfig(localSavedOrder.map_config);
         }
+        if (localSavedOrder.customer?.email) {
+          triggerSendEmail(localSavedOrder, false);
+        }
       }
     } catch (e) {
       console.warn('LocalStorage order read warning:', e);
@@ -78,6 +129,10 @@ function PaymentSuccessContent() {
         if (res.ok) {
           const data: OrderRecord = await res.json();
           setOrder(data);
+
+          if (data.customer?.email) {
+            triggerSendEmail(data, false);
+          }
 
           // If physical order and Gelato submission was not triggered yet, trigger client fallback
           if (data.frame_style !== 'digital' && !data.gelato_order_id) {
@@ -355,6 +410,95 @@ function PaymentSuccessContent() {
             </div>
           </div>
         )}
+
+        {/* Email Confirmation & Tracking Delivery Banner */}
+        <div className="p-5 sm:p-6 bg-white border border-[#E2DDD5] rounded-3xl shadow-xs space-y-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 text-[#A37055] flex items-center justify-center shrink-0">
+                <Mail className="w-5 h-5 text-[#A37055]" />
+              </div>
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#1C1917]">
+                    {locale === 'de'
+                      ? 'Bestellbestätigung per E-Mail'
+                      : locale === 'en'
+                      ? 'Order Confirmation Email'
+                      : 'Bestelbevestiging per E-mail'}
+                  </h4>
+                  {emailStatus === 'sending' && (
+                    <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                      <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                      {locale === 'de' ? 'Wird gesendet...' : locale === 'en' ? 'Sending...' : 'Wordt verzonden...'}
+                    </span>
+                  )}
+                  {emailStatus === 'sent' && (
+                    <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                      <CheckCircle2 className="w-2.5 h-2.5" />
+                      {locale === 'de' ? 'Gesendet' : locale === 'en' ? 'Dispatched' : 'Verzonden'}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-[#57534E]">
+                  {order?.customer?.email ? (
+                    <>
+                      {isDigital
+                        ? locale === 'de'
+                          ? 'Bestätigung mit Vektor-PDF-Downloadlink wurde gesendet an:'
+                          : locale === 'en'
+                          ? 'Confirmation with vector PDF download link was sent to:'
+                          : 'Bevestiging inclusief vector PDF downloadlink is verstuurd naar:'
+                        : locale === 'de'
+                        ? 'Bestätigung mit Trackinglink wurde gesendet an:'
+                        : locale === 'en'
+                        ? 'Confirmation with tracking link was sent to:'
+                        : 'Bevestiging inclusief track & trace link is verstuurd naar:'}{' '}
+                      <strong className="text-[#1C1917] font-semibold">{order.customer.email}</strong>
+                    </>
+                  ) : (
+                    locale === 'de'
+                      ? 'Die Bestellbestätigung wird an die bei der Zahlung angegebene E-Mail-Adresse gesendet.'
+                      : locale === 'en'
+                      ? 'The order confirmation is dispatched to the email provided during payment.'
+                      : 'De bestelbevestiging wordt verzonden naar het tijdens de betaling opgegeven e-mailadres.'
+                  )}
+                </p>
+              </div>
+            </div>
+
+            {order?.customer?.email && (
+              <button
+                type="button"
+                onClick={() => triggerSendEmail(undefined, true)}
+                disabled={emailStatus === 'sending'}
+                className="shrink-0 px-3.5 py-1.5 rounded-xl border border-[#E2DDD5] bg-[#FAF8F5] hover:bg-[#F2ECE1] text-[11px] font-medium text-[#1C1917] transition flex items-center gap-1.5 shadow-2xs disabled:opacity-50 cursor-pointer"
+              >
+                {emailResent ? (
+                  <>
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span>{locale === 'de' ? 'Erneut gesendet!' : locale === 'en' ? 'Resent!' : 'Opnieuw verstuurd!'}</span>
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className={`w-3 h-3 text-[#A37055] ${emailStatus === 'sending' ? 'animate-spin' : ''}`} />
+                    <span>{locale === 'de' ? 'E-Mail erneut senden' : locale === 'en' ? 'Resend email' : 'E-mail opnieuw sturen'}</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          <div className="pt-2 border-t border-[#F2ECE1] flex items-center justify-between text-[11px] text-[#78716C]">
+            <p>
+              {locale === 'de'
+                ? '💡 Tipp: Falls Sie die E-Mail nicht in Ihrem Posteingang sehen, prüfen Sie bitte auch den Spam-Ordner und markieren Sie sie als "Kein Spam".'
+                : locale === 'en'
+                ? '💡 Tip: If you don’t see the email immediately, please check your spam or junk folder and mark it as "Not Spam".'
+                : '💡 Tip: Zie je de e-mail niet direct? Controleer voor de zekerheid je ongewenste e-mail (spam) en markeer deze als "Geen spam".'}
+            </p>
+          </div>
+        </div>
 
         {/* Order Details & Summary Card */}
         <div className="bg-white rounded-3xl border border-[#E2DDD5] shadow-sm overflow-hidden divide-y divide-[#F2ECE1]">

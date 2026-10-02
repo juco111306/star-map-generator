@@ -2,7 +2,7 @@
   {
     "order_id": "STL-15553",
     "created_at": "2026-09-29T06:09:54.609557Z",
-    "status": "in_production",
+    "status": "shipped",
     "customer": {
       "name": "olivia taylor",
       "email": "colnarjure@gmail.com",
@@ -26,8 +26,8 @@
     "pdf_filename": "STL-15553_print_ready_300dpi.pdf",
     "pdf_size_bytes": 581876,
     "carrier": "PostNL",
-    "tracking_number": "",
-    "tracking_url": "",
+    "tracking_number": "3SABCD123456789",
+    "tracking_url": "https://jouw.postnl.nl/track-and-trace/3SABCD123456789-NL-2594CK",
     "gelato_order_id": "c042c805-d8ea-428c-8950-3dadcb687076",
     "gelato_status": "draft",
     "gelato_submitted_at": "2026-09-29T06:10:02.254461Z",
@@ -50,8 +50,24 @@
         "timestamp": "2026-09-29T06:10:02.254461Z",
         "title": "Verzonden naar Gelato Print-on-Demand",
         "description": "Printorder #c042c805-d8ea-428c-8950-3dadcb687076 is succesvol aangemeld bij inlijstpartner Gelato voor productie en bezorging."
+      },
+      {
+        "status": "printed",
+        "timestamp": "2026-10-02T09:44:49.991783Z",
+        "title": "Gedrukt & Ge\u00efnspecteerd",
+        "description": "Print gereed voor verzending"
+      },
+      {
+        "status": "shipped",
+        "timestamp": "2026-10-02T09:44:50.016009Z",
+        "title": "Verzonden",
+        "description": "Pakket verzonden met PostNL Track & Trace"
       }
-    ]
+    ],
+    "gelato_total_vat": 0.0,
+    "gelato_total_cost": 0.0,
+    "gelato_currency": "EUR",
+    "gelato_tax_note": ""
   },
   {
     "order_id": "STL-31890",

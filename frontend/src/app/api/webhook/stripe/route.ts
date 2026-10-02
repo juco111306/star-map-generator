@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { sendOrderConfirmationEmail } from '@/utils/emailSender';
 
 const stripeKey = process.env.STRIPE_RESTRICTED_KEY || process.env.STRIPE_SECRET_KEY;
 const stripe = stripeKey ? new Stripe(stripeKey, { apiVersion: '2024-06-20' as any }) : null;
@@ -32,6 +33,13 @@ export async function POST(req: Request) {
       const session = event.data.object as Stripe.Checkout.Session;
       const orderId = session.metadata?.orderId;
       const frameStyle = session.metadata?.frameStyle;
+      const customerEmail =
+        session.customer_details?.email ||
+        session.customer_email ||
+        session.metadata?.customerEmail;
+      const customerName =
+        session.customer_details?.name ||
+        session.metadata?.customerName;
 
       console.log(`✅ Payment successful for session: ${session.id}, Order ID: ${orderId}`);
 
@@ -60,6 +68,52 @@ export async function POST(req: Request) {
           }
         } catch (dispatchErr) {
           console.error(`Error notifying backend/Gelato for order ${orderId}:`, dispatchErr);
+        }
+
+        // 3. Dispatch automated high-deliverability order confirmation email
+        if (customerEmail) {
+          try {
+            console.log(`✉️ Dispatching order confirmation email to ${customerEmail} for order ${orderId}...`);
+            let parsedShippingAddress: any = undefined;
+            if (session.metadata?.shippingAddress) {
+              try {
+                parsedShippingAddress = JSON.parse(session.metadata.shippingAddress);
+              } catch {
+                // Ignore parse error
+              }
+            }
+            if (!parsedShippingAddress && session.shipping_details?.address) {
+              const a = session.shipping_details.address;
+              parsedShippingAddress = {
+                address_line1: a.line1 || undefined,
+                address_line2: a.line2 || undefined,
+                city: a.city || undefined,
+                state: a.state || undefined,
+                postal_code: a.postal_code || undefined,
+                country: a.country || undefined,
+              };
+            }
+
+            const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://stellaire-atelier.nl';
+            await sendOrderConfirmationEmail({
+              orderId,
+              customerEmail,
+              customerName: customerName || undefined,
+              frameStyle: frameStyle || 'digital',
+              posterSize: session.metadata?.posterSize || '50x70',
+              styleId: session.metadata?.styleId,
+              titleText: session.metadata?.titleText,
+              namesText: session.metadata?.namesText,
+              dateText: session.metadata?.dateText,
+              locationText: session.metadata?.locationText,
+              carrier: frameStyle === 'digital' ? undefined : (session.metadata?.carrier || 'PostNL'),
+              shippingAddress: parsedShippingAddress,
+              locale: (session.metadata?.locale as any) || 'nl',
+              origin,
+            });
+          } catch (emailErr) {
+            console.error(`Error sending confirmation email for order ${orderId}:`, emailErr);
+          }
         }
       }
     }

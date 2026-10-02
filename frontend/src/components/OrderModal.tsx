@@ -264,6 +264,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             posterSize: config.posterSize,
             frameStyle: config.frameStyle,
             styleId: config.styleId,
+            titleText: resolvedTitle,
+            namesText: resolvedNames,
+            dateText: resolvedDate,
+            locationText: resolvedLocation,
+            carrier: localOrderData.carrier,
             locale: locale,
           }),
         });

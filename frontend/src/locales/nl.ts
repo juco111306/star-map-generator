@@ -153,7 +153,7 @@ export const nl: Translations = {
     serviceTitle: 'Persoonlijke Klantenservice',
     serviceDesc: 'Ons atelier volgt elke bestelling handmatig op voor een vlekkeloze ervaring.',
     contactLabel: 'Vragen?',
-    email: 'service@stellaire-atelier.nl',
+    email: 'info@stellaireshop.com',
   },
   howItWorks: {
     badge: 'Eenvoudig & Betekenisvol',
