@@ -267,7 +267,10 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
             </text>
             <g>
               <line x1="375" y1="1080" x2="465" y2="1080" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
-              <text x="500" y="1086" textAnchor="middle" fill="#F7D6DA" fontSize="20">♥</text>
+              <path
+                d="M 500 1088 C 493 1080 486 1073 491 1067 C 495 1063 499 1066 500 1069 C 501 1066 505 1063 509 1067 C 514 1073 507 1080 500 1088 Z"
+                fill="#F7D6DA"
+              />
               <line x1="535" y1="1080" x2="625" y2="1080" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1138" textAnchor="middle" fill="#F7D6DA" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">

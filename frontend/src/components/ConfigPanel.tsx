@@ -982,7 +982,17 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         : 'bg-[#FAF8F5] text-[#57534E] border-[#E2DDD5] hover:border-[#1C1917]'
                     }`}
                   >
-                    <span className="text-xs font-bold block">{d.symbol}</span>
+                    <span className="text-xs font-bold block">
+                      {d.id === 'heart' ? (
+                        <span className="inline-flex items-center justify-center gap-1">
+                          <span className="opacity-75">—</span>
+                          <Heart className="w-3 h-3 fill-current stroke-none inline-block align-middle" />
+                          <span className="opacity-75">—</span>
+                        </span>
+                      ) : (
+                        d.symbol
+                      )}
+                    </span>
                     <span className="text-[9px] opacity-75">{d.label}</span>
                   </button>
                 ))}

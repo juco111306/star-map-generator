@@ -365,7 +365,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
             </text>
             <g>
               <line x1="375" y1="1088" x2="465" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
-              <text x="500" y="1094" textAnchor="middle" fill="#F7D6DA" fontSize="20">♥</text>
+              <path
+                d="M 500 1096 C 493 1088 486 1081 491 1075 C 495 1071 499 1074 500 1077 C 501 1074 505 1071 509 1075 C 514 1081 507 1088 500 1096 Z"
+                fill="#F7D6DA"
+              />
               <line x1="535" y1="1088" x2="625" y2="1088" stroke="rgba(255,235,238,0.5)" strokeWidth="1.5" />
             </g>
             <text x="500" y="1144" textAnchor="middle" fill="#F7D6DA" fontSize="28" fontFamily="Montserrat, sans-serif" fontWeight="500" letterSpacing="3.5">
