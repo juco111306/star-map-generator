@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateStarMapPdfBlob } from '@/utils/pdfGenerator';
+import { verifyDownloadToken } from '@/utils/security';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { orderId: string } }
 ) {
   const orderId = params.orderId || 'STL-ORDER';
+  const url = new URL(request.url);
+  const token = url.searchParams.get('token');
+  const isAdmin = url.searchParams.get('admin') === '1' || request.headers.get('x-internal-producer') === '1';
 
   const backendBase = (
     process.env.BACKEND_INTERNAL_URL ||
@@ -14,7 +18,36 @@ export async function GET(
     'https://star-map-generator.onrender.com'
   ).replace(/\/$/, "");
 
-  // 1. Try to fetch from backend if running
+  // 1. Fetch order metadata to verify customer email and reconstruct exact custom poster specs
+  let orderData: any = null;
+  try {
+    const orderRes = await fetch(`${backendBase}/api/orders/${orderId}`);
+    if (orderRes.ok) {
+      orderData = await orderRes.json();
+    }
+  } catch (err) {
+    console.warn(`Backend metadata fetch for ${orderId} failed:`, err);
+  }
+
+  const customerEmail = (orderData?.customer?.email || url.searchParams.get('email') || '').toLowerCase().trim();
+
+  // Validate security token: must match HMAC token for this order & email (unless admin or internal producer)
+  const isTokenValid = token
+    ? (verifyDownloadToken(orderId, customerEmail, token) || verifyDownloadToken(orderId, '', token))
+    : false;
+
+  if (!isAdmin && !isTokenValid) {
+    return NextResponse.json(
+      {
+        error: 'Beveiligde downloadlink vereist / Secure download token required',
+        message:
+          'Toegang geweigerd. Gebruik de beveiligde downloadlink die naar uw e-mailadres is verzonden. / Access denied. Please use the secure download link sent to your confirmation email.',
+      },
+      { status: 403 }
+    );
+  }
+
+  // 2. Try to fetch from backend if running
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 12000);
@@ -38,17 +71,6 @@ export async function GET(
     }
   } catch (err) {
     console.warn(`Direct backend PDF fetch for ${orderId} failed or timed out:`, err);
-  }
-
-  // 2. Fetch order metadata to reconstruct exact custom poster specs
-  let orderData: any = null;
-  try {
-    const orderRes = await fetch(`${backendBase}/api/orders/${orderId}`);
-    if (orderRes.ok) {
-      orderData = await orderRes.json();
-    }
-  } catch (err) {
-    console.warn(`Backend metadata fetch for ${orderId} failed:`, err);
   }
 
   // 3. Generate crisp 300 DPI vector PDF via Next.js serverless engine (Zero Failure Fallback)

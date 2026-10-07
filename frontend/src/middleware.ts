@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const LOCALES = ['nl', 'de', 'en'];
-const DEFAULT_LOCALE = 'nl';
+const DEFAULT_LOCALE = 'en';
 const COOKIE_NAME = 'stellaire_locale';
 
 export function middleware(request: NextRequest) {
@@ -27,13 +27,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 1. Check if user already made a manual choice stored in cookie
+  // 1. Explicit user choice stored in cookie has highest priority (never overridden)
   const cookieLocale = request.cookies.get(COOKIE_NAME)?.value;
   if (cookieLocale && LOCALES.includes(cookieLocale)) {
     return NextResponse.redirect(new URL(`/${cookieLocale}${pathname === '/' ? '' : pathname}${search}`, request.url));
   }
 
-  // 2. Geo-IP detection (Vercel, Cloudflare, or custom reverse-proxy headers)
+  // 2. Geo-IP detection: ONLY German-speaking or Dutch-speaking places auto-open in their native language
   const countryHeader =
     request.headers.get('x-vercel-ip-country') ||
     request.headers.get('cf-ipcountry') ||
@@ -41,30 +41,17 @@ export function middleware(request: NextRequest) {
 
   if (countryHeader) {
     const c = countryHeader.toUpperCase();
-    if (['DE', 'AT', 'CH'].includes(c)) {
+    // German-speaking: Germany, Austria, Switzerland, Liechtenstein
+    if (['DE', 'AT', 'CH', 'LI'].includes(c)) {
       return NextResponse.redirect(new URL(`/de${pathname === '/' ? '' : pathname}${search}`, request.url));
     }
-    if (['NL', 'BE'].includes(c)) {
+    // Dutch-speaking: Netherlands, Belgium, Suriname
+    if (['NL', 'BE', 'SR'].includes(c)) {
       return NextResponse.redirect(new URL(`/nl${pathname === '/' ? '' : pathname}${search}`, request.url));
     }
-    if (['GB', 'US', 'IE', 'CA', 'AU', 'NZ', 'FR', 'ES', 'IT', 'DK', 'SE', 'NO', 'FI'].includes(c)) {
-      return NextResponse.redirect(new URL(`/en${pathname === '/' ? '' : pathname}${search}`, request.url));
-    }
   }
 
-  // 3. Browser Accept-Language header detection
-  const acceptLang = request.headers.get('accept-language')?.toLowerCase() || '';
-  if (acceptLang.startsWith('de') || acceptLang.includes(',de')) {
-    return NextResponse.redirect(new URL(`/de${pathname === '/' ? '' : pathname}${search}`, request.url));
-  }
-  if (acceptLang.startsWith('nl') || acceptLang.includes(',nl')) {
-    return NextResponse.redirect(new URL(`/nl${pathname === '/' ? '' : pathname}${search}`, request.url));
-  }
-  if (acceptLang.startsWith('en') || acceptLang.includes(',en')) {
-    return NextResponse.redirect(new URL(`/en${pathname === '/' ? '' : pathname}${search}`, request.url));
-  }
-
-  // 4. Default fallback: redirect to /nl
+  // 3. Default for all other locations worldwide (including Nairobi/Kenya, US, UK, international): English
   return NextResponse.redirect(new URL(`/${DEFAULT_LOCALE}${pathname === '/' ? '' : pathname}${search}`, request.url));
 }
 

@@ -27,6 +27,7 @@ import {
   Globe,
   Circle,
   Heart,
+  Clock,
   X,
 } from 'lucide-react';
 import { GOOGLE_FONTS, POPULAR_LOCATIONS } from '../constants/styles';
@@ -270,9 +271,6 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       .then((data) => {
         if (data.unit === 'in') {
           setUnitPreference('in');
-          if (!['12x18', '18x24', '24x36'].includes(config.posterSize)) {
-            onChange({ posterSize: '18x24' });
-          }
         }
         if (data.isUK) {
           setIsUK(true);
@@ -1519,7 +1517,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       {/* Bottom Footer: Badge & Safe Contained Pricing (Never overflows) */}
                       <div className="mt-2 pt-2 border-t border-[#ECE7DE] flex items-center justify-between gap-1.5">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-white border border-[#E2DDD5] text-[#57534E] shrink-0 truncate max-w-[110px]">
+                          <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded border shrink-0 truncate max-w-[130px] ${
+                            f.id === 'digital'
+                              ? 'bg-emerald-100 border-emerald-300 text-emerald-800 font-bold'
+                              : 'bg-amber-50 border-amber-200 text-amber-800'
+                          }`}>
                             {f.badge || (locale === 'de' ? 'Verfügbar' : locale === 'en' ? 'Available' : 'Beschikbaar')}
                           </span>
                           {isSelected && (
@@ -1533,9 +1535,19 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                         </div>
 
                         <div className="text-right shrink-0 whitespace-nowrap pl-1">
-                          <span className="text-xs font-bold text-[#1C1917]">{itemPrice.formattedPrice}</span>
-                          {itemPrice.formattedOriginalPrice && (
-                            <span className="text-[9px] text-[#A8A29E] line-through ml-1">{itemPrice.formattedOriginalPrice}</span>
+                          {f.id === 'digital' ? (
+                            <span className="text-xs font-bold text-emerald-700 font-extrabold">
+                              {locale === 'de' ? 'GRATIS (0,00 €)' : locale === 'en' ? 'FREE ($0.00)' : 'GRATIS (€0,00)'}
+                            </span>
+                          ) : (
+                            <div className="flex flex-col items-end leading-tight">
+                              <span className="text-[10px] text-amber-700 font-semibold">
+                                {locale === 'de' ? 'Demnächst' : locale === 'en' ? 'Coming Soon' : 'Binnenkort'}
+                              </span>
+                              {itemPrice.formattedPrice && (
+                                <span className="text-[9px] text-[#A8A29E] line-through">{itemPrice.formattedPrice}</span>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -1543,6 +1555,42 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   );
                 })}
               </div>
+
+              {/* Physical Framing Coming Soon Atelier Notice */}
+              {config.frameStyle !== 'digital' && (
+                <div className="p-3.5 bg-amber-50/90 border border-amber-200/90 rounded-xl text-xs text-amber-950 flex items-start gap-2.5 shadow-2xs">
+                  <Clock className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <div className="font-semibold text-amber-950">
+                      {locale === 'de'
+                        ? '⏳ Physische Drucke & Rahmen: Demnächst verfügbar'
+                        : locale === 'en'
+                        ? '⏳ Physical Prints & Frames: Coming Soon'
+                        : '⏳ Fysieke Prints & Lijsten: Binnenkort beschikbaar'}
+                    </div>
+                    <p className="text-[11px] text-amber-800 leading-relaxed">
+                      {locale === 'de'
+                        ? 'Sie können diesen Rahmen in der Vorschau betrachten. Während unserer Pilotphase können Sie das Design sofort zu 100% kostenlos als hochauflösende 300 DPI Vektor-PDF bestellen!'
+                        : locale === 'en'
+                        ? 'You can preview this frame on the map. During our pilot launch, you can order this design immediately as a 100% free high-resolution 300 DPI vector PDF!'
+                        : 'Je kunt deze lijst live op de kaart bekijken. Tijdens onze pilotfase kun je het ontwerp direct 100% gratis als hoge resolutie 300 DPI vector PDF bestellen!'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => onChange({ frameStyle: 'digital' })}
+                      className="text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 underline flex items-center gap-1 cursor-pointer pt-0.5"
+                    >
+                      <span>
+                        {locale === 'de'
+                          ? '→ Zu 100% kostenloser 300 DPI PDF wechseln'
+                          : locale === 'en'
+                          ? '→ Switch to 100% Free 300 DPI PDF'
+                          : '→ Omschakelen naar 100% Gratis 300 DPI PDF'}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* 2. Region-Aware Sizing with cm / in Toggle */}
@@ -1707,8 +1755,18 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <span className="text-[#57534E] truncate shrink-0">{config.frameStyle === 'digital' ? 'PDF 300 DPI' : `${config.posterSize.replace('x', ' × ')} cm`}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-            <span className="text-[11px] text-[#A8A29E] line-through">{currentPriceDetails.formattedOriginalPrice}</span>
-            <strong className="text-sm font-bold text-[#1C1917]">{currentPriceDetails.formattedPrice}</strong>
+            {config.frameStyle === 'digital' ? (
+              <>
+                <span className="text-[11px] text-[#A8A29E] line-through">{currentPriceDetails.formattedOriginalPrice}</span>
+                <strong className="text-sm font-bold text-emerald-800">
+                  {locale === 'de' ? '0,00 € (Kostenlos)' : locale === 'en' ? '$0.00 (Free)' : '€0,00 (Gratis)'}
+                </strong>
+              </>
+            ) : (
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                {locale === 'de' ? '⏳ Bald verfügbar' : locale === 'en' ? '⏳ Coming Soon' : '⏳ Binnenkort'}
+              </span>
+            )}
           </div>
         </div>
 
@@ -1716,10 +1774,19 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
           {/* Primary Order Action Button */}
           <button
             type="button"
-            onClick={onOpenOrderModal}
-            className="w-full py-3.5 px-3 rounded-xl bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition transform hover:-translate-y-0.5 truncate"
+            onClick={() => {
+              if (config.frameStyle !== 'digital') {
+                onChange({ frameStyle: 'digital' });
+              }
+              onOpenOrderModal();
+            }}
+            className="w-full py-3.5 px-3 rounded-xl font-semibold text-xs shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition transform hover:-translate-y-0.5 truncate cursor-pointer bg-emerald-800 hover:bg-emerald-900 text-white ring-2 ring-emerald-600/30"
           >
-            <span className="truncate">{t.studio.orderButton} ({currentPriceDetails.formattedPrice})</span>
+            <span className="truncate">
+              {config.frameStyle === 'digital'
+                ? (locale === 'de' ? '🚀 Kostenlose 300 DPI PDF Herunterladen (Pilot)' : locale === 'en' ? '🚀 Download Free 300 DPI PDF (Pilot Special)' : '🚀 Download Gratis 300 DPI PDF (Pilot Special)')
+                : (locale === 'de' ? '⏳ Bald verfügbar • Gratis 300 DPI PDF Bestellen' : locale === 'en' ? '⏳ Prints Coming Soon • Order Free 300 DPI PDF' : '⏳ Binnenkort Beschikbaar • Bestel Gratis 300 DPI PDF')}
+            </span>
             <ChevronRight className="w-4 h-4 shrink-0" />
           </button>
         </div>

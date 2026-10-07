@@ -128,13 +128,6 @@ const jsonLdData = {
           name: 'Stellaire Atelier',
         },
       },
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '4.98',
-        reviewCount: '342',
-        bestRating: '5',
-        worstRating: '1',
-      },
     },
   ],
 };
@@ -145,7 +138,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="nl" className="overflow-x-hidden max-w-full w-full">
+    <html lang="en" className="overflow-x-hidden max-w-full w-full">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

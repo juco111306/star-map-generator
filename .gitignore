@@ -7,6 +7,11 @@ tools/
 frontend/.next/
 frontend/out/
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 # Python caches
 __pycache__/
 *.py[cod]
@@ -25,4 +30,7 @@ hip_main.dat
 backend/tests/output_pdfs/
 backend/tests/*.png
 backend/tests/*.pdf
+backend/data/orders/*.pdf
 *.log
+marketing/
+public/

@@ -63,12 +63,19 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-50 w-full bg-[#FAF8F5] border-b border-[#EBE7DF] transition-colors">
       {/* Top Announcement Bar */}
-      <div className="bg-[#F2ECE1] border-b border-[#E5DECF] py-1.5 px-4 text-center">
-        <p className="text-[11px] font-medium tracking-wide text-[#57534E] flex items-center justify-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#A37055]" />
-          <span>{t.navbar.bannerText}</span>
-          <span className="text-[#D6D0C7] hidden sm:inline">•</span>
-          <span className="text-[#78716C] hidden sm:inline">{t.navbar.bannerSub}</span>
+      <div
+        onClick={() => onNavigate('customizer')}
+        className="bg-[#1C1917] text-[#FAF8F5] py-2 px-4 text-center cursor-pointer hover:bg-[#2A2624] transition-colors border-b border-black/10"
+        title={locale === 'de' ? 'Klicken Sie hier, um eine kostenlose 300 DPI PDF zu erstellen' : locale === 'en' ? 'Click to create your free 300 DPI PDF' : 'Klik hier om een gratis 300 DPI PDF te maken'}
+      >
+        <p className="text-[11px] sm:text-xs font-medium tracking-wide flex items-center justify-center gap-2 flex-wrap">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-semibold text-white">{t.navbar.bannerText}</span>
+          <span className="text-white/40 hidden sm:inline">•</span>
+          <span className="text-emerald-300 font-medium hidden sm:inline">{t.navbar.bannerSub}</span>
+          <span className="underline text-[10.5px] text-[#E6C285] hover:text-white font-semibold ml-1">
+            {locale === 'de' ? 'Jetzt gratis ausprobieren →' : locale === 'en' ? 'Claim free PDF now →' : 'Nu gratis uitproberen →'}
+          </span>
         </p>
       </div>
 
@@ -265,11 +272,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Primary CTA (Hidden on mobile to keep first row clean and spacious, visible on tablet/desktop) */}
           <button
             onClick={() => onNavigate('customizer')}
-            className="hidden sm:flex items-center space-x-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm shrink-0"
+            className="hidden sm:flex items-center space-x-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#1C1917] hover:bg-[#332F2B] text-[#FAF8F5] font-semibold text-xs transition-all shadow-sm shrink-0"
           >
             <Compass className="w-3.5 h-3.5 text-[#E6C285]" />
             <span className="hidden sm:inline">{t.navbar.ctaButton}</span>
             <span className="sm:hidden">{t.navbar.ctaMobile}</span>
+            <span className="text-[9.5px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-600 text-white ml-0.5">
+              {locale === 'de' ? 'Gratis' : locale === 'en' ? 'Free' : 'Gratis'}
+            </span>
             <ArrowRight className="w-3.5 h-3.5 hidden sm:inline" />
           </button>
         </div>

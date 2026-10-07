@@ -7,6 +7,8 @@
  * - Clear transactional disclosure and atelier contact details
  */
 
+import { generateDownloadToken } from './security';
+
 export interface OrderEmailParams {
   orderId: string;
   customerName?: string;
@@ -45,7 +47,7 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
     customerEmail,
     frameStyle,
     posterSize = '50x70',
-    titleText = 'DE NACHT WAARIN WE ELKAAR VONDEN',
+    titleText,
     namesText = '',
     dateText = '',
     locationText = '',
@@ -56,13 +58,19 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
     origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://stellaireshop.com',
   } = params;
 
+  const safeLocale: 'nl' | 'en' | 'de' = (locale === 'de' || locale === 'en' || locale === 'nl') ? locale : 'nl';
+  const defaultTitle = safeLocale === 'de' ? 'UNSER BESONDERER ABEND' : safeLocale === 'en' ? 'OUR SPECIAL NIGHT' : 'DE NACHT WAARIN WE ELKAAR VONDEN';
+  const resolvedTitle = titleText && titleText.trim() ? titleText.trim() : defaultTitle;
+
   const isDigital = frameStyle === 'digital';
   const cleanBase = origin.replace(/\/$/, '');
   const displayHost = cleanBase.replace(/^https?:\/\//, '');
-  const downloadUrl = `${cleanBase}/api/orders/${orderId}/pdf`;
-  const trackingUrl = `${cleanBase}/${locale}/payment-success?order_id=${orderId}`;
+  const downloadToken = generateDownloadToken(orderId, customerEmail);
+  const downloadUrl = `${cleanBase}/api/orders/${orderId}/pdf?token=${downloadToken}`;
+  const trackingUrl = `${cleanBase}/${safeLocale}/payment-success?order_id=${orderId}&token=${downloadToken}`;
 
-  const greetingName = customerName ? customerName.trim() : (locale === 'de' ? 'Kunde' : locale === 'en' ? 'Customer' : 'Klant');
+  const defaultCustomer = safeLocale === 'de' ? 'Kunde' : safeLocale === 'en' ? 'Customer' : 'Klant';
+  const greetingName = customerName && customerName.trim() ? customerName.trim() : defaultCustomer;
 
   // Translations and localized copy
   const content = {
@@ -75,6 +83,7 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       subheadline: isDigital
         ? 'Je digitale sterrenkaart is berekend met astronomische precisie en staat klaar in drukwaardige resolutie.'
         : 'Je gepersonaliseerde sterrenposter wordt met zorg en vakmanschap vervaardigd in ons atelier.',
+      greeting: `Beste ${greetingName},`,
       orderRef: 'Bestelnummer',
       starMapDetails: 'Jouw Sterrenhemel Compositie',
       titleLabel: 'Titel',
@@ -89,6 +98,9 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       digitalActionDesc:
         'Klik op de onderstaande knop om je hoge-resolutie vector PDF-bestand te downloaden. Dit bestand is geoptimaliseerd voor haarscherpe afdrukken op elk formaat (tot 70x100 cm).',
       downloadButton: 'Download Sterrenkaart PDF (300 DPI)',
+      directLinkText: 'Download jouw 300 DPI printklare PDF via deze directe link:',
+      onlineOverviewText: 'Je kunt de bestelling en het bestand ook altijd online openen:',
+      digitalFallbackHtml: `Directe link werkt niet? Open <a href="${trackingUrl}" style="color: #A37055; text-decoration: underline;">jouw besteloverzicht</a> om het bestand op elk moment opnieuw te downloaden.`,
       digitalTipsTitle: 'Tips voor het mooiste printresultaat:',
       digitalTip1: 'Laat het bestand lokaal afdrukken op zwaar fine-art papier (200-300 g/m²) met een matte afwerking.',
       digitalTip2: 'Het vector-PDF bestand behoudt haarscherpe sterren en letters op zowel A4, A3 als 50x70 cm posters.',
@@ -98,11 +110,15 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       trackingLabel: 'Volgcode',
       estimatedDelivery: 'Verwachte levertijd: 2 - 4 werkdagen',
       trackButton: 'Volg Jouw Bestelling Online',
+      trackLiveText: 'Volg je bestelling live:',
       shippingAddressLabel: 'Bezorgadres',
       guaranteeTitle: '100% Kwaliteitsgarantie',
       guaranteeText:
         'Elke print wordt vóór verzending gecontroleerd. Mocht er tijdens het transport onverhoopt iets beschadigen, dan sturen wij kosteloos een nieuwe print.',
       questionsText: 'Vragen over je bestelling? Ons atelier helpt je graag via info@stellaireshop.com.',
+      signOff: 'Met vriendelijke groet,',
+      teamName: 'Het Stellaire Atelier Team',
+      tagline: 'Ambachtelijke Astronomische Kunst',
       footerNotice: `U ontvangt deze e-mail als aankoopbevestiging van uw bestelling bij Stellaire Atelier.`,
     },
     en: {
@@ -114,6 +130,7 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       subheadline: isDigital
         ? 'Your custom celestial map has been accurately calculated and is ready in museum print quality.'
         : 'Your personalized star map is being crafted with precision and care in our atelier.',
+      greeting: `Dear ${greetingName},`,
       orderRef: 'Order Reference',
       starMapDetails: 'Your Celestial Composition',
       titleLabel: 'Title',
@@ -128,6 +145,9 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       digitalActionDesc:
         'Click the button below to download your high-resolution vector PDF file, optimized for gallery-quality printing up to 24x36″ (70x100 cm).',
       downloadButton: 'Download Star Map PDF (300 DPI)',
+      directLinkText: 'Download your 300 DPI print-ready PDF via this direct link:',
+      onlineOverviewText: 'You can also view your order and file online at any time:',
+      digitalFallbackHtml: `Direct link not working? Open <a href="${trackingUrl}" style="color: #A37055; text-decoration: underline;">your order overview</a> to download the file at any time.`,
       digitalTipsTitle: 'Tips for the finest local print result:',
       digitalTip1: 'Print on heavyweight matte fine-art paper (200-300 gsm) at your local print shop for the best velvet texture.',
       digitalTip2: 'Because it is a vector PDF, stars, constellations, and typography remain razor-sharp at any size.',
@@ -137,11 +157,15 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       trackingLabel: 'Tracking Reference',
       estimatedDelivery: 'Estimated delivery: 2 - 4 business days',
       trackButton: 'Track Your Order Online',
+      trackLiveText: 'Track your order live:',
       shippingAddressLabel: 'Shipping Address',
       guaranteeTitle: '100% Quality & Safe Arrival Guarantee',
       guaranteeText:
         'Every print is individually inspected. If your piece arrives damaged during transit, we provide an immediate complimentary replacement.',
       questionsText: 'Questions regarding your order? Our concierge is available at info@stellaireshop.com.',
+      signOff: 'Warm regards,',
+      teamName: 'The Stellaire Atelier Team',
+      tagline: 'Artisan Astronomical Fine Art',
       footerNotice: `You received this email as an official order confirmation from Stellaire Atelier.`,
     },
     de: {
@@ -153,6 +177,7 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       subheadline: isDigital
         ? 'Ihre astronomische Sternenkarte wurde präzise berechnet und steht in Druckauflösung bereit.'
         : 'Ihre personalisierte Sternenkarte wird in unserem Atelier mit höchster Sorgfalt gefertigt.',
+      greeting: `Guten Tag ${greetingName},`,
       orderRef: 'Bestellnummer',
       starMapDetails: 'Ihre Himmelskomposition',
       titleLabel: 'Titel',
@@ -167,6 +192,9 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       digitalActionDesc:
         'Klicken Sie auf die Schaltfläche unten, um Ihre hochauflösende Vektor-PDF-Datei herunterzuladen.',
       downloadButton: 'Sternenkarte PDF herunterladen (300 DPI)',
+      directLinkText: 'Laden Sie Ihre druckfertige 300-DPI-PDF über diesen direkten Link herunter:',
+      onlineOverviewText: 'Sie können Ihre Bestellung und die Datei auch jederzeit online aufrufen:',
+      digitalFallbackHtml: `Direkter Link funktioniert nicht? Öffnen Sie <a href="${trackingUrl}" style="color: #A37055; text-decoration: underline;">Ihre Bestellübersicht</a>, um die Datei jederzeit erneut herunterzuladen.`,
       digitalTipsTitle: 'Tipps für das perfekte Druckergebnis:',
       digitalTip1: 'Lassen Sie die Datei lokal auf schwerem Kunstdruckpapier (200–300 g/m²) mit mattem Finish drucken.',
       digitalTip2: 'Als Vektorgrafik bleiben Sterne und Typografie in jeder Größe gestochen scharf.',
@@ -176,14 +204,18 @@ export function generateOrderConfirmationEmail(params: OrderEmailParams): Genera
       trackingLabel: 'Sendungsnummer',
       estimatedDelivery: 'Voraussichtliche Lieferzeit: 2 – 4 Werktage',
       trackButton: 'Sendung online verfolgen',
+      trackLiveText: 'Verfolgen Sie Ihre Sendung live:',
       shippingAddressLabel: 'Lieferadresse',
       guaranteeTitle: '100% Qualitätsgarantie',
       guaranteeText:
         'Jeder Druck wird vor dem Versand geprüft. Bei Transportschäden liefern wir sofort kostenlosen Ersatz.',
       questionsText: 'Fragen zu Ihrer Bestellung? Unser Atelier hilft Ihnen gerne unter info@stellaireshop.com.',
+      signOff: 'Mit freundlichen Grüßen,',
+      teamName: 'Ihr Stellaire Atelier Team',
+      tagline: 'Handwerkliche Astronomische Kunst',
       footerNotice: `Sie erhalten diese E-Mail als Kaufbestätigung für Ihre Bestellung bei Stellaire Atelier.`,
     },
-  }[locale];
+  }[safeLocale];
 
   // Address formatted block
   const formattedAddress = shippingAddress?.address_line1
@@ -197,7 +229,7 @@ STELLAIRE • ATELIER CÉLESTE
 ${content.headline.toUpperCase()}
 ============================================================
 
-Beste ${greetingName},
+${content.greeting}
 
 ${content.subheadline}
 
@@ -206,7 +238,7 @@ ${content.orderRef}: ${orderId}
 ------------------------------------------------------------
 ${content.starMapDetails.toUpperCase()}
 ------------------------------------------------------------
-• ${content.titleLabel}: ${titleText}
+• ${content.titleLabel}: ${resolvedTitle}
 ${namesText ? `• ${content.namesLabel}: ${namesText}` : ''}
 • ${content.dateLabel}: ${dateText}
 • ${content.locationLabel}: ${locationText}
@@ -217,10 +249,10 @@ ${
     ? `------------------------------------------------------------
 ${content.digitalActionTitle.toUpperCase()}
 ------------------------------------------------------------
-Download jouw 300 DPI printklare PDF via deze directe link:
+${content.directLinkText}
 ${downloadUrl}
 
-Je kunt de bestelling en het bestand ook altijd online openen:
+${content.onlineOverviewText}
 ${trackingUrl}
 
 ${content.digitalTipsTitle}
@@ -235,7 +267,7 @@ ${trackingNumber ? `${content.trackingLabel}: ${trackingNumber}` : ''}
 ${content.estimatedDelivery}
 ${formattedAddress ? `${content.shippingAddressLabel}: ${formattedAddress}` : ''}
 
-Volg je bestelling live:
+${content.trackLiveText}
 ${trackingUrl}`
 }
 
@@ -246,8 +278,8 @@ ${content.guaranteeText}
 
 ${content.questionsText}
 
-Met vriendelijke groet,
-Het Stellaire Atelier Team
+${content.signOff}
+${content.teamName}
 ${cleanBase}
 
 ---
@@ -326,7 +358,7 @@ Stellaire Atelier • info@stellaireshop.com
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 13px; line-height: 20px; color: #1C1917;">
                       <tr>
                         <td width="30%" style="color: #78716C; padding: 4px 0;">${content.titleLabel}:</td>
-                        <td style="font-weight: 600; padding: 4px 0;">${titleText}</td>
+                        <td style="font-weight: 600; padding: 4px 0;">${resolvedTitle}</td>
                       </tr>
                       ${
                         namesText
@@ -382,7 +414,7 @@ Stellaire Atelier • info@stellaireshop.com
                     </table>
 
                     <div style="margin-top: 14px; font-size: 11px; color: #78716C;">
-                      Directe link werkt niet? Open <a href="${trackingUrl}" style="color: #A37055; text-decoration: underline;">jouw besteloverzicht</a> om het bestand op elk moment opnieuw te downloaden.
+                      ${content.digitalFallbackHtml}
                     </div>
 
                     <!-- Local Printing Tips Box -->
@@ -417,8 +449,8 @@ Stellaire Atelier • info@stellaireshop.com
                     ${
                       carrier || trackingNumber
                         ? `<div style="margin-bottom: 18px; font-size: 12px; color: #57534E;">
-                      ${carrier ? `Vervoerder: <strong>${carrier}</strong>` : ''}
-                      ${trackingNumber ? ` • Volgcode: <code style="background: #EFEBE4; padding: 2px 6px; border-radius: 4px;">${trackingNumber}</code>` : ''}
+                      ${carrier ? `${content.carrierLabel}: <strong>${carrier}</strong>` : ''}
+                      ${trackingNumber ? ` • ${content.trackingLabel}: <code style="background: #EFEBE4; padding: 2px 6px; border-radius: 4px;">${trackingNumber}</code>` : ''}
                     </div>`
                         : ''
                     }
@@ -475,7 +507,7 @@ Stellaire Atelier • info@stellaireshop.com
             <td style="background-color: #FAF8F5; border-top: 1px solid #EAE5DC; padding: 24px 32px; text-align: center;">
               <div style="font-size: 11px; color: #A8A29E; line-height: 16px;">
                 ${content.footerNotice}<br>
-                Stellaire Atelier • Ambachtelijke Astronomische Kunst<br>
+                Stellaire Atelier • ${content.tagline}<br>
                 <a href="${cleanBase}" style="color: #A37055; text-decoration: none;">${displayHost}</a> • <a href="mailto:info@stellaireshop.com" style="color: #A37055; text-decoration: none;">info@stellaireshop.com</a>
               </div>
             </td>

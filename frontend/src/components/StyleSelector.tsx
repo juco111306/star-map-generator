@@ -89,7 +89,6 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
         return (
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <rect width="1000" height="1400" fill="#0B132B" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
             {/* Summer Triangle Sky over Amsterdam */}
             {renderPosterSky(
@@ -151,7 +150,6 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
             </defs>
 
             <rect width="1000" height="1400" fill="#F5F7F6" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(12,75,86,0.22)" strokeWidth="1.5" />
 
             {/* Spring Sky / Ursa Major over Utrecht */}
             {renderPosterSky(
@@ -191,7 +189,6 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
         return (
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <rect width="1000" height="1400" fill="#081C15" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="1.5" />
 
             {/* Autumn Sky / Cassiopeia over Antwerpen */}
             {renderPosterSky(
@@ -242,7 +239,6 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
         return (
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <rect width="1000" height="1400" fill="#38070E" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,235,238,0.22)" strokeWidth="1.5" />
 
             {/* Winter Sky / Orion & Sirius over Rotterdam */}
             {renderPosterSky(
@@ -309,8 +305,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   : 'border-[#E2DDD5] bg-[#FAF8F5]/60 hover:bg-white hover:border-[#1C1917] shadow-xs'
               }`}
             >
-              {/* Natural Light Wood Framed Mini Poster */}
-              <div className="relative aspect-[300/420] w-full rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[3px] sm:p-[5px] shadow-[0_4px_14px_rgba(40,25,10,0.12)] ring-1 ring-[#C8B28E]/60 mb-1.5 sm:mb-2.5 overflow-hidden transition-transform duration-300 group-hover:scale-[1.015]">
+              {/* Clean Flush Mini Poster - No Passepartout */}
+              <div className="relative aspect-[300/420] w-full rounded-none shadow-[0_4px_14px_rgba(40,25,10,0.12)] ring-1 ring-black/10 mb-1.5 sm:mb-2.5 overflow-hidden transition-transform duration-300 group-hover:scale-[1.015]">
                 {/* Active checkmark badge */}
                 {isSelected && (
                   <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-10 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#1C1917] text-white flex items-center justify-center shadow-md">
@@ -318,8 +314,8 @@ export const StyleSelector: React.FC<StyleSelectorProps> = ({
                   </div>
                 )}
 
-                {/* Vector Poster Art - Flush Fit in Wood Frame */}
-                <div className="w-full h-full rounded-none overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]">
+                {/* Vector Poster Art - Edge to Edge */}
+                <div className="w-full h-full">
                   {renderPosterSVG(style.id)}
                 </div>
               </div>

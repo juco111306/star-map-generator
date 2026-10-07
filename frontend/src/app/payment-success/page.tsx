@@ -35,6 +35,7 @@ function PaymentSuccessContent() {
   const orderId = searchParams.get('order_id') || searchParams.get('orderId') || '';
   const sessionId = searchParams.get('session_id') || '';
   const amountParam = searchParams.get('amount') || '';
+  const tokenParam = searchParams.get('token') || '';
 
   const [order, setOrder] = useState<OrderRecord | null>(null);
   const [orderConfig, setOrderConfig] = useState<MapConfig | null>(null);
@@ -182,7 +183,8 @@ function PaymentSuccessContent() {
 
       // 1. Try fetching from Next.js / backend order route
       try {
-        const res = await fetch(`/api/orders/${displayOrderId}/pdf`);
+        const fetchPdfUrl = `/api/orders/${displayOrderId}/pdf${tokenParam ? `?token=${encodeURIComponent(tokenParam)}` : ''}`;
+        const res = await fetch(fetchPdfUrl);
         if (res.ok) {
           const candidate = await res.blob();
           if (
@@ -275,7 +277,7 @@ function PaymentSuccessContent() {
       {/* Top Navigation Bar */}
       <header className="w-full bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#EAE5DC] px-6 py-4 sticky top-0 z-30">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link href={locale === 'nl' ? '/' : `/${locale}`} className="flex items-center space-x-2 group">
+          <Link href={`/${locale}`} className="flex items-center space-x-2 group">
             <span className="font-serif text-2xl font-bold tracking-tight text-[#1C1917] group-hover:text-[#A37055] transition-colors">
               Stellaire
             </span>
@@ -285,7 +287,7 @@ function PaymentSuccessContent() {
           </Link>
 
           <Link
-            href={locale === 'nl' ? '/' : `/${locale}`}
+            href={`/${locale}`}
             className="text-xs font-semibold text-[#57534E] hover:text-[#1C1917] flex items-center gap-1.5 transition"
           >
             <HomeIcon className="w-3.5 h-3.5" />
@@ -661,7 +663,7 @@ function PaymentSuccessContent() {
             </button>
 
             <Link
-              href={locale === 'nl' ? '/' : `/${locale}`}
+              href={`/${locale}`}
               className="w-full sm:w-auto px-5 py-3 rounded-full bg-white hover:bg-[#F5F2EB] text-[#1C1917] font-medium text-xs border border-[#E2DDD5] flex items-center justify-center gap-1.5 transition shadow-xs text-center"
             >
               <span>{t.paymentSuccess.continueExploringButton}</span>

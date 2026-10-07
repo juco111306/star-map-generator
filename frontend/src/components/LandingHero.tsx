@@ -54,10 +54,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
       names: isDe ? 'Hannah & Maximilian' : isEn ? 'Olivia & James' : 'Sophie & Daan',
       date: isDe ? '22. SEPTEMBER 2024' : isEn ? 'SEPTEMBER 22, 2024' : '22 SEPTEMBER 2024',
       dateIso: '2024-09-22',
-      location: isDe ? 'BERLIN, DEUTSCHLAND' : isEn ? 'LONDON, UNITED KINGDOM' : 'AMSTERDAM, NEDERLAND',
-      coords: isDe ? '52.5200° N • 13.4050° O' : isEn ? '51.5074° N • 0.1278° W' : '52.3676° N • 4.9041° E',
-      lat: isDe ? 52.52 : isEn ? 51.5074 : 52.3676,
-      lng: isDe ? 13.405 : isEn ? -0.1278 : 4.9041,
+      location: 'NEW YORK, UNITED STATES',
+      coords: '40.7128° N • 74.0060° W',
+      lat: 40.7128,
+      lng: -74.006,
       tagline: isDe ? 'Der Moment, in dem alles begann' : isEn ? 'The moment our journey began' : 'Het moment waarop alles begon',
     },
     wedding: {
@@ -69,10 +69,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
       names: isDe ? 'Laura & Felix' : isEn ? 'Charlotte & William' : 'Emma & Lucas',
       date: isDe ? '18. AUGUST 2023' : isEn ? 'AUGUST 18, 2023' : '18 AUGUSTUS 2023',
       dateIso: '2023-08-18',
-      location: isDe ? 'MÜNCHEN, DEUTSCHLAND' : isEn ? 'EDINBURGH, UNITED KINGDOM' : 'UTRECHT, NEDERLAND',
-      coords: isDe ? '48.1351° N • 11.5820° O' : isEn ? '55.9533° N • 3.1883° W' : '52.0907° N • 5.1214° E',
-      lat: isDe ? 48.1351 : isEn ? 55.9533 : 52.0907,
-      lng: isDe ? 11.582 : isEn ? -3.1883 : 5.1214,
+      location: isDe ? 'AMSTERDAM, NIEDERLANDE' : isEn ? 'AMSTERDAM, THE NETHERLANDS' : 'AMSTERDAM, NEDERLAND',
+      coords: '52.3676° N • 4.9041° E',
+      lat: 52.3676,
+      lng: 4.9041,
       tagline: isDe ? 'Zwei Leben vereint unter diesen Sternen' : isEn ? 'Two souls united beneath these stars' : 'Twee zielen verenigd onder deze sterren',
     },
     birth: {
@@ -84,10 +84,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
       names: isDe ? 'Noah Alexander' : isEn ? 'Oliver James' : 'Liam Alexander',
       date: isDe ? '14. MAI 2025' : isEn ? 'MAY 14, 2025' : '14 MEI 2025',
       dateIso: '2025-05-14',
-      location: isDe ? 'HAMBURG, DEUTSCHLAND' : isEn ? 'DUBLIN, IRELAND' : 'ROTTERDAM, NEDERLAND',
-      coords: isDe ? '53.5511° N • 9.9937° O' : isEn ? '53.3498° N • 6.2603° W' : '51.9244° N • 4.4777° E',
-      lat: isDe ? 53.5511 : isEn ? 53.3498 : 51.9244,
-      lng: isDe ? 9.9937 : isEn ? -6.2603 : 4.4777,
+      location: isDe ? 'MÜNCHEN, DEUTSCHLAND' : isEn ? 'MUNICH, GERMANY' : 'MÜNCHEN, DUITSLAND',
+      coords: '48.1351° N • 11.5820° E',
+      lat: 48.1351,
+      lng: 11.582,
       tagline: isDe ? 'Der Himmel in deiner allerersten Stunde' : isEn ? 'The sky in your very first hour' : 'De hemel in jouw allereerste uur',
     },
     anniversary: {
@@ -99,10 +99,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
       names: isDe ? 'Mia & Jonas' : isEn ? 'Amelia & George' : 'Mila & Thomas',
       date: isDe ? '04. OKTOBER 2020' : isEn ? 'OCTOBER 04, 2020' : '04 OKTOBER 2020',
       dateIso: '2020-10-04',
-      location: isDe ? 'WIEN, ÖSTERREICH' : isEn ? 'NEW YORK, UNITED STATES' : 'ANTWERPEN, BELGIË',
-      coords: isDe ? '48.2082° N • 16.3738° O' : isEn ? '40.7128° N • 74.0060° W' : '51.2194° N • 4.4025° E',
-      lat: isDe ? 48.2082 : isEn ? 40.7128 : 51.2194,
-      lng: isDe ? 16.3738 : isEn ? -74.006 : 4.4025,
+      location: isDe ? 'MAILAND, ITALIEN' : isEn ? 'MILAN, ITALY' : 'MILANO, ITALIË',
+      coords: '45.4642° N • 9.1900° E',
+      lat: 45.4642,
+      lng: 9.19,
       tagline: isDe ? 'Jedes Jahr strahlender denn je' : isEn ? 'Every year shining brighter' : 'Elk jaar stralender dan voorheen',
     },
   };
@@ -116,6 +116,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
   };
 
   const handleStyleSwatchClick = (styleId: string) => {
+    if (styleId === 'midnight_classic') setSelectedOccasion('first_date');
+    else if (styleId === 'emerald_night') setSelectedOccasion('wedding');
+    else if (styleId === 'teal_watercolor') setSelectedOccasion('birth');
+    else if (styleId === 'burgundy_sky') setSelectedOccasion('anniversary');
     setOverrideStyleId(styleId);
   };
 
@@ -188,6 +192,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
           location: activeOccasion.location.toUpperCase(),
           coords: activeOccasion.coords,
         },
+        frameStyle: 'digital',
       });
     } else {
       onNavigate('customizer');
@@ -270,7 +275,6 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
               </radialGradient>
             </defs>
             <rect width="1000" height="1400" fill="#F5F7F6" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(12,75,86,0.22)" strokeWidth="1.5" />
             {renderCelestialSky(
               'hero-sky-teal',
               'url(#hero-teal-nebula)',
@@ -307,7 +311,6 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
         return (
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <rect width="1000" height="1400" fill="#081C15" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="1.5" />
             {renderCelestialSky(
               'hero-sky-emerald',
               '#04110C',
@@ -344,7 +347,6 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
         return (
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <rect width="1000" height="1400" fill="#38070E" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,235,238,0.22)" strokeWidth="1.5" />
             {renderCelestialSky(
               'hero-sky-burgundy',
               '#240308',
@@ -385,7 +387,6 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
         return (
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             <rect width="1000" height="1400" fill="#0B132B" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
             {renderCelestialSky(
               'hero-sky-midnight',
               '#070D1F',
@@ -493,7 +494,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
                   onClick={handleStartPersonalizing}
                   className="px-7 py-3.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs tracking-wide shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  <span>{isDe ? 'Diesen Moment Personalisieren' : isEn ? 'Personalize This Moment' : 'Pas Dit Moment Aan'}</span>
+                  <span>{t.hero.ctaDesign}</span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-600 text-white ml-1 shadow-xs">
+                    {isDe ? '100% Gratis' : isEn ? '100% Free' : '100% Gratis'}
+                  </span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
 
@@ -506,15 +510,17 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
                 </button>
               </div>
 
-              {/* Gentle Social Proof */}
-              <div className="flex items-center space-x-3 text-xs text-[#78716C]">
-                <div className="flex items-center text-[#A37055]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-[#A37055]" />
-                  ))}
-                </div>
-                <span>
-                  <strong className="text-[#1C1917] font-medium">4.98 / 5.0</strong> • {t.socialProof.totalReviews}
+              {/* Transparent Indie Pilot Proof */}
+              <div className="flex flex-wrap items-center gap-3 text-xs text-[#78716C]">
+                <span className="inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full font-medium text-[11px] shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  <span>{isDe ? 'Reddit & Community-Pilot aktiv' : isEn ? 'Reddit & Community Pilot Active' : 'Reddit & Community Pilot actief'}</span>
+                </span>
+                <span className="text-xs text-[#57534E] flex items-center gap-1.5">
+                  <span className="text-[#A8A29E] line-through text-[11px]">{formatPrice(19)}</span>
+                  <strong className="text-emerald-800 font-bold">{isDe ? '0,00 € (Kostenlos)' : isEn ? '$0.00 (100% Free)' : '€0,00 (Gratis)'}</strong>
+                  <span>•</span>
+                  <span>{isDe ? 'Keine Kreditkarte nötig' : isEn ? 'No credit card required' : 'Geen creditcard nodig'}</span>
                 </span>
               </div>
             </div>
@@ -523,33 +529,27 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
           {/* Section 2: Visual Framed Art Showcase (Prominent & immediately visible on Mobile) */}
           <div className="w-full lg:col-span-5 flex flex-col items-center">
             <div className="relative group w-full max-w-[290px] sm:max-w-[360px] lg:max-w-[440px]">
-              {/* Soft warm shadow */}
-              <div className="absolute -inset-2 rounded-[28px] bg-[#E8E1D3]/50 blur-xl opacity-80 pointer-events-none" />
-
-              {/* Natural Wood Frame Mockup */}
-              <div className="relative rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[6px] sm:p-[9px] shadow-[0_20px_45px_-10px_rgba(40,25,10,0.22),0_6px_16px_-4px_rgba(40,25,10,0.12)] ring-1 ring-[#C8B28E]/60 transition-transform duration-500 group-hover:scale-[1.015]">
-                
+              {/* Clean Flush Poster Art (Zero Passepartout, Zero Halo, Edge to Edge) */}
+              <div
+                onClick={handleStartPersonalizing}
+                className="relative rounded-none overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer shadow-[0_25px_50px_-12px_rgba(0,0,0,0.35),0_8px_20px_-6px_rgba(0,0,0,0.2)] transition-transform duration-500 group-hover:scale-[1.015]"
+                title={isDe ? 'Klicken Sie hier, um im Studio anzupassen' : isEn ? 'Click to customize in studio' : 'Klik om aan te passen in studio'}
+              >
                 {/* Active Occasion Tag on Corner */}
                 <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-none text-[8px] sm:text-[9px] font-bold tracking-wider uppercase bg-white/95 text-[#1C1917] shadow-xs border border-black/10 flex items-center gap-1">
                   <span>{activeOccasion.icon}</span>
                   <span>{activeOccasion.label}</span>
                 </div>
 
-                <div
-                  onClick={handleStartPersonalizing}
-                  className="relative rounded-none overflow-hidden aspect-[5/7] bg-[#0B132B] cursor-pointer shadow-[inset_0_1px_3px_rgba(0,0,0,0.35)]"
-                  title={isDe ? 'Klicken Sie hier, um im Studio anzupassen' : isEn ? 'Click to customize in studio' : 'Klik om aan te passen in studio'}
-                >
-                  {/* Dynamic SVG Poster that morphs instantly */}
-                  {renderHeroPosterSVG()}
+                {/* Dynamic SVG Poster that morphs instantly */}
+                {renderHeroPosterSVG()}
 
-                  {/* Hover Prompt */}
-                  <div className="absolute inset-0 bg-[#1C1917]/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="px-4 py-2 rounded-full bg-white text-[#1C1917] font-semibold text-xs shadow-xl flex items-center gap-1.5 transform translate-y-1 group-hover:translate-y-0 transition-transform">
-                      <span>{t.navbar.ctaButton}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
+                {/* Hover Prompt */}
+                <div className="absolute inset-0 bg-[#1C1917]/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="px-4 py-2 rounded-full bg-white text-[#1C1917] font-semibold text-xs shadow-xl flex items-center gap-1.5 transform translate-y-1 group-hover:translate-y-0 transition-transform">
+                    <span>{t.navbar.ctaButton}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
                 </div>
               </div>
 
@@ -565,8 +565,8 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
                   </p>
                 </div>
                 <div className="text-right shrink-0 whitespace-nowrap">
-                  <span className="text-[10px] text-[#A8A29E] line-through block">{formatPrice(29)}</span>
-                  <span className="font-serif text-xs font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} {formatPrice(19)}</span>
+                  <span className="text-[10px] text-[#A8A29E] line-through block">{formatPrice(19)}</span>
+                  <span className="font-serif text-xs font-bold text-emerald-800">{isDe ? 'KOSTENLOS (Pilot)' : isEn ? 'FREE (Pilot)' : 'GRATIS (Pilot)'}</span>
                 </div>
               </div>
             </div>
@@ -606,7 +606,10 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
                 onClick={handleStartPersonalizing}
                 className="w-full py-3.5 px-4 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-semibold text-xs tracking-wide shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>{isDe ? 'Diesen Moment Personalisieren' : isEn ? 'Personalize This Moment' : 'Pas Dit Moment Aan'}</span>
+                <span>{t.hero.ctaDesign}</span>
+                <span className="text-[9.5px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-600 text-white ml-0.5 shadow-xs">
+                  {isDe ? '100% Gratis' : isEn ? '100% Free' : '100% Gratis'}
+                </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
@@ -618,14 +621,13 @@ export const LandingHero: React.FC<LandingHeroProps> = ({ onNavigate, onStartWit
                 {t.hero.ctaStyles}
               </button>
 
-              <div className="flex items-center justify-center space-x-2 text-xs text-[#78716C] pt-1">
-                <div className="flex items-center text-[#A37055]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-[#A37055]" />
-                  ))}
-                </div>
-                <span className="text-[11px]">
-                  <strong className="text-[#1C1917] font-medium">4.98 / 5.0</strong> • {t.socialProof.totalReviews}
+              <div className="flex flex-col items-center justify-center space-y-1 text-xs text-[#78716C] pt-1">
+                <span className="inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full font-medium text-[10.5px]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  <span>{isDe ? 'Reddit & Community-Pilot • 100% Kostenlose PDF' : isEn ? 'Reddit & Community Pilot • 100% Free PDF' : 'Reddit & Community Pilot • 100% Gratis PDF'}</span>
+                </span>
+                <span className="text-[10px] text-[#78716C]">
+                  {isDe ? '300 DPI Vektordatei • Keine Kreditkarte nötig' : isEn ? '300 DPI vector file • No card required' : '300 DPI vectorbestand • Geen creditcard nodig'}
                 </span>
               </div>
             </div>

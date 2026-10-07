@@ -9,17 +9,20 @@ import {
 } from '../constants/sampleCelestialData';
 import { MysticalMilkyWay } from './MysticalMilkyWay';
 import { useLanguage } from '../context/LanguageContext';
+import { FrameStyle } from '../types';
 
 interface ProductCatalogProps {
   onCustomizeStarMap: () => void;
   onSelectStyle?: (styleId: string) => void;
+  onSelectEdition?: (frameStyle: FrameStyle) => void;
 }
 
 export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   onCustomizeStarMap,
   onSelectStyle,
+  onSelectEdition,
 }) => {
-  const { locale, t, currencySymbol } = useLanguage();
+  const { locale, t, currencySymbol, formatPrice } = useLanguage();
 
   const currentStyles = getLocalizedStyleDetails(locale);
 
@@ -101,7 +104,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             {/* Background */}
             <rect width="1000" height="1400" fill="#0B132B" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />
 
             {/* Dense Authentic Celestial Starfield (Summer Triangle / Cygnus Sky - 0° orientation) */}
             {renderCelestialSky(
@@ -165,7 +167,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 
             {/* Matted Gallery Light Linen Background */}
             <rect width="1000" height="1400" fill="#F5F7F6" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(12,75,86,0.22)" strokeWidth="1.5" />
 
             {/* Swirling Teal Watercolor Celestial Disk (Spring Sky / Ursa Major - 95° orientation) */}
             {renderCelestialSky(
@@ -207,7 +208,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             {/* British Racing Green Background */}
             <rect width="1000" height="1400" fill="#081C15" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="1.5" />
 
             {/* Inner Forest Sphere with Gold Stars (Autumn Sky / Cassiopeia & Pegasus - 190° orientation) */}
             {renderCelestialSky(
@@ -261,7 +261,6 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
           <svg viewBox="0 0 1000 1400" className="w-full h-full select-none" preserveAspectRatio="xMidYMid meet">
             {/* Velvet Wine Red Background */}
             <rect width="1000" height="1400" fill="#38070E" />
-            <rect x="36" y="36" width="928" height="1328" fill="none" stroke="rgba(255,235,238,0.22)" strokeWidth="1.5" />
 
             {/* Deep Bordeaux Celestial Disk (Winter Sky / Orion & Sirius - 280° orientation) */}
             {renderCelestialSky(
@@ -341,15 +340,15 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 className="group bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 border border-[#E2DDD5] shadow-[0_8px_25px_rgba(28,25,23,0.04)] hover:shadow-[0_18px_40px_rgba(28,25,23,0.12)] hover:border-[#C8BFB0] transition-all duration-300 cursor-pointer flex flex-col justify-between"
               >
                 <div className="space-y-2 sm:space-y-3.5">
-                  {/* Natural Wood Frame Mockup */}
-                  <div className="relative aspect-[300/420] rounded-none bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B] p-[3px] sm:p-[7px] shadow-[0_10px_25px_-5px_rgba(40,25,10,0.18)] ring-1 ring-[#C8B28E]/60 transition-transform duration-500 group-hover:scale-[1.02]">
+                  {/* Clean Flush Poster Art - No Passepartout */}
+                  <div className="relative aspect-[300/420] rounded-none overflow-hidden shadow-[0_12px_28px_-6px_rgba(0,0,0,0.25)] transition-transform duration-500 group-hover:scale-[1.02]">
                     {/* Badge */}
                     <span className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 z-10 px-1.5 py-0.5 sm:px-2 rounded-none text-[7px] sm:text-[8.5px] font-bold tracking-wider uppercase bg-white/95 text-[#1C1917] shadow-xs border border-black/10">
                       {meta.tag}
                     </span>
 
-                    {/* The Exact Vector Poster Art - Flush Fit with Wooden Frame */}
-                    <div className="w-full h-full rounded-none overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.3)]">
+                    {/* The Exact Vector Poster Art - Edge to Edge */}
+                    <div className="w-full h-full">
                       {renderExactPosterSVG(style.id)}
                     </div>
                   </div>
@@ -361,8 +360,8 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                         {meta.title}
                       </h3>
                       <div className="text-right shrink-0 whitespace-nowrap ml-1">
-                        <span className="hidden sm:inline text-[10px] text-[#A8A29E] line-through mr-1">{currencySymbol}29</span>
-                        <span className="text-[11px] sm:text-xs font-bold text-[#1C1917]">{t.catalog.digital.pricePrefix} {currencySymbol}19</span>
+                        <span className="hidden sm:inline text-[10px] text-[#A8A29E] line-through mr-1">{currencySymbol}19</span>
+                        <span className="text-[11px] sm:text-xs font-bold text-emerald-800">{t.catalog.digital.pricePrefix} {locale === 'de' ? 'Kostenlos' : locale === 'en' ? 'FREE' : 'Gratis'}</span>
                       </div>
                     </div>
                     <p className="text-[9.5px] sm:text-[10.5px] font-semibold text-[#A37055] truncate">
@@ -384,6 +383,209 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
               </div>
             );
           })}
+        </div>
+
+        {/* Editions & Formats Showcase */}
+        <div className="space-y-8 pt-6">
+          <div className="text-center max-w-xl mx-auto space-y-2.5">
+            <div className="inline-flex items-center space-x-2 px-3 py-0.5 rounded-full bg-[#EFE9DF] border border-[#E0D7C9] text-[#78716C] text-[11px] font-medium">
+              <Sparkles className="w-3 h-3 text-[#A37055]" />
+              <span>{t.catalog.badge}</span>
+            </div>
+            <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#1C1917]">
+              {t.catalog.title}
+            </h3>
+            <p className="text-xs sm:text-sm text-[#78716C] font-light">
+              {locale === 'de'
+                ? 'Wählen Sie zwischen unserer kostenlosen Pilot-Digitaldatei für Reddit-Tester oder hochwertigen physischen Drucken.'
+                : locale === 'en'
+                ? 'Choose between our 100% free pilot digital edition for Reddit testers or artisan physical prints.'
+                : 'Kies tussen onze 100% gratis pilot digitale editie voor Reddit-testers of ambachtelijke fysieke prints.'}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* Edition 1: 300 DPI Digital Vector PDF (Featured 100% Free Pilot Tier) */}
+            <div className="relative rounded-3xl p-6 sm:p-7 bg-white border-2 border-emerald-500 shadow-[0_12px_35px_rgba(16,185,129,0.12)] flex flex-col justify-between space-y-5 ring-4 ring-emerald-500/10">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    {t.catalog.digital.badge}
+                  </span>
+                  <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>{locale === 'de' ? 'Sofort' : locale === 'en' ? 'Instant' : 'Direct'}</span>
+                  </span>
+                </div>
+
+                <div>
+                  <h4 className="font-serif text-lg sm:text-xl font-bold text-[#1C1917]">
+                    {t.catalog.digital.title}
+                  </h4>
+                  <p className="text-xs text-[#78716C] mt-0.5 font-light">
+                    {t.catalog.digital.subtitle}
+                  </p>
+                </div>
+
+                <div className="py-2.5 px-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/70 flex items-baseline gap-2">
+                  <span className="text-xs text-[#78716C] line-through">{formatPrice(19)}</span>
+                  <span className="text-2xl sm:text-3xl font-serif font-bold text-emerald-800">
+                    {formatPrice(0)}
+                  </span>
+                  <span className="text-xs font-semibold text-emerald-700">
+                    ({locale === 'de' ? '100% Kostenlos • Pilot' : locale === 'en' ? '100% Free • Pilot' : '100% Gratis • Pilot'})
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#57534E] font-light leading-relaxed">
+                  {t.catalog.digital.description}
+                </p>
+
+                <ul className="space-y-2 pt-1">
+                  {t.catalog.digital.features.map((feat, i) => (
+                    <li key={i} className="text-[11.5px] text-[#44403C] flex items-start gap-2">
+                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (onSelectEdition) onSelectEdition('digital');
+                  else onCustomizeStarMap();
+                }}
+                className="w-full py-3.5 px-4 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs tracking-wide shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>{t.catalog.digital.cta}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Edition 2: Museum Fine-Art Poster */}
+            <div className="relative rounded-3xl p-6 sm:p-7 bg-white border border-[#E2DDD5] shadow-xs flex flex-col justify-between space-y-5 hover:border-[#C8BFB0] transition">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300">
+                    {locale === 'de' ? '⏳ Bald Verfügbar' : locale === 'en' ? '⏳ Coming Soon' : '⏳ Binnenkort Beschikbaar'}
+                  </span>
+                </div>
+
+                <div>
+                  <h4 className="font-serif text-lg sm:text-xl font-bold text-[#1C1917]">
+                    {t.catalog.poster.title}
+                  </h4>
+                  <p className="text-xs text-[#78716C] mt-0.5 font-light">
+                    {t.catalog.poster.subtitle}
+                  </p>
+                </div>
+
+                <div className="py-2.5 px-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE5DC] flex items-baseline gap-2">
+                  <span className="text-xs text-[#78716C]">{t.catalog.poster.pricePrefix}</span>
+                  <span className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917]">
+                    {formatPrice(39)}
+                  </span>
+                  <span className="text-[11px] text-[#78716C]">
+                    ({t.common.vatIncluded})
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#57534E] font-light leading-relaxed">
+                  {t.catalog.poster.description}
+                </p>
+
+                <ul className="space-y-2 pt-1">
+                  {t.catalog.poster.features.map((feat, i) => (
+                    <li key={i} className="text-[11.5px] text-[#44403C] flex items-start gap-2">
+                      <Check className="w-3.5 h-3.5 text-[#A37055] shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (onSelectEdition) onSelectEdition('digital');
+                  else onCustomizeStarMap();
+                }}
+                className="w-full py-3.5 px-4 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-white font-semibold text-xs tracking-wide shadow-sm hover:shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>
+                  {locale === 'de'
+                    ? '⏳ Bald Verfügbar (Gratis PDF wählen)'
+                    : locale === 'en'
+                    ? '⏳ Coming Soon (Choose Free PDF)'
+                    : '⏳ Binnenkort (Kies Gratis PDF)'}
+                </span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Edition 3: Framed Heirloom Print */}
+            <div className="relative rounded-3xl p-6 sm:p-7 bg-white border border-[#E2DDD5] shadow-xs flex flex-col justify-between space-y-5 hover:border-[#C8BFB0] transition">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300">
+                    {locale === 'de' ? '⏳ Bald Verfügbar' : locale === 'en' ? '⏳ Coming Soon' : '⏳ Binnenkort Beschikbaar'}
+                  </span>
+                </div>
+
+                <div>
+                  <h4 className="font-serif text-lg sm:text-xl font-bold text-[#1C1917]">
+                    {t.catalog.framed.title}
+                  </h4>
+                  <p className="text-xs text-[#78716C] mt-0.5 font-light">
+                    {t.catalog.framed.subtitle}
+                  </p>
+                </div>
+
+                <div className="py-2.5 px-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EAE5DC] flex items-baseline gap-2">
+                  <span className="text-xs text-[#78716C]">{t.catalog.framed.pricePrefix}</span>
+                  <span className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917]">
+                    {formatPrice(79)}
+                  </span>
+                  <span className="text-[11px] text-[#78716C]">
+                    ({t.common.vatIncluded})
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#57534E] font-light leading-relaxed">
+                  {t.catalog.framed.description}
+                </p>
+
+                <ul className="space-y-2 pt-1">
+                  {t.catalog.framed.features.map((feat, i) => (
+                    <li key={i} className="text-[11.5px] text-[#44403C] flex items-start gap-2">
+                      <Check className="w-3.5 h-3.5 text-[#A37055] shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (onSelectEdition) onSelectEdition('digital');
+                  else onCustomizeStarMap();
+                }}
+                className="w-full py-3.5 px-4 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-white font-semibold text-xs tracking-wide shadow-sm hover:shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>
+                  {locale === 'de'
+                    ? '⏳ Bald Verfügbar (Gratis PDF wählen)'
+                    : locale === 'en'
+                    ? '⏳ Coming Soon (Choose Free PDF)'
+                    : '⏳ Binnenkort (Kies Gratis PDF)'}
+                </span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Quality & Trust Banner */}

@@ -11,8 +11,15 @@ export const GeoLanguageBanner: React.FC = () => {
   const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
-    // Only check if user hasn't explicitly dismissed it this session
-    if (sessionStorage.getItem('stellaire_geo_dismissed')) return;
+    // 1. If user has ever manually chosen a language or dismissed the prompt, NEVER show banner
+    if (typeof window !== 'undefined') {
+      if (
+        sessionStorage.getItem('stellaire_geo_dismissed') ||
+        localStorage.getItem('stellaire_user_manual_locale')
+      ) {
+        return;
+      }
+    }
 
     // Check client browser language
     const browserLang = navigator.language?.toLowerCase() || '';
@@ -57,11 +64,14 @@ export const GeoLanguageBanner: React.FC = () => {
     setDismissed(true);
     try {
       sessionStorage.setItem('stellaire_geo_dismissed', 'true');
+      localStorage.setItem('stellaire_user_manual_locale', 'true');
     } catch {}
   };
 
   const handleSwitch = () => {
-    changeLocale(suggestedLocale);
+    if (suggestedLocale) {
+      changeLocale(suggestedLocale);
+    }
     handleDismiss();
   };
 

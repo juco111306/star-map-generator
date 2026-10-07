@@ -44,31 +44,42 @@ export async function sendOrderConfirmationEmail(
   // 1. Resend (Primary choice for Next.js / Vercel with high Primary Inbox deliverability)
   if (resendApiKey) {
     try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${resendApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: defaultFrom,
-          to: [params.customerEmail],
-          reply_to: replyTo,
-          subject: emailContent.subject,
-          html: emailContent.html,
-          text: emailContent.text,
+      const sendPayload = async (fromAddress: string) => {
+        return fetch('https://api.resend.com/emails', {
+          method: 'POST',
           headers: {
-            'X-Entity-Ref-ID': params.orderId,
-            'Auto-Submitted': 'auto-generated',
+            Authorization: `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json',
           },
-          tags: [
-            { name: 'category', value: 'order_confirmation' },
-            { name: 'order_id', value: params.orderId },
-          ],
-        }),
-      });
+          body: JSON.stringify({
+            from: fromAddress,
+            to: [params.customerEmail],
+            reply_to: replyTo,
+            subject: emailContent.subject,
+            html: emailContent.html,
+            text: emailContent.text,
+            headers: {
+              'X-Entity-Ref-ID': params.orderId,
+              'Auto-Submitted': 'auto-generated',
+            },
+            tags: [
+              { name: 'category', value: 'order_confirmation' },
+              { name: 'order_id', value: params.orderId },
+            ],
+          }),
+        });
+      };
 
-      const data = await res.json();
+      let res = await sendPayload(defaultFrom);
+      let data = await res.json();
+
+      // If custom domain is not yet verified in Resend dashboard, fall back to onboarding@resend.dev for test delivery
+      if (!res.ok && data?.message && data.message.toLowerCase().includes('domain') && defaultFrom !== 'onboarding@resend.dev') {
+        console.warn(`[Email] Domain not yet verified in Resend (${defaultFrom}). Retrying with test sender onboarding@resend.dev...`);
+        res = await sendPayload('Stellaire <onboarding@resend.dev>');
+        data = await res.json();
+      }
+
       if (res.ok && data?.id) {
         sentOrderCache.set(cacheKey, now);
         console.log(`[Email] Resend dispatched successfully for ${params.orderId}. Message ID: ${data.id}`);

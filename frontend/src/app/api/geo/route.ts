@@ -7,7 +7,8 @@ export async function GET(request: NextRequest) {
   const country = (
     request.headers.get('x-vercel-ip-country') ||
     request.headers.get('cf-ipcountry') ||
-    'NL'
+    request.headers.get('x-country-code') ||
+    ''
   ).toUpperCase();
 
   const isUS = country === 'US';
@@ -16,9 +17,9 @@ export async function GET(request: NextRequest) {
   const unit: 'in' | 'cm' = isUS ? 'in' : 'cm';
   const currency: 'USD' | 'GBP' | 'EUR' = isUS ? 'USD' : isUK ? 'GBP' : 'EUR';
   const suggestedLocale =
-    country === 'DE' || country === 'AT' || country === 'CH'
+    country === 'DE' || country === 'AT' || country === 'CH' || country === 'LI'
       ? 'de'
-      : country === 'NL' || country === 'BE'
+      : country === 'NL' || country === 'BE' || country === 'SR'
       ? 'nl'
       : 'en';
 

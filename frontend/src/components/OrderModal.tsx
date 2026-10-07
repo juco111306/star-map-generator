@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Printer,
@@ -11,16 +11,19 @@ import {
   MapPin,
   Calendar,
   Download,
+  Mail,
   ArrowRight,
   Loader2,
   AlertCircle,
   X,
   ShieldCheck,
   Globe,
+  Clock,
 } from 'lucide-react';
 import { CustomerDetails, MapConfig, OrderRecord } from '../types';
 import { apiFetch } from '../utils/api';
 import { calculatePrice } from '../utils/pricing';
+import { generateStarMapPdfBlob } from '../utils/pdfGenerator';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutPage from "./CheckoutPage";
@@ -65,6 +68,57 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [completedOrder, setCompletedOrder] = useState<OrderRecord | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCompletedOrder(null);
+      setError(null);
+      setIsSubmitting(false);
+      setIsResending(false);
+      setResendSuccess(false);
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setCompletedOrder(null);
+    setError(null);
+    setIsSubmitting(false);
+    setIsResending(false);
+    setResendSuccess(false);
+    onClose();
+  };
+
+  const handleResendEmail = async () => {
+    if (!completedOrder?.customer?.email || isResending) return;
+    setIsResending(true);
+    try {
+      await fetch('/api/send-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: completedOrder.order_id,
+          customerEmail: completedOrder.customer.email,
+          customerName: completedOrder.customer.name,
+          frameStyle: completedOrder.frame_style,
+          posterSize: completedOrder.poster_size,
+          titleText: completedOrder.title_text,
+          namesText: completedOrder.names_text,
+          dateText: completedOrder.date_text,
+          locationText: completedOrder.location_text,
+          locale,
+          forceResend: true,
+        }),
+      });
+      setResendSuccess(true);
+      setTimeout(() => setResendSuccess(false), 5000);
+    } catch (e) {
+      console.warn('Failed to resend confirmation email:', e);
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -84,6 +138,17 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!isDigital) {
+      setError(
+        locale === 'de'
+          ? 'Physische Drucke und Rahmen sind demnächst verfügbar. Bitte wechseln Sie zur kostenlosen 300 DPI Digital-PDF!'
+          : locale === 'en'
+          ? 'Physical prints and frames are coming soon. Please switch to the free 300 DPI Digital PDF!'
+          : 'Fysieke prints en lijsten zijn binnenkort beschikbaar. Schakel alstublieft over naar het gratis 300 DPI digitaal bestand!'
+      );
+      return;
+    }
+
     if (!customer.name.trim() || !customer.email.trim()) {
       setError(locale === 'de' ? 'Bitte geben Sie Ihren Namen und Ihre E-Mail-Adresse ein.' : locale === 'en' ? 'Please enter your name and email address.' : 'Vul alstublieft uw naam en e-mailadres in.');
       return;
@@ -249,7 +314,53 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         console.warn('localStorage save warning:', storageErr);
       }
 
-      // 3. Call the Next.js checkout route
+      // For digital orders: Dispatch confirmation email with secure download link (No direct auto-download)
+      if (isDigital && (priceDetails.price === 0 || amount === 0)) {
+        // Dispatch confirmation email containing the secure download link & order composition details
+        try {
+          await fetch('/api/send-confirmation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderId,
+              customerEmail: payloadCustomer.email,
+              customerName: payloadCustomer.name,
+              frameStyle: 'digital',
+              posterSize: config.posterSize,
+              titleText: resolvedTitle,
+              namesText: resolvedNames,
+              dateText: resolvedDate,
+              locationText: resolvedLocation,
+              locale,
+            }),
+          });
+        } catch (emailErr) {
+          console.warn('Confirmation email dispatch warning:', emailErr);
+        }
+
+        const pilotOrder: OrderRecord = registeredOrder || {
+          order_id: orderId,
+          created_at: new Date().toISOString(),
+          status: 'completed',
+          customer: payloadCustomer,
+          poster_size: config.posterSize,
+          style_id: config.styleId,
+          frame_style: config.frameStyle,
+          title_text: config.titleBlock.text,
+          names_text: config.namesBlock.text,
+          date_text: config.dateBlock.text,
+          location_text: config.locationBlock.text,
+          pdf_filename: `${orderId}_print_ready_300dpi.pdf`,
+          pdf_size_bytes: 1024000,
+        };
+
+        setCompletedOrder(pilotOrder);
+        onOrderSuccess(pilotOrder);
+        confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+        return;
+      }
+
+      // 3. Call the Next.js checkout route for physical or paid orders
       let checkoutData: any = null;
       try {
         const checkoutRes = await fetch('/api/checkout', {
@@ -360,7 +471,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
 
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1.5 rounded-full text-[#78716C] hover:text-[#1C1917] hover:bg-white transition shrink-0"
           >
             <X className="w-4 h-4" />
@@ -383,12 +494,36 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 {t.paymentSuccess.orderConfirmedTitle}
               </h2>
               <p className="text-xs text-[#57534E] max-w-md mx-auto leading-relaxed">
-                {locale === 'de'
-                  ? 'Ihre 300 DPI archivfeste Druck-PDF wurde mit höchster Präzision anhand der genauen Himmelskoordinaten berechnet und zur Produktionswarteschlange hinzugefügt.'
-                  : locale === 'en'
-                  ? 'Your 300 DPI archival-grade print PDF has been calculated with precision based on exact celestial coordinates and added to the production queue.'
-                  : 'Uw 300 DPI archiefwaardige print-PDF is met uiterste precisie berekend op basis van de exacte hemelcoördinaten en toegevoegd aan de productiewachtrij.'}
+                {completedOrder.frame_style === 'digital'
+                  ? (locale === 'de'
+                    ? `Vielen Dank für Ihre Bestellung! Ihre 300 DPI druckreife Sternenkarte wurde erstellt. Ein sicherer Download-Link wurde an ${completedOrder.customer.email} gesendet. Bitte prüfen Sie Ihren Posteingang (und Spam-Ordner).`
+                    : locale === 'en'
+                    ? `Thank you for your order! Your 300 DPI print-ready star map has been created. A secure download link has been sent directly to ${completedOrder.customer.email}. Please check your inbox (and spam/junk folder).`
+                    : `Bedankt voor je bestelling! Jouw 300 DPI printklare sterrenkaart is gegenereerd. Een beveiligde downloadlink is verstuurd naar ${completedOrder.customer.email}. Controleer je inbox (en eventueel spambox).`)
+                  : (locale === 'de'
+                    ? `Ihre Bestellung wurde bestätigt und an unser Atelier übermittelt. Eine Bestätigungs-E-Mail mit allen Details wurde an ${completedOrder.customer.email} gesendet.`
+                    : locale === 'en'
+                    ? `Your order is confirmed and entering production in our atelier. A confirmation email with full details has been sent to ${completedOrder.customer.email}.`
+                    : `Je bestelling is bevestigd en in productie genomen in ons atelier. Een bevestigingsmail met alle details is verstuurd naar ${completedOrder.customer.email}.`)}
               </p>
+            </div>
+
+            {/* Email Dispatch Notice Banner */}
+            <div className="p-3.5 bg-emerald-50/80 border border-emerald-200/80 rounded-2xl text-xs text-emerald-900 max-w-lg mx-auto flex items-center justify-between gap-3 shadow-2xs">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Mail className="w-4 h-4 text-emerald-700 shrink-0" />
+                <div className="text-left min-w-0">
+                  <div className="font-semibold text-emerald-950 truncate">
+                    {locale === 'de' ? 'E-Mail gesendet an:' : locale === 'en' ? 'Confirmation sent to:' : 'Bevestiging verzonden naar:'}
+                  </div>
+                  <div className="text-[11px] text-emerald-800 truncate font-mono">
+                    {completedOrder.customer.email}
+                  </div>
+                </div>
+              </div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-200/70 text-emerald-900 shrink-0">
+                {locale === 'de' ? 'Posteingang prüfen' : locale === 'en' ? 'Check Inbox' : 'Check Inbox'}
+              </span>
             </div>
 
             {/* Order Specification Summary Card */}
@@ -417,7 +552,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </span>
                 <span className="text-[#1C1917] truncate text-right">
                   {completedOrder.frame_style === 'digital'
-                    ? (locale === 'de' ? 'Digitales Kunstwerk' : locale === 'en' ? 'Digital File' : 'Digitaal Bestand')
+                    ? (locale === 'de' ? 'Digitales Kunstwerk (300 DPI Vector PDF)' : locale === 'en' ? 'Digital File (300 DPI Vector PDF)' : 'Digitaal Bestand (300 DPI Vector PDF)')
                     : `${completedOrder.poster_size} cm`} • {frameLabels[completedOrder.frame_style] || 'Kunstdruk'}
                 </span>
               </div>
@@ -443,18 +578,33 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
             {/* Actions */}
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a
-                href={`/api/orders/${completedOrder.order_id}/pdf`}
-                download
-                className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#1C1917] font-medium text-xs border border-[#E2DDD5] flex items-center justify-center gap-2 shadow-sm transition"
+              <button
+                type="button"
+                onClick={handleResendEmail}
+                disabled={isResending}
+                className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-white hover:bg-[#F5F2EB] text-[#1C1917] font-medium text-xs border border-[#E2DDD5] flex items-center justify-center gap-2 shadow-sm transition disabled:opacity-50 cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>{t.paymentSuccess.downloadPdfButton}</span>
-              </a>
+                {isResending ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-[#A37055]" />
+                    <span>{locale === 'de' ? 'Wird gesendet...' : locale === 'en' ? 'Sending...' : 'Bezig met verzenden...'}</span>
+                  </>
+                ) : resendSuccess ? (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>{locale === 'de' ? 'E-Mail erneut gesendet!' : locale === 'en' ? 'Email Resent!' : 'E-mail Opnieuw Verzonden!'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Mail className="w-3.5 h-3.5 text-[#A37055]" />
+                    <span>{locale === 'de' ? 'E-Mail erneut senden' : locale === 'en' ? 'Resend Confirmation Email' : 'E-mail Opnieuw Verzenden'}</span>
+                  </>
+                )}
+              </button>
 
               <button
-                onClick={onClose}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition"
+                onClick={handleClose}
+                className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition cursor-pointer"
               >
                 {t.paymentSuccess.continueExploringButton}
               </button>
@@ -467,6 +617,48 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
                 <span>{error}</span>
+              </div>
+            )}
+
+            {/* Physical Framing Coming Soon Notice */}
+            {!isDigital && (
+              <div className="p-3.5 bg-amber-50 border border-amber-200/90 rounded-2xl text-xs text-amber-950 space-y-2.5 shadow-2xs">
+                <div className="flex items-start gap-2.5">
+                  <Clock className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                  <div className="space-y-1 flex-1">
+                    <div className="font-semibold text-amber-950">
+                      {locale === 'de'
+                        ? '⏳ Physische Drucke & Rahmen sind demnächst verfügbar'
+                        : locale === 'en'
+                        ? '⏳ Physical prints & frames are coming soon'
+                        : '⏳ Fysieke prints & lijsten zijn binnenkort beschikbaar'}
+                    </div>
+                    <p className="text-[11px] text-amber-800 leading-relaxed">
+                      {locale === 'de'
+                        ? 'Während unserer Pilotphase ist die 300 DPI Vektor-PDF zu 100% kostenlos verfügbar. Schalten Sie jetzt um, um Ihre hochauflösende Datei sofort per E-Mail zu erhalten!'
+                        : locale === 'en'
+                        ? 'During our pilot launch, the print-ready 300 DPI vector PDF is 100% free. Switch now to receive your high-resolution file instantly via email!'
+                        : 'Tijdens onze pilotfase is de printklare 300 DPI vector PDF 100% gratis beschikbaar. Schakel nu om jouw hoge resolutie bestand direct per e-mail te ontvangen!'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onSwitchToDigital) onSwitchToDigital();
+                    setError(null);
+                  }}
+                  className="w-full py-2.5 px-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>
+                    {locale === 'de'
+                      ? 'Zu 100% Kostenloser 300 DPI PDF wechseln'
+                      : locale === 'en'
+                      ? 'Switch to 100% Free 300 DPI PDF'
+                      : 'Omschakelen naar 100% Gratis 300 DPI PDF'}
+                  </span>
+                </button>
               </div>
             )}
 
@@ -500,7 +692,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </span>
                 <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
                   <span className="text-[10px] text-[#A8A29E] line-through">{priceDetails.formattedOriginalPrice}</span>
-                  <span className="text-xs font-bold text-[#1C1917]">{priceDetails.formattedPrice}</span>
+                  <span className={`text-xs font-bold ${priceDetails.price === 0 ? 'text-emerald-800' : 'text-[#1C1917]'}`}>
+                    {priceDetails.price === 0
+                      ? (locale === 'de' ? '0,00 € (Kostenlos)' : locale === 'en' ? '$0.00 (Free)' : '€0,00 (Gratis)')
+                      : priceDetails.formattedPrice}
+                  </span>
                 </div>
               </div>
             </div>
@@ -519,14 +715,18 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Customer & Shipping / Delivery Fields */}
             {isDigital ? (
               <div className="space-y-3">
-                <div className="p-3 bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-xl text-xs text-sky-950 flex items-start gap-2.5 shadow-2xs">
-                  <Globe className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+                <div className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl text-xs text-emerald-950 flex items-start gap-2.5 shadow-2xs">
+                  <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                   <div className="space-y-0.5">
-                    <div className="font-semibold text-sky-900 flex items-center gap-1.5">
-                      <span>{t.orderModal.worldwideDeliveryBadge}</span>
+                    <div className="font-semibold text-emerald-900 flex items-center gap-1.5">
+                      <span>{locale === 'de' ? '🚀 Indie-Pilot-Aktion • 100% Kostenlos' : locale === 'en' ? '🚀 Indie Pilot Special • 100% Free' : '🚀 Indie Pilot Actie • 100% Gratis'}</span>
                     </div>
-                    <p className="text-[11px] text-sky-800 leading-relaxed">
-                      {t.orderModal.worldwideDeliveryNotice}
+                    <p className="text-[11px] text-emerald-800 leading-relaxed">
+                      {locale === 'de'
+                        ? 'Geben Sie Ihren Namen und Ihre E-Mail-Adresse ein, um Ihre druckfertige 300 DPI Vektor-PDF sofort und kostenlos herunterzuladen. Keine Kreditkarte erforderlich!'
+                        : locale === 'en'
+                        ? 'Enter your name and email to receive and download your print-ready 300 DPI vector PDF instantly for free. No credit card required!'
+                        : 'Vul je naam en e-mailadres in om jouw drukklare 300 DPI vector PDF direct gratis te downloaden. Geen creditcard nodig!'}
                     </p>
                   </div>
                 </div>
@@ -811,35 +1011,61 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             {/* Action Bar */}
             <div className="pt-3 border-t border-[#E8E4DC] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <span className="text-[11px] text-[#78716C] text-center sm:text-left">
-                {isDigital ? t.orderModal.digitalDeliveryNotice : t.orderModal.physicalDeliveryNotice}
+                {isDigital
+                  ? t.orderModal.digitalDeliveryNotice
+                  : (locale === 'de' ? '⏳ Physischer Versand demnächst verfügbar' : locale === 'en' ? '⏳ Physical delivery coming soon' : '⏳ Fysieke bezorging binnenkort beschikbaar')}
               </span>
 
               <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full sm:w-auto">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="w-full sm:w-auto px-4 py-2.5 rounded-full text-xs font-medium text-[#78716C] hover:text-[#1C1917] text-center transition"
                 >
                   {t.orderModal.cancelButton}
                 </button>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>{t.common.loading}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Printer className="w-3.5 h-3.5" />
-                      <span>{t.orderModal.proceedToPayment} ({priceDetails.formattedPrice})</span>
-                    </>
-                  )}
-                </button>
+                {!isDigital ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onSwitchToDigital) onSwitchToDigital();
+                      setError(null);
+                    }}
+                    className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white font-medium text-xs shadow-md transition flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>
+                      {locale === 'de'
+                        ? '⏳ Demnächst • Zur Gratis-PDF wechseln'
+                        : locale === 'en'
+                        ? '⏳ Coming Soon • Switch to Free PDF'
+                        : '⏳ Binnenkort • Schakel over naar Gratis PDF'}
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#1C1917] hover:bg-[#2E2A27] text-[#FAF8F5] font-medium text-xs shadow-md transition disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>{t.common.loading}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Printer className="w-3.5 h-3.5" />
+                        <span>
+                          {isDigital && priceDetails.price === 0
+                            ? (locale === 'de' ? '🚀 Jetzt Kostenlos Herunterladen (Pilot)' : locale === 'en' ? '🚀 Download Free 300 DPI PDF (Pilot)' : '🚀 Nu Gratis Downloaden (Pilot)')
+                            : `${t.orderModal.proceedToPayment} (${priceDetails.formattedPrice})`}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </form>

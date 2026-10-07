@@ -6,7 +6,7 @@ import { en } from './en';
 export * from './types';
 
 export const SUPPORTED_LOCALES: Locale[] = ['nl', 'de', 'en'];
-export const DEFAULT_LOCALE: Locale = 'nl';
+export const DEFAULT_LOCALE: Locale = 'en';
 
 export const DICTIONARIES: Record<Locale, Translations> = {
   nl,

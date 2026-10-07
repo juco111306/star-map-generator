@@ -22,7 +22,7 @@ import { AppView, CelestialData, FrameStyle, MapConfig, OrderRecord } from '../t
 import { apiFetch } from '../utils/api';
 import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
 import { useLanguage } from '../context/LanguageContext';
-import { Locale } from '../locales';
+import { Locale, isValidLocale } from '../locales';
 
 const INITIAL_CELESTIAL_DATA: CelestialData = {
   stars: SAMPLE_STARS.map((s) => ({
@@ -74,8 +74,9 @@ interface HomeProps {
   initialSearchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default function Home({ initialLocale, initialView, initialSearchParams }: HomeProps = {}) {
-  const { locale } = useLanguage();
+export default function Home(props: any) {
+  const { initialLocale, initialView, initialSearchParams } = props || {};
+  const { locale, changeLocale } = useLanguage();
 
   const isInitialAdmin = Boolean(
     initialView === 'producer' ||
@@ -194,78 +195,51 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
     frameStyle: 'digital',
   }));
 
-  // Track locale changes to translate default poster sample text seamlessly
+  const [hasUserCustomized, setHasUserCustomized] = useState(false);
+  const isUserCustomizedRef = useRef(false);
+
+  // Track locale changes: if the user has ALREADY started customizing or is in the studio,
+  // NEVER alter the poster, layout, text, coordinates, or placeholders!
   const prevLocaleRef = useRef<Locale>(locale);
   useEffect(() => {
     const prev = prevLocaleRef.current;
     if (prev !== locale) {
       prevLocaleRef.current = locale;
-      const prevDef = LOCALE_DEFAULTS[prev] || LOCALE_DEFAULTS.nl;
-      const nextDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.nl;
 
-      setConfig((prevConfig) => {
-        const allTitles = Object.values(LOCALE_DEFAULTS).map((d) => d.title);
-        const allNames = Object.values(LOCALE_DEFAULTS).map((d) => d.names);
-        const allLocs = Object.values(LOCALE_DEFAULTS).map((d) => d.locationName);
-        const allDates = Object.values(LOCALE_DEFAULTS).map((d) => d.dateStr);
+      // Check if user has already started customizing or entered the studio
+      const isCustomized = Boolean(
+        hasUserCustomized ||
+        isUserCustomizedRef.current ||
+        currentView === 'customizer' ||
+        config.titleBlock?.text?.trim() ||
+        config.namesBlock?.text?.trim() ||
+        config.dateBlock?.text?.trim() ||
+        config.locationBlock?.text?.trim() ||
+        config.taglineBlock?.text?.trim() ||
+        config.coordsBlock?.text?.trim()
+      );
 
-        const isDefaultTitle =
-          !prevConfig.titleBlock.text ||
-          !prevConfig.titleBlock.text.trim() ||
-          allTitles.includes(prevConfig.titleBlock.text) ||
-          ALL_KNOWN_TITLES.has(prevConfig.titleBlock.text.trim().toLowerCase());
-        const isDefaultNames =
-          !prevConfig.namesBlock.text ||
-          !prevConfig.namesBlock.text.trim() ||
-          allNames.includes(prevConfig.namesBlock.text) ||
-          ALL_KNOWN_NAMES.has(prevConfig.namesBlock.text.trim().toLowerCase());
-        const isDefaultLoc =
-          !prevConfig.locationName ||
-          !prevConfig.locationName.trim() ||
-          allLocs.includes(prevConfig.locationName) ||
-          ALL_KNOWN_LOCATIONS.has(prevConfig.locationName.trim().toLowerCase());
-        const isDefaultDate =
-          !prevConfig.dateBlock.text ||
-          !prevConfig.dateBlock.text.trim() ||
-          allDates.includes(prevConfig.dateBlock.text) ||
-          ALL_KNOWN_DATES.has(prevConfig.dateBlock.text.trim().toLowerCase());
+      // Once customized, the user's poster is sacred and must NEVER be modified by language/currency changes
+      if (isCustomized) {
+        isUserCustomizedRef.current = true;
+        setHasUserCustomized(true);
+        return;
+      }
 
-        return {
-          ...prevConfig,
-          locationName: isDefaultLoc ? nextDef.locationName : prevConfig.locationName,
-          latitude: isDefaultLoc ? nextDef.lat : prevConfig.latitude,
-          longitude: isDefaultLoc ? nextDef.lng : prevConfig.longitude,
-          titleBlock: {
-            ...prevConfig.titleBlock,
-            text: isDefaultTitle ? '' : prevConfig.titleBlock.text,
-          },
-          namesBlock: {
-            ...prevConfig.namesBlock,
-            text: isDefaultNames ? '' : prevConfig.namesBlock.text,
-          },
-          dateBlock: {
-            ...prevConfig.dateBlock,
-            text: isDefaultDate ? '' : prevConfig.dateBlock.text,
-          },
-          locationBlock: {
-            ...prevConfig.locationBlock,
-            text: isDefaultLoc ? '' : prevConfig.locationBlock.text,
-          },
-          coordsBlock: {
-            ...prevConfig.coordsBlock,
-            text: isDefaultLoc ? '' : prevConfig.coordsBlock.text,
-          },
-          placeholders: {
-            title: isDefaultTitle ? nextDef.title : prevConfig.placeholders?.title || nextDef.title,
-            names: isDefaultNames ? nextDef.names : prevConfig.placeholders?.names || nextDef.names,
-            date: isDefaultDate ? nextDef.dateStr : prevConfig.placeholders?.date || nextDef.dateStr,
-            location: isDefaultLoc ? nextDef.locationName.toUpperCase() : prevConfig.placeholders?.location || nextDef.locationName.toUpperCase(),
-            coords: isDefaultLoc ? nextDef.coords : prevConfig.placeholders?.coords || nextDef.coords,
-          },
-        };
-      });
+      // ONLY on initial untouched landing page: update default placeholder labels without touching layout or coordinates
+      const nextDef = LOCALE_DEFAULTS[locale] || LOCALE_DEFAULTS.en || LOCALE_DEFAULTS.nl;
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        placeholders: {
+          title: nextDef.title,
+          names: nextDef.names,
+          date: nextDef.dateStr,
+          location: nextDef.locationName.toUpperCase(),
+          coords: nextDef.coords,
+        },
+      }));
     }
-  }, [locale]);
+  }, [locale, hasUserCustomized, currentView, config]);
 
   const [celestialData, setCelestialData] = useState<CelestialData | null>(INITIAL_CELESTIAL_DATA);
   const [isLoadingStars, setIsLoadingStars] = useState(false);
@@ -356,6 +330,8 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
   }, [config.latitude, config.longitude, config.date, config.time, fetchStars]);
 
   const handleConfigChange = (updates: Partial<MapConfig>) => {
+    isUserCustomizedRef.current = true;
+    setHasUserCustomized(true);
     setConfig((prev) => ({ ...prev, ...updates }));
   };
 
@@ -376,6 +352,10 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
       <Navbar
         currentView={currentView}
         onNavigate={(v) => {
+          if (v === 'customizer') {
+            isUserCustomizedRef.current = true;
+            setHasUserCustomized(true);
+          }
           setCurrentView(v);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
@@ -388,10 +368,16 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
         <main className="flex-1 w-full max-w-full overflow-x-hidden">
           <LandingHero
             onNavigate={(v) => {
+              if (v === 'customizer') {
+                isUserCustomizedRef.current = true;
+                setHasUserCustomized(true);
+              }
               setCurrentView(v);
               window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }}
             onStartWithPreset={(preset) => {
+              isUserCustomizedRef.current = true;
+              setHasUserCustomized(true);
               setConfig((prev) => ({
                 ...prev,
                 ...preset,
@@ -402,16 +388,30 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
           />
           <ProductCatalog
             onCustomizeStarMap={() => {
+              isUserCustomizedRef.current = true;
+              setHasUserCustomized(true);
+              setConfig((prev) => ({ ...prev, frameStyle: 'digital' }));
               setCurrentView('customizer');
               window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }}
             onSelectStyle={(styleId) => {
-              setConfig((prev) => ({ ...prev, styleId }));
+              isUserCustomizedRef.current = true;
+              setHasUserCustomized(true);
+              setConfig((prev) => ({ ...prev, styleId, frameStyle: 'digital' }));
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+            onSelectEdition={(frameStyle) => {
+              isUserCustomizedRef.current = true;
+              setHasUserCustomized(true);
+              setConfig((prev) => ({ ...prev, frameStyle }));
               setCurrentView('customizer');
               window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }}
           />
           <HowItWorks onStartCustomizing={() => {
+            isUserCustomizedRef.current = true;
+            setHasUserCustomized(true);
             setCurrentView('customizer');
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           }} />
@@ -419,6 +419,8 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
           <FAQ
             onOpenReturnPolicy={() => setIsReturnPolicyOpen(true)}
             onCustomizeStarMap={() => {
+              isUserCustomizedRef.current = true;
+              setHasUserCustomized(true);
               setCurrentView('customizer');
               window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             }}
@@ -436,10 +438,23 @@ export default function Home({ initialLocale, initialView, initialSearchParams }
 
       {currentView === 'products' && (
         <main className="flex-1 w-full max-w-full overflow-x-hidden">
-          <ProductCatalog onCustomizeStarMap={() => {
-            setCurrentView('customizer');
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-          }} />
+          <ProductCatalog
+            onCustomizeStarMap={() => {
+              setConfig((prev) => ({ ...prev, frameStyle: 'digital' }));
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+            onSelectStyle={(styleId) => {
+              setConfig((prev) => ({ ...prev, styleId, frameStyle: 'digital' }));
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+            onSelectEdition={(frameStyle) => {
+              setConfig((prev) => ({ ...prev, frameStyle }));
+              setCurrentView('customizer');
+              window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            }}
+          />
           <HowItWorks onStartCustomizing={() => {
             setCurrentView('customizer');
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });

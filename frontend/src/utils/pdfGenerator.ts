@@ -1,7 +1,124 @@
 import { PDFDocument, rgb, degrees, StandardFonts } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import { MapConfig } from '../types';
 import { DESIGN_STYLES } from '../constants/styles';
 import { SAMPLE_STARS, SAMPLE_CONSTELLATION_LINES } from '../constants/sampleCelestialData';
+
+// Cache font buffers in memory so they are only loaded once per process/session
+const fontBufferCache = new Map<string, ArrayBuffer>();
+
+const FONT_FILE_MAP: Record<string, string> = {
+  'Cinzel': 'Cinzel.ttf',
+  'Great Vibes': 'GreatVibes.ttf',
+  'Montserrat': 'Montserrat.ttf',
+  'Playfair Display': 'PlayfairDisplay.ttf',
+  'Lato': 'Lato.ttf',
+};
+
+async function getFontBuffer(fontName: string): Promise<ArrayBuffer | null> {
+  if (fontBufferCache.has(fontName)) {
+    return fontBufferCache.get(fontName)!;
+  }
+
+  // 1. Try Node.js fs (server-side Next.js route / API / script)
+  if (typeof window === 'undefined') {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const candidatePaths = [
+        path.join(process.cwd(), 'public', 'fonts', fontName),
+        path.join(process.cwd(), 'frontend', 'public', 'fonts', fontName),
+        path.join(__dirname, '..', '..', 'public', 'fonts', fontName),
+        path.join(__dirname, '..', '..', '..', 'public', 'fonts', fontName),
+        path.join(__dirname, '..', '..', 'frontend', 'public', 'fonts', fontName),
+      ];
+      for (const fontPath of candidatePaths) {
+        if (fs.existsSync(fontPath)) {
+          const buf = fs.readFileSync(fontPath);
+          const arrayBuf = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+          fontBufferCache.set(fontName, arrayBuf);
+          return arrayBuf;
+        }
+      }
+    } catch (e) {
+      console.warn(`[PDF] Server font load for ${fontName} note:`, e);
+    }
+  }
+
+  // 2. Try browser fetch (client-side in browser)
+  if (typeof window !== 'undefined' || typeof fetch !== 'undefined') {
+    try {
+      const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+      const res = await fetch(`${origin}/fonts/${fontName}`);
+      if (res.ok) {
+        const arrayBuf = await res.arrayBuffer();
+        fontBufferCache.set(fontName, arrayBuf);
+        return arrayBuf;
+      }
+    } catch (e) {
+      console.warn(`[PDF] Client font fetch for ${fontName} note:`, e);
+    }
+  }
+
+  return null;
+}
+
+// Fallback transliteration for standard fonts (WinAnsi Windows-1252) when custom font is unavailable
+function safeCharForFont(char: string, font: any): string {
+  try {
+    font.encodeText(char);
+    return char;
+  } catch {
+    const map: Record<string, string> = {
+      // Balkan / South Slavic
+      'č': 'c', 'Č': 'C',
+      'ć': 'c', 'Ć': 'C',
+      'ž': 'z', 'Ž': 'Z',
+      'š': 's', 'Š': 'S',
+      'đ': 'dj', 'Đ': 'Dj',
+      // Nordic
+      'å': 'a', 'Å': 'A',
+      'æ': 'ae', 'Æ': 'Ae',
+      'ø': 'o', 'Ø': 'O',
+      // German / Dutch
+      'ä': 'a', 'Ä': 'A',
+      'ö': 'o', 'Ö': 'O',
+      'ü': 'u', 'Ü': 'U',
+      'ß': 'ss',
+      'ë': 'e', 'Ë': 'E',
+      'ï': 'i', 'Ï': 'I',
+      'ÿ': 'y', 'Ÿ': 'Y',
+      // Polish / Czech / Slovak / Hungarian
+      'ł': 'l', 'Ł': 'L',
+      'ń': 'n', 'Ń': 'N',
+      'ę': 'e', 'Ę': 'E',
+      'ą': 'a', 'Ą': 'A',
+      'ś': 's', 'Ś': 'S',
+      'ź': 'z', 'Ź': 'Z',
+      'ż': 'z', 'Ż': 'Z',
+      'ř': 'r', 'Ř': 'R',
+      'ť': 't', 'Ť': 'T',
+      'ď': 'd', 'Ď': 'D',
+      'ň': 'n', 'Ň': 'N',
+      'ů': 'u', 'Ů': 'U',
+      'ő': 'o', 'Ő': 'O',
+      'ű': 'u', 'Ű': 'U',
+      // Romanian
+      'ș': 's', 'Ș': 'S',
+      'ț': 't', 'Ț': 'T',
+    };
+    return map[char] || '?';
+  }
+}
+
+function sanitizeTextForFont(text: string, font: any): string {
+  try {
+    font.encodeText(text);
+    return text;
+  } catch {
+    return Array.from(text).map((c) => safeCharForFont(c, font)).join('');
+  }
+}
 
 // Color parser utility supporting hex (#ffffff, #fff) and rgba(r, g, b, a)
 function parseColor(str: string): { r: number; g: number; b: number; a: number } {
@@ -41,17 +158,18 @@ function parseColor(str: string): { r: number; g: number; b: number; a: number }
   return { r: 0.1, g: 0.1, b: 0.1, a: 1.0 };
 }
 
-// Draw centered text with character tracking support
+// Draw centered text with character tracking and complete European/Balkan Unicode support
 function drawCenteredText(
   page: any,
-  text: string,
+  rawText: string,
   y: number,
   size: number,
   font: any,
   color: { r: number; g: number; b: number; a: number },
   tracking: number = 0
 ) {
-  if (!text) return;
+  if (!rawText) return;
+  const text = sanitizeTextForFont(rawText, font);
   const pdfColor = rgb(color.r, color.g, color.b);
 
   if (tracking <= 0) {
@@ -67,14 +185,15 @@ function drawCenteredText(
     return;
   }
 
+  const chars = Array.from(text);
   let totalWidth = 0;
-  for (let i = 0; i < text.length; i++) {
-    totalWidth += font.widthOfTextAtSize(text[i], size) + (i < text.length - 1 ? tracking : 0);
+  for (let i = 0; i < chars.length; i++) {
+    totalWidth += font.widthOfTextAtSize(chars[i], size) + (i < chars.length - 1 ? tracking : 0);
   }
 
   let currentX = (page.getWidth() - totalWidth) / 2;
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
+  for (let i = 0; i < chars.length; i++) {
+    const char = chars[i];
     page.drawText(char, {
       x: currentX,
       y,
@@ -154,11 +273,35 @@ export async function generateStarMapPdfBlob(
     baseCy = 485.0;
   }
 
-  // 2. Load and embed classic standard typography fonts
-  const fontSerifBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
-  const fontSerifItalic = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
-  const fontSans = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const fontSansBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  // 2. Register fontkit and embed TrueType fonts with full Latin-Ext (Nordic, Balkan, German, etc.) support
+  pdfDoc.registerFontkit(fontkit);
+
+  // Fallback standard fonts in case TTF buffer retrieval fails
+  const stdSerifBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+  const stdSerifItalic = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
+  const stdSans = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const stdSansBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  async function loadTtfFont(fontFamilyName: string, fallbackFont: any) {
+    const filename = FONT_FILE_MAP[fontFamilyName] || `${fontFamilyName.replace(/\s+/g, '')}.ttf`;
+    try {
+      const buf = await getFontBuffer(filename);
+      if (buf) {
+        return await pdfDoc.embedFont(buf);
+      }
+    } catch (err) {
+      console.warn(`[PDF] Embedding ${fontFamilyName} (${filename}) failed, using fallback:`, err);
+    }
+    return fallbackFont;
+  }
+
+  // Load configured fonts or their studio defaults with native Latin-Ext vector glyphs
+  const fontTitle = await loadTtfFont(config.titleBlock?.font || 'Cinzel', stdSerifBold);
+  const fontNames = await loadTtfFont(config.namesBlock?.font || 'Great Vibes', stdSerifItalic);
+  const fontDate = await loadTtfFont(config.dateBlock?.font || 'Montserrat', stdSans);
+  const fontLoc = await loadTtfFont(config.coordsBlock?.font || config.locationBlock?.font || 'Montserrat', stdSans);
+  const fontSans = await loadTtfFont('Montserrat', stdSans);
+  const fontSansBold = await loadTtfFont('Montserrat', stdSansBold);
 
   // 3. Resolve style configuration
   const styleId = config.styleId || 'midnight_classic';
@@ -457,7 +600,7 @@ export async function generateStarMapPdfBlob(
       formattedTitle,
       titleY,
       titleSize,
-      fontSerifBold,
+      fontTitle,
       textColor,
       titleTracking
     );
@@ -480,7 +623,7 @@ export async function generateStarMapPdfBlob(
       formattedNames,
       namesY,
       namesSize,
-      fontSerifItalic,
+      fontNames,
       subtitleColor,
       namesTracking
     );
@@ -577,7 +720,7 @@ export async function generateStarMapPdfBlob(
       formattedDate,
       dateY,
       dateSize,
-      fontSans,
+      fontDate,
       footerColor,
       dateTracking
     );
@@ -606,7 +749,7 @@ export async function generateStarMapPdfBlob(
       combinedLoc,
       locY,
       locSize,
-      fontSans,
+      fontLoc,
       footerColor,
       locTracking
     );

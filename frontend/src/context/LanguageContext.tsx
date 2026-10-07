@@ -81,20 +81,35 @@ export const LanguageProvider: React.FC<{
 
   // Sync state if initialLocale changes
   useEffect(() => {
-    if (initialLocale && isValidLocale(initialLocale) && initialLocale !== locale) {
-      setLocaleState(initialLocale);
+    if (initialLocale && isValidLocale(initialLocale)) {
+      setLocaleState((current) => (current !== initialLocale ? initialLocale : current));
     }
-  }, [initialLocale, locale]);
+  }, [initialLocale]);
 
   // Read URL on client-side navigation
   useEffect(() => {
     if (pathname) {
       const match = pathname.match(/^\/(nl|de|en)(\/|$)/);
-      if (match && isValidLocale(match[1]) && match[1] !== locale) {
-        setLocaleState(match[1] as Locale);
+      if (match && isValidLocale(match[1])) {
+        const pathLocale = match[1] as Locale;
+        setLocaleState((current) => (current !== pathLocale ? pathLocale : current));
       }
     }
-  }, [pathname, locale]);
+  }, [pathname]);
+
+  // Sync on browser back/forward history navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      if (typeof window !== 'undefined') {
+        const match = window.location.pathname.match(/^\/(nl|de|en)(\/|$)/);
+        if (match && isValidLocale(match[1])) {
+          setLocaleState(match[1] as Locale);
+        }
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Geo IP detection on initial mount
   useEffect(() => {
@@ -141,7 +156,7 @@ export const LanguageProvider: React.FC<{
   const changeLocale = useCallback((newLocale: Locale) => {
     if (!isValidLocale(newLocale)) return;
 
-    // 1. Update local state
+    // 1. Update local state immediately for instant, seamless UI transition
     setLocaleState(newLocale);
 
     // 2. Persist in cookie (1 year expiry) and localStorage so user preference is NEVER overridden
@@ -149,6 +164,7 @@ export const LanguageProvider: React.FC<{
       document.cookie = `${COOKIE_NAME}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
       try {
         localStorage.setItem(COOKIE_NAME, newLocale);
+        localStorage.setItem('stellaire_user_manual_locale', 'true');
       } catch (err) {}
     }
 
@@ -161,9 +177,11 @@ export const LanguageProvider: React.FC<{
       }
     }
 
-    // 3. Immediate and reliable navigation to target locale path
+    // 3. Smooth, immediate navigation to target locale path without jarring page reload
     if (typeof window !== 'undefined') {
       const curPath = window.location.pathname;
+      const search = window.location.search || '';
+      const hash = window.location.hash || '';
       const match = curPath.match(/^\/(nl|de|en)(\/|$)/);
       let targetPath = `/${newLocale}`;
       if (match) {
@@ -171,9 +189,16 @@ export const LanguageProvider: React.FC<{
       } else {
         targetPath = `/${newLocale}${curPath === '/' ? '' : curPath}`;
       }
-      window.location.href = targetPath;
+      const fullTarget = `${targetPath}${search}${hash}`;
+
+      try {
+        window.history.pushState(null, '', fullTarget);
+        router.replace(fullTarget);
+      } catch {
+        window.location.href = fullTarget;
+      }
     }
-  }, [isUK]);
+  }, [isUK, router]);
 
   const t = useMemo(() => getDictionary(locale), [locale]);
 

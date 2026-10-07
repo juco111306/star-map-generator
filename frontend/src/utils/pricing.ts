@@ -18,6 +18,8 @@ export interface PriceDetails {
   savings: number;
   isDigital: boolean;
   hasFrame: boolean;
+  isComingSoon?: boolean;
+  available?: boolean;
   typeLabel: string;
   frameLabel: string;
   sizeLabel: string;
@@ -126,18 +128,20 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
     id: 'digital' as FrameStyle,
     label: locale === 'de' ? '300 DPI Digitale Datei (Weltweit)' : locale === 'en' ? '300 DPI Digital Vector (Worldwide)' : '300 DPI Digitaal Bestand (Wereldwijd)',
     category: 'digital' as const,
-    sub: locale === 'de' ? '300 DPI Vektor-PDF • Weltweiter Sofortversand' : locale === 'en' ? '300 DPI Vector PDF • Instant Worldwide' : '300 DPI Vector PDF • Wereldwijd Direct',
+    sub: locale === 'de' ? '300 DPI Vektor-PDF • Pilot: 100% Kostenlos (0,00 €)' : locale === 'en' ? '300 DPI Vector PDF • Pilot: 100% Free ($0.00 / €0.00)' : '300 DPI Vector PDF • Pilot: 100% Gratis (€0,00)',
     desc:
       locale === 'de'
-        ? 'Weltweiter Sofortversand per E-Mail in 300 DPI. Ideal für den lokalen Druck & Einrahmung in Ihrer Stadt ohne Versandkosten.'
+        ? 'Sofortiger Download & E-Mail in 300 DPI Druckauflösung. 100% Kostenlos während unserer Reddit- & Community-Pilotphase!'
         : locale === 'en'
-        ? 'Worldwide instant delivery via email at 300 DPI. Print locally & custom-frame in your own city with zero shipping delays.'
-        : 'Wereldwijde directe levering per e-mail in 300 DPI. Print lokaal en kies uw eigen lijst in uw stad zonder verzendkosten.',
-    badge: locale === 'de' ? 'Weltweit • Sofort' : locale === 'en' ? 'Worldwide • Instant' : 'Wereldwijd • Direct',
-    borderStyle: 'border-dashed border-sky-400',
-    bgStyle: 'bg-sky-50',
+        ? 'Instant browser download & email delivery at 300 DPI print resolution. 100% Free during our Reddit & community pilot launch!'
+        : 'Directe download & e-mail in 300 DPI drukkwaliteit. 100% Gratis tijdens onze Reddit- & community pilotfase!',
+    badge: locale === 'de' ? '🎁 100% Kostenlos (Pilot)' : locale === 'en' ? '🎁 100% Free (Pilot)' : '🎁 100% Gratis (Pilot)',
+    available: true,
+    isComingSoon: false,
+    borderStyle: 'border-2 border-emerald-500 ring-1 ring-emerald-500/20',
+    bgStyle: 'bg-emerald-50/60',
     innerBg: 'bg-[#0E1526]',
-    previewBorderColor: '#38bdf8',
+    previewBorderColor: '#10b981',
   },
   {
     id: 'none' as FrameStyle,
@@ -150,7 +154,9 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
         : locale === 'en'
         ? 'Unframed print. Crafted on FSC® archival cotton paper, delivered in a reinforced poster tube.'
         : 'Zonder lijst. Gedrukt door onze ervaren drukpartner op FSC® archiefpapier, geleverd in stevige koker.',
-    badge: locale === 'de' ? 'Beliebt' : locale === 'en' ? 'Popular' : 'Populair',
+    badge: locale === 'de' ? '⏳ Demnächst verfügbar' : locale === 'en' ? '⏳ Coming Soon' : '⏳ Binnenkort beschikbaar',
+    available: false,
+    isComingSoon: true,
     borderStyle: 'border-dashed border-[#C5BFB5]',
     bgStyle: 'bg-white',
     innerBg: 'bg-[#2E3440]',
@@ -167,7 +173,9 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
         : locale === 'en'
         ? 'Solid FSC® hardwood frame, gallery anti-reflective acrylic glass, pre-strung and ready to hang.'
         : 'FSC® massief hout van onze ervaren inlijstpartner, ontspiegeld kristalhelder acrylglas en ophangklaar.',
-    badge: locale === 'de' ? 'Galerie-Klassiker' : locale === 'en' ? 'Gallery Classic' : 'Klassiek Galerij',
+    badge: locale === 'de' ? '⏳ Demnächst verfügbar' : locale === 'en' ? '⏳ Coming Soon' : '⏳ Binnenkort beschikbaar',
+    available: false,
+    isComingSoon: true,
     borderStyle: 'border-[3px] border-[#181716]',
     bgStyle: 'bg-[#181716]',
     innerBg: 'bg-[#0E1526]',
@@ -184,7 +192,9 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
         : locale === 'en'
         ? 'Solid Scandinavian light pine with clean profile, gallery acrylic glass, and mounting hardware.'
         : 'Massief natuurlijk licht hout (Scandinavisch grenen) met strakke scherpe randen van onze ervaren inlijstpartner, acrylglas en ophangkit.',
-    badge: locale === 'de' ? 'Warm & Zeitlos' : locale === 'en' ? 'Warm & Timeless' : 'Warm & Tijdloos',
+    badge: locale === 'de' ? '⏳ Demnächst verfügbar' : locale === 'en' ? '⏳ Coming Soon' : '⏳ Binnenkort beschikbaar',
+    available: false,
+    isComingSoon: true,
     borderStyle: 'border-[3px] border-[#DFC9A6]',
     bgStyle: 'bg-gradient-to-br from-[#E8DAC3] via-[#DFCCA9] to-[#D4BE9B]',
     innerBg: 'bg-[#0E1526]',
@@ -201,7 +211,9 @@ export const getLocalizedFrameOptions = (locale: string = 'nl') => [
         : locale === 'en'
         ? 'Satin-white solid timber frame, shatterproof acrylic glass, and hanging kit for bright interiors.'
         : 'Zacht satijnwit massief hout van onze ervaren inlijstpartner, acrylglas en ophangkit, perfect voor lichte interieurs.',
-    badge: locale === 'de' ? 'Hell & Modern' : locale === 'en' ? 'Clean & Modern' : 'Licht & Modern',
+    badge: locale === 'de' ? '⏳ Demnächst verfügbar' : locale === 'en' ? '⏳ Coming Soon' : '⏳ Binnenkort beschikbaar',
+    available: false,
+    isComingSoon: true,
     borderStyle: 'border-[3px] border-[#E8E4DC] ring-1 ring-[#D0CAC0]',
     bgStyle: 'bg-white',
     innerBg: 'bg-[#0E1526]',
@@ -213,15 +225,16 @@ export const METRIC_SIZES = getLocalizedMetricSizes('nl', false);
 export const FRAME_OPTIONS = getLocalizedFrameOptions('nl');
 
 // Multi-currency pricing matrix taking into account Gelato production costs, local shipping, and healthy webshop margins
+// Digital is 100% Free during the Indie Pilot Launch
 export const PRICING_TABLE: Record<Currency, Record<FrameStyle, Record<string, { price: number; originalPrice: number }>>> = {
   EUR: {
     digital: {
-      '30x40': { price: 19, originalPrice: 29 },
-      '40x50': { price: 19, originalPrice: 29 },
-      '50x70': { price: 19, originalPrice: 29 },
-      '12x18': { price: 19, originalPrice: 29 },
-      '18x24': { price: 19, originalPrice: 29 },
-      '24x36': { price: 19, originalPrice: 29 },
+      '30x40': { price: 0, originalPrice: 19 },
+      '40x50': { price: 0, originalPrice: 19 },
+      '50x70': { price: 0, originalPrice: 19 },
+      '12x18': { price: 0, originalPrice: 19 },
+      '18x24': { price: 0, originalPrice: 19 },
+      '24x36': { price: 0, originalPrice: 19 },
     },
     none: {
       '30x40': { price: 39, originalPrice: 49 },
@@ -258,12 +271,12 @@ export const PRICING_TABLE: Record<Currency, Record<FrameStyle, Record<string, {
   },
   USD: {
     digital: {
-      '30x40': { price: 19, originalPrice: 29 },
-      '40x50': { price: 19, originalPrice: 29 },
-      '50x70': { price: 19, originalPrice: 29 },
-      '12x18': { price: 19, originalPrice: 29 },
-      '18x24': { price: 19, originalPrice: 29 },
-      '24x36': { price: 19, originalPrice: 29 },
+      '30x40': { price: 0, originalPrice: 19 },
+      '40x50': { price: 0, originalPrice: 19 },
+      '50x70': { price: 0, originalPrice: 19 },
+      '12x18': { price: 0, originalPrice: 19 },
+      '18x24': { price: 0, originalPrice: 19 },
+      '24x36': { price: 0, originalPrice: 19 },
     },
     none: {
       '30x40': { price: 39, originalPrice: 49 },
@@ -300,12 +313,12 @@ export const PRICING_TABLE: Record<Currency, Record<FrameStyle, Record<string, {
   },
   GBP: {
     digital: {
-      '30x40': { price: 19, originalPrice: 29 },
-      '40x50': { price: 19, originalPrice: 29 },
-      '50x70': { price: 19, originalPrice: 29 },
-      '12x18': { price: 19, originalPrice: 29 },
-      '18x24': { price: 19, originalPrice: 29 },
-      '24x36': { price: 19, originalPrice: 29 },
+      '30x40': { price: 0, originalPrice: 19 },
+      '40x50': { price: 0, originalPrice: 19 },
+      '50x70': { price: 0, originalPrice: 19 },
+      '12x18': { price: 0, originalPrice: 19 },
+      '18x24': { price: 0, originalPrice: 19 },
+      '24x36': { price: 0, originalPrice: 19 },
     },
     none: {
       '30x40': { price: 35, originalPrice: 45 },
@@ -351,7 +364,12 @@ const SIZE_LABELS_MAP: Record<string, string> = {
   '24x36': '24 × 36″ (60 × 90 cm)',
 };
 
-export function formatPrice(amount: number, currency: Currency = 'EUR'): string {
+export function formatPrice(amount: number, currency: Currency = 'EUR', locale: string = 'nl'): string {
+  if (amount === 0) {
+    if (locale === 'de') return 'Kostenlos';
+    if (locale === 'en') return 'FREE';
+    return 'Gratis';
+  }
   if (currency === 'USD') {
     return `$${amount}.00`;
   }
@@ -362,29 +380,23 @@ export function formatPrice(amount: number, currency: Currency = 'EUR'): string 
 }
 
 export function getBaseStartingPrice(currency: Currency = 'EUR', locale: string = 'nl'): string {
-  if (currency === 'USD') {
-    return 'from $19.00';
-  }
-  if (currency === 'GBP') {
-    return 'from £19.00';
-  }
   if (locale === 'de') {
-    return 'ab €19,00';
+    return 'Kostenlos (Pilot)';
   }
   if (locale === 'en') {
-    return 'from €19.00';
+    return 'FREE (Pilot)';
   }
-  return 'vanaf €19,00';
+  return 'Gratis (Pilot)';
 }
 
 export function getBaseStartingOriginalPrice(currency: Currency = 'EUR'): string {
   if (currency === 'USD') {
-    return '$29.00';
+    return '$19.00';
   }
   if (currency === 'GBP') {
-    return '£29.00';
+    return '£19.00';
   }
-  return '€29,00';
+  return '€19,00';
 }
 
 export function calculatePrice(
@@ -402,10 +414,10 @@ export function calculatePrice(
   const safeSize = (size in currencyPricing.digital ? size : '50x70') as PosterSize;
   const safeFrame = (frameStyle in currencyPricing ? frameStyle : 'none') as FrameStyle;
 
-  const entry = currencyPricing[safeFrame][safeSize] || { price: 19, originalPrice: 29 };
-  const price = entry.price;
-  const originalPrice = entry.originalPrice;
+  const entry = currencyPricing[safeFrame][safeSize] || { price: 0, originalPrice: 19 };
   const isDigital = safeFrame === 'digital';
+  const price = isDigital ? 0 : entry.price;
+  const originalPrice = entry.originalPrice;
   const hasFrame = ['black', 'oak', 'white'].includes(safeFrame);
 
   const frameOptions = getLocalizedFrameOptions(locale);
@@ -438,10 +450,10 @@ export function calculatePrice(
 
   const shippingText = isDigital
     ? locale === 'de'
-      ? 'Sofort per E-Mail (Kostenlos)'
+      ? 'Sofortiger Vektor-PDF-Download (Kostenlos)'
       : locale === 'en'
-      ? 'Instant email delivery (Free)'
-      : 'Direct per e-mail (Gratis)'
+      ? 'Instant Vector PDF Download (Free)'
+      : 'Directe Vector PDF Download (Gratis)'
     : locale === 'de'
     ? 'Kostenlose & versicherte Lieferung via DHL / DPD'
     : effectiveCurrency === 'USD'
@@ -452,16 +464,28 @@ export function calculatePrice(
     ? 'Free & insured tracked delivery via trusted partners'
     : 'Gratis en verzekerd in NL & BE via vertrouwde partners (zoals PostNL, Bpost)';
 
+  const formattedPrice = isDigital
+    ? locale === 'de'
+      ? 'Kostenlos (Pilot)'
+      : locale === 'en'
+      ? 'FREE (Pilot)'
+      : 'Gratis (Pilot)'
+    : formatPrice(price, effectiveCurrency, locale);
+
+  const formattedOriginalPrice = formatPrice(originalPrice, effectiveCurrency, locale);
+
   return {
     price,
     originalPrice,
     currency: effectiveCurrency,
     currencySymbol: CURRENCY_SYMBOLS[effectiveCurrency],
-    formattedPrice: formatPrice(price, effectiveCurrency),
-    formattedOriginalPrice: formatPrice(originalPrice, effectiveCurrency),
+    formattedPrice,
+    formattedOriginalPrice,
     savings: originalPrice - price,
     isDigital,
     hasFrame,
+    isComingSoon: !isDigital,
+    available: isDigital,
     typeLabel,
     frameLabel: frameOption.label,
     sizeLabel,
@@ -469,5 +493,5 @@ export function calculatePrice(
   };
 }
 
-export const BASE_STARTING_PRICE = 'vanaf €19,00';
-export const BASE_STARTING_ORIGINAL_PRICE = '€29,00';
+export const BASE_STARTING_PRICE = 'Gratis (Pilot)';
+export const BASE_STARTING_ORIGINAL_PRICE = '€19,00';
