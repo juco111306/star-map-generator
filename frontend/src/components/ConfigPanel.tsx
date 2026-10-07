@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   MapPin,
   Calendar,
@@ -358,15 +358,42 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   ];
 
   const currentStepIdx = stepsList.findIndex((s) => s.id === activeTab);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = useCallback(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'instant' });
+      scrollContainerRef.current.scrollTop = 0;
+    }
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      if (panelRef.current) {
+        panelRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, []);
+
+  // Automatically scroll back to the top whenever switching steps
+  useEffect(() => {
+    scrollToTop();
+  }, [activeTab, scrollToTop]);
+
   const handlePrevStep = () => {
-    if (currentStepIdx > 0) setActiveTab(stepsList[currentStepIdx - 1].id);
+    if (currentStepIdx > 0) {
+      setActiveTab(stepsList[currentStepIdx - 1].id);
+      scrollToTop();
+    }
   };
   const handleNextStep = () => {
-    if (currentStepIdx < stepsList.length - 1) setActiveTab(stepsList[currentStepIdx + 1].id);
+    if (currentStepIdx < stepsList.length - 1) {
+      setActiveTab(stepsList[currentStepIdx + 1].id);
+      scrollToTop();
+    }
   };
 
   return (
     <div
+      ref={panelRef}
       id="atelier-panel"
       className="order-2 lg:order-1 w-full lg:w-[490px] xl:w-[530px] shrink-0 flex flex-col justify-between bg-[#FAF8F5] border-r border-[#EAE5DC] text-[#1C1917] lg:h-[calc(100vh-65px)]"
     >
@@ -381,7 +408,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <button
                   key={step.id}
                   type="button"
-                  onClick={() => setActiveTab(step.id)}
+                  onClick={() => {
+                    setActiveTab(step.id);
+                    scrollToTop();
+                  }}
                   className={`group relative py-2 sm:py-2.5 px-0.5 sm:px-1 rounded-xl transition-all duration-200 flex flex-col items-center justify-center text-center gap-1 sm:gap-1.5 min-h-[54px] sm:min-h-[58px] ${
                     isCurrent
                       ? 'bg-white text-[#1C1917] shadow-sm ring-1 ring-black/5 font-semibold'
@@ -416,7 +446,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       </div>
 
       {/* Dedicated Separate Scroll Container for Options (2-3x longer on mobile: ~480-520px, flex-1 on desktop) */}
-      <div className="h-[480px] sm:h-[520px] lg:h-auto lg:flex-1 min-h-0 overflow-y-auto overscroll-contain p-3 sm:p-5 lg:p-6 space-y-4 bg-[#FAF8F5]">
+      <div
+        ref={scrollContainerRef}
+        className="h-[480px] sm:h-[520px] lg:h-auto lg:flex-1 min-h-0 overflow-y-auto overscroll-contain p-3 sm:p-5 lg:p-6 space-y-4 bg-[#FAF8F5]"
+      >
 
         {/* ================= STEP 1: LOCATION & TIME ================= */}
         {activeTab === 'location' && (
